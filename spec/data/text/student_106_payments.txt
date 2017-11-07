@@ -1,0 +1,1 @@
+{"payments":[{"invoice_status":"Late","type":"Application","invoice_number":1006,"amount":"100.0","issue_date":"2015-09-17","due_date":"2015-10-07","payment_method":"credit_card","payment_date":"2015-02-22"}]}
