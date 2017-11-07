@@ -253,12 +253,12 @@ RSpec.describe Openapply do
       test_ids = @oa.all_student_ids_by_status('applied')
       expect( test_ids ).to eq ( { student_ids: @correct_ids } )
     end
-    # it "finds all student data on all students of a status" do
-    #   allow(@oa).to receive(:api_records) { 10 }
-    #   test_answer = @oa.students_details_by_status('applied')
-    #   # pp test_answer
-    #   expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DATA_HASH
-    # end
+    it "finds all student data on all students of a status" do
+      allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.students_details_by_status('applied')
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DATA_HASH
+    end
   end
 
   context "build correct urls for students summary queries" do

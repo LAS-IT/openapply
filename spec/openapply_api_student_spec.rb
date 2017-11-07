@@ -99,6 +99,11 @@ RSpec.describe Openapply do
       # pp @oa.student_details_by_id(106)
       expect(@oa.student_details_by_id(106)).to eq SpecData::STUDENT_106_ALL_DATA_HASH
     end
+    it "student_details_by_id - kid 106 w/payments -- sends back all kid data - FLATTENED" do
+      pp @oa.student_details_by_id(106,true)
+      expect(true).to be true
+      # expect(@oa.student_details_by_id(106,true)).to eq SpecData::STUDENT_106_FLATTENED_HASH
+    end
   end
 
 end
