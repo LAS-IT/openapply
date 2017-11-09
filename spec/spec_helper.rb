@@ -1,3 +1,4 @@
+require_relative "./spec_data_array"
 require_relative "./spec_data_hash"
 require_relative "./spec_data_text"
 require "bundler/setup"

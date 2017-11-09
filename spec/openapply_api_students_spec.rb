@@ -259,6 +259,73 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DATA_HASH
     end
+    it "convert a empty hash of students_details into an array - no keys" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_keys = [:id, :name]
+      student_hash = {}
+      test_answer = @oa.students_hash_to_array(student_hash)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_EMPTY
+    end
+    it "convert a empty hash of students_details into an array" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_keys = [:id, :name]
+      student_hash = {}
+      test_answer = @oa.students_hash_to_array(student_hash, student_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_EMPTY
+    end
+    it "convert a empty hash of students_details into an array" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_keys = [:id, :name]
+      parent_keys = [:name]
+      student_hash = {}
+      test_answer = @oa.students_hash_to_array(student_hash, student_keys, parent_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_RENTS_EMPTY
+    end
+    xit "convert a hash of students_details into an array" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_keys = [:id, :name]
+      student_hash = SpecData::STATUS_APPLIED_COLLECTED_HASH
+      test_answer = @oa.students_hash_to_array(student_hash, student_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED
+    end
+    xit "convert an array of students_details into a csv string object" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_array = []
+      test_answer = @oa.students_array_to_csv(student_array)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
+    end
+    xit "convert an array of students_details into a xlsx string object" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_array = []
+      test_answer = @oa.students_array_to_xlsx(student_array)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+    end
+    xit "convert a has of students_details into a csv string object" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_hash = {}
+      test_answer = @oa.students_details_to_csv(student_hash)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
+    end
+    xit "convert a has of students_details into a xlsx string object" do
+      allow(@oa).to receive(:api_records) { 10 }
+      student_hash = {}
+      test_answer = @oa.students_details_to_xlsx(student_hash)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+    end
+    xit "collect multiple statuses into a single student details hash" do
+      allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.students_details_by_statuses(['applied','accepted'])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
+    end
   end
 
   context "build correct urls for students summary queries" do

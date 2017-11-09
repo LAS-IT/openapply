@@ -243,7 +243,7 @@ module Get
   #         :home_telephone=>"",
   #         ...,
   #         :parent_residency=>"Citizen"}}]}}
-  def student_details_by_id(id, flatten = false)
+  def student_details_by_id(id, flatten_keys=[],reject_keys=[])
     student_info = student_by_id( "#{id}" )
     payment_info = payments_by_id( "#{id}" )
 
@@ -261,7 +261,9 @@ module Get
     payments = payment_info[:payments].dup   unless payment_info.nil? or
                                                     payment_info[:payments].nil?
     # process meaningful data
-    if flatten.eql? true
+    unless flatten_keys.empty? and reject_keys.empty?
+      flatten_keys = [:flatten_no_keys] if flatten_keys.empty?
+      reject_keys  = [:reject_no_keys]  if reject_keys.empty?
       student = flatten_record(student_info[:student])
       g_flat = []
       guardians = guardians.each do |guard|
@@ -291,7 +293,7 @@ module Get
   end
 
   # TODO: add recursion?
-  def flatten_record(hash, flatten_keys=[:custom_fields],reject_keys=[:parent_guardian])
+  def flatten_record(hash, flatten_keys=[:flatten_no_keys],reject_keys=[:reject_no_keys])
     # Rails.logger.debug "Hash in: #{hash.inspect}"
     # Rails.logger.debug "Flatten Fields: #{flatten_field_keys.inspect}"
     answer = {}
@@ -320,30 +322,29 @@ module Get
     return answer
   end
 
-  def flatten_custom_fields( hash )
-    # Rails.logger.debug "FLATTEN: #{hash}"
-    answer = {}
-    hash.each do |key,val|
-
-      # if not a nested custom_field - add directly to the record
-      unless key == :custom_fields
-        # Rails.logger.debug "** ADD KEY: #{key.inspect} - #{val}"
-        answer[key] = val
-
-      # if this is a nested custom field - add to the top level
-      else
-        val.each do |k,v|
-
-          # skip parent_guardian - in student custom field
-          next if k == :parent_guardian
-
-          # Rails.logger.debug "** ADD CUST: [#{k.inspect}] - #{v}"
-          answer[k] = v
-        end
-      end
-    end
-    return answer
-  end
-
+  # def flatten_custom_fields( hash )
+  #   # Rails.logger.debug "FLATTEN: #{hash}"
+  #   answer = {}
+  #   hash.each do |key,val|
+  #
+  #     # if not a nested custom_field - add directly to the record
+  #     unless key == :custom_fields
+  #       # Rails.logger.debug "** ADD KEY: #{key.inspect} - #{val}"
+  #       answer[key] = val
+  #
+  #     # if this is a nested custom field - add to the top level
+  #     else
+  #       val.each do |k,v|
+  #
+  #         # skip parent_guardian - in student custom field
+  #         next if k == :parent_guardian
+  #
+  #         # Rails.logger.debug "** ADD CUST: [#{k.inspect}] - #{v}"
+  #         answer[k] = v
+  #       end
+  #     end
+  #   end
+  #   return answer
+  # end
 
 end

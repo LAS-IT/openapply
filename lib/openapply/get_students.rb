@@ -367,8 +367,48 @@ module Get
   # alias_method :all_students_all_data_by_status, :students_details_by_status
   alias_method :students_details, :students_details_by_status
 
-  def students_details_as_csv_by_status(status,keys)
+  def students_as_csv_by_status(status,keys)
     # some code
+  end
+
+  def students_hash_to_array(students, student_keys=[], guardian_keys=[], payment_keys=[])
+    headers  = []
+    headers  = student_keys.map{ |k| "student_" + k.to_s } unless student_keys.empty?
+    headers += guardian_keys.map{|k| "guardian_" + k.to_s } unless guardian_keys.empty?
+    headers += payment_keys.map{ |k| "payment_" + k.to_s } unless payment_keys.empty?
+    # Rails.logger.debug "HEADERS #{headers.inspect}"
+
+    array   = []
+    array  << headers
+    return array      if students.empty?
+
+    students.each do |record|
+      row = []
+
+      # Rails.logger.debug "RECORD #{record.inspect}"
+
+      student_keys.each{ |key| row << nil }                  if student.blank?
+      student_keys.each{ |key| row << student[key] }     unless student.blank?
+
+      # add the first (primary) parent / guardian
+      gaurdian_1 = record[:gaurdians].first
+      @gaurdian_fields.each{ |key| row << nil }                 if gaurdian_1.blank?
+      @gaurdian_fields.each{ |key| row << gaurdian_1[key] } unless gaurdian_1.blank?
+
+      # add the second (other) parent / guardian
+      gaurdian_2 = record[:gaurdians].second
+      @gaurdian_fields.each{ |key| row << nil }                 if gaurdian_2.blank?
+      @gaurdian_fields.each{ |key| row << gaurdian_2[key] } unless gaurdian_2.blank?
+
+      # only add the last payment in this status
+      payment = record[:payments].last
+      @payment_fields.each{ |key| row << nil }                  if payment.blank?
+      @payment_fields.each{ |key| row << payment[key] }     unless payment.blank?
+
+      array << row
+    end
+
+    return array
   end
 
   # # TODO: build queries that collects changed by date
