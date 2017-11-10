@@ -243,6 +243,7 @@ module Get
   #         :home_telephone=>"",
   #         ...,
   #         :parent_residency=>"Citizen"}}]}}
+  # TODO: COMMENT BETTER SO IT IS UNDERSTANDABLE
   def student_details_by_id(id, flatten_keys=[],reject_keys=[])
     student_info = student_by_id( "#{id}" )
     payment_info = payments_by_id( "#{id}" )
@@ -260,22 +261,25 @@ module Get
     payments = []
     payments = payment_info[:payments].dup   unless payment_info.nil? or
                                                     payment_info[:payments].nil?
-    # process meaningful data
-    unless flatten_keys.empty? and reject_keys.empty?
-      flatten_keys = [:flatten_no_keys] if flatten_keys.empty?
-      reject_keys  = [:reject_no_keys]  if reject_keys.empty?
-      student = flatten_record(student_info[:student])
-      g_flat = []
-      guardians = guardians.each do |guard|
-        next                 if guard.empty?
-        g_flat << flatten_record( guard )
-      end                unless guardians.empty?
-      guardians = g_flat unless g_flat.empty?
-    else
+    # if no keys do nothing (except remove duplicate guardian info)
+    if  (flatten_keys.nil? or flatten_keys.empty?) and
+        (reject_keys.nil?  or reject_keys.empty?)
+      # make a copy to avoid messing up the data
       student = student_info[:student].dup
       # remove duplicated parental data fields
       student[:custom_fields][:parent_guardian] = nil
+    else
+      flatten_keys = [:flatten_no_keys] if flatten_keys.nil? or flatten_keys.empty?
+      reject_keys  = [:reject_no_keys]  if reject_keys.nil?  or reject_keys.empty?
+      student = flatten_record(student_info[:student], flatten_keys, reject_keys)
+      g_flat = []
+      guardians = guardians.each do |guard|
+        next                 if guard.empty?
+        g_flat << flatten_record( guard, flatten_keys, reject_keys )
+      end                unless guardians.empty?
+      guardians = g_flat unless g_flat.empty?
     end
+
     return { student:
               { id: id,
                 record: student,
@@ -293,6 +297,7 @@ module Get
   end
 
   # TODO: add recursion?
+  # TODO: COMMENT BETTER SO IT IS UNDERSTANDABLE
   def flatten_record(hash, flatten_keys=[:flatten_no_keys],reject_keys=[:reject_no_keys])
     # Rails.logger.debug "Hash in: #{hash.inspect}"
     # Rails.logger.debug "Flatten Fields: #{flatten_field_keys.inspect}"
