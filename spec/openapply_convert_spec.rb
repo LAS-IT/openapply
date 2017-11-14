@@ -296,32 +296,18 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
+    xit "collect multiple statuses into a single student details hash" do
+      allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.students_details_by_statuses(['applied','accepted'])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
+    end
     xit "convert an array of students_details into a xlsx string object" do
       allow(@oa).to receive(:api_records) { 10 }
       student_array = []
       test_answer = @oa.students_array_to_xlsx(student_array)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
-    end
-    xit "convert a has of students_details into a csv string object" do
-      allow(@oa).to receive(:api_records) { 10 }
-      student_hash = {}
-      test_answer = @oa.students_details_to_csv(student_hash)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
-    end
-    xit "convert a has of students_details into a xlsx string object" do
-      allow(@oa).to receive(:api_records) { 10 }
-      student_hash = {}
-      test_answer = @oa.students_details_to_xlsx(student_hash)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
-    end
-    xit "collect multiple statuses into a single student details hash" do
-      allow(@oa).to receive(:api_records) { 10 }
-      test_answer = @oa.students_details_by_statuses(['applied','accepted'])
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
     end
   end
 
