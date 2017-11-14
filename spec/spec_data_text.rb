@@ -30,7 +30,10 @@ module SpecData
   # # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3&auth_token=demo_site_api_key
   file = File.join( path, 'status_applied_page_3.txt' )
   STATUS_APPLIED_PAGE_3_TEXT = File.read(file).chomp
-  #
+
+  file = File.join( path, 'status_applied_csv.txt' )
+  STATUS_APPLIED_CSV_TEXT = File.read(file) #.chomp
+
   # # # https://demo.openapply.com/api/v1/students/?status=applied&count=100&since_id=106&auth_token=demo_site_api_key
   # file = File.join( path, 'status_applied_pages_all.txt' )
   # STATUS_APPLIED_PAGES_All_TEXT = File.read(file).chomp

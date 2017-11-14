@@ -1,4 +1,5 @@
 # require 'json'
+require 'csv'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -397,12 +398,12 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq true_answer
     end
-    xit "convert an array of students_details into a csv string object" do
-      allow(@oa).to receive(:api_records) { 10 }
-      student_array = []
-      test_answer = @oa.students_array_to_csv(student_array)
+    it "convert an array of students_details into a csv string object" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_array = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
+      test_answer   = @oa.students_array_to_csv(student_array)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
     xit "convert an array of students_details into a xlsx string object" do
       allow(@oa).to receive(:api_records) { 10 }

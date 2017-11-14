@@ -1,3 +1,5 @@
+require 'csv'
+
 module Get
 
   # Creates a custom query (non-recursive) to get a list of students summaries
@@ -147,8 +149,19 @@ module Get
   # alias_method :all_students_all_data_by_status, :students_details_by_status
   alias_method :students_details, :students_details_by_status
 
-  def students_as_csv_by_status(status,keys)
-    # some code
+  # def students_as_csv_by_status(status,keys)
+  #   # some code
+  # end
+
+  def students_array_to_csv(array)
+    return ""              if array.nil? or array.empty?
+    # https://stackoverflow.com/questions/4822422/output-array-to-csv-in-ruby
+    csv_string = CSV.generate do |csv|
+      array.each do |row|
+        csv << row
+      end
+    end
+    return csv_string
   end
 
   def process_key_info?(info)
