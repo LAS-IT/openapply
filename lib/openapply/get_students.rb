@@ -204,35 +204,43 @@ module Get
       guardians  = student[:guardians]
       payments   = student[:payments]
 
+      # inject student record info into the array
       student_keys.each{ |key| row << kid_record[key] }
 
+      # inject guardian record info into the array
       if process_key_info?(guardian_info)
-        count = info_count(guardian_info) - 1
+        count = info_count(guardian_info).to_i - 1
         # loop through the correct number of parents
         (0..count).each do |i|
+          # add info if parent record exists
+          guardian_info[:keys].each{ |key| row << guardians[i][key] } if guardians[i]
           # add nils if there isn't a parent record
-          if guardians.count < i or guardians[i].nil? or guardians[i].empty?
-            guardian_info[:keys].each{ |key| row << nil }
-          else
-            guardian_info[:keys].each{ |key| row << guardians[i][key] }
-          end
+          guardian_info[:keys].each{ |key| row << nil }           unless guardians[i]
         end
       end
 
-      # # add the first (primary) parent / guardian
-      # gaurdian_1 = record[:gaurdians].first
-      # @gaurdian_fields.each{ |key| row << nil }                 if gaurdian_1.blank?
-      # @gaurdian_fields.each{ |key| row << gaurdian[key] } unless gaurdian_1.blank?
-      #
-      # # add the second (other) parent / guardian
-      # gaurdian_2 = record[:gaurdians].second
-      # @gaurdian_fields.each{ |key| row << nil }                 if gaurdian_2.blank?
-      # @gaurdian_fields.each{ |key| row << gaurdian_2[key] } unless gaurdian_2.blank?
-      #
-      # # only add the last payment in this status
-      # payment = record[:payments].last
-      # @payment_fields.each{ |key| row << nil }                  if payment.blank?
-      # @payment_fields.each{ |key| row << payment[key] }     unless payment.blank?
+      # inject guardian record info (most recent - last to oldest) into the array
+      if process_key_info?(payment_info)
+        if payment_info[:order].nil? or payment_info[:order].eql? :newest
+          # get the newest records first
+          count = info_count(payment_info).to_i
+          # loop through the correct number of parents
+          (1..count).each do |index|
+            i = index * -1
+            # puts "INDEX #{i}"
+            payment_info[:keys].each{ |key| row << payments[i][key] } if payments[i]
+            payment_info[:keys].each{ |key| row << nil }          unless payments[i]
+          end
+        else
+          # start with the oldest records
+          count = info_count(payment_info).to_i - 1
+          # loop through the correct number of parents
+          (0..count).each do |i|
+            payment_info[:keys].each{ |key| row << payments[i][key] } if payments[i]
+            payment_info[:keys].each{ |key| row << nil }          unless payments[i]
+          end
+        end
+      end
 
       array << row
     end

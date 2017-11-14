@@ -16,6 +16,7 @@ require_relative './data/hash/status_applied_pages_all'
 require_relative './data/hash/status_applied_collected'
 require_relative './data/hash/status_applied_all_details'
 require_relative './data/hash/status_applied_all_flattened'
+require_relative './data/hash/status_applied_all_flattened_multipayments'
 
 module SpecData
   # puts "#{File.expand_path File.dirname(__FILE__)}"

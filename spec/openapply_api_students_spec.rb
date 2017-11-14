@@ -342,6 +342,61 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq true_answer
     end
+    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment implied" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      # guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
+      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
+      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
+      # pp test_answer
+      expect( test_answer ).to eq true_answer
+    end
+    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment - explicit" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      # guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
+      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
+      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
+      # pp test_answer
+      expect( test_answer ).to eq true_answer
+    end
+    it "convert a hash of students_details into an array - w kid names & LAST TWO NEWEST payments" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      # guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
+      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
+      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_NEWEST_PAYMENTS
+      # pp test_answer
+      expect( test_answer ).to eq true_answer
+    end
+    it "convert a hash of students_details into an array - w kid names & TWO OLDEST payments" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      # guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
+      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
+      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_OLDEST_PAYMENTS
+      # pp test_answer
+      expect( test_answer ).to eq true_answer
+    end
+    it "convert a hash of students_details into an array - w KID & PARENT & PAYMENTS" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
+      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys, payment_keys)
+      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
+      # pp test_answer
+      expect( test_answer ).to eq true_answer
+    end
     xit "convert an array of students_details into a csv string object" do
       allow(@oa).to receive(:api_records) { 10 }
       student_array = []
