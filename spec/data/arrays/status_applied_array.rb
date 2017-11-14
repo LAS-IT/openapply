@@ -64,7 +64,7 @@ module SpecData
 
   STATUS_APPLIED_ARRAY_POPULATED_KIDS_2_GUARDIANS =
     [
-      [ "student_id", "student_name", "guardian1_id", "guardian1_name"],
+      [ "student_id", "student_name", "guardian1_id", "guardian1_name", "guardian2_id", "guardian2_name"],
       [95, "Richard Washington", 492, "Philippa Washington", 493, "Fred Washington"],
       [106, "Samuel Epelbaum", 265, "Thomas Epelbaum", 266, "Ann Epelbaum"],
       [240, "Jesse Hawkins", 408, "Sabrina Hawkins", 409, "Jeramy Hawkins"],
