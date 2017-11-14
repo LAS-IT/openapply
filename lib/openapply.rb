@@ -1,5 +1,6 @@
 require "openapply/get_students"
 require "openapply/get_student"
+require "openapply/convert"
 require "openapply/version"
 require "openapply/put"
 require 'httparty'
@@ -11,11 +12,16 @@ module Openapply
   #
   class Client
 
-    # Contains the GET api calls
-    include Get
-    # Contains the PUT api calls
+    # PUT api calls
     include Put
-    # Library to make the API calls with OpenApply
+
+    # GET api calls
+    include Get
+    
+    # Convert student data to various formats
+    include Convert
+
+    # Library for API calls to OpenApply
     include HTTParty
 
     # Defines OpenApply domain name from ENV-VARS
