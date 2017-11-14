@@ -116,7 +116,9 @@ module Get
   #
   # ==== Attributes
   # * +status+ - match status (be sure it is in the list of OpenApply status)
-  def students_details_by_status(status)
+  # student_details_by_id(id, flatten_keys=[], reject_keys=[])
+  # def students_details_by_status(status)
+  def students_details_by_status( status, flatten_keys=[], reject_keys=[] )
     ids = all_student_ids_by_status(status)
     return { error: 'answer nil' }  if ids.nil?
     return { error: 'ids nil' }     if ids[:student_ids].nil?
@@ -127,7 +129,8 @@ module Get
     student_records = []
     ids[:student_ids].each do |id|
       # get each kids details w_billing
-      student = student_details_by_id( "#{id}" )
+      # student = student_details_by_id( "#{id}" )
+      student = student_details_by_id( "#{id}", flatten_keys, reject_keys )
 
       error_ids << id                       if student.nil? or
                                                     student[:student].nil? or

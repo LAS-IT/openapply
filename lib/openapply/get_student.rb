@@ -38,7 +38,7 @@ module Get
   # ==== Attributes
   # * +student_id+ - openapply student_id
   # TODO: COMMENT BETTER SO IT IS UNDERSTANDABLE
-  def student_details_by_id(id, flatten_keys=[],reject_keys=[])
+  def student_details_by_id(id, flatten_keys=[], reject_keys=[])
     student_info = student_by_id( "#{id}" )
     payment_info = payments_by_id( "#{id}" )
 

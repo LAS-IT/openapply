@@ -256,8 +256,14 @@ RSpec.describe Openapply do
     it "finds all student data on all students of a status" do
       allow(@oa).to receive(:api_records) { 10 }
       test_answer = @oa.students_details_by_status('applied')
-      pp test_answer
+      # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
+    end
+    it "finds all student data on all students of a status and flattens the data" do
+      allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.students_details_by_status('applied',[:custom_fields],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
     end
     it "convert a empty hash of students_details into an array - no keys" do
       # allow(@oa).to receive(:api_records) { 10 }
