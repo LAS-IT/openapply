@@ -151,6 +151,16 @@ module Get
     # some code
   end
 
+  def process_key_info?(info)
+    return true unless info.nil? or info.empty? or
+                        info[:keys].nil? or info[:keys].empty?
+    return false
+  end
+
+  def info_count(info)
+    info[:count] || 1
+  end
+
   def create_csv_headers( student_keys=[], guardian_info={}, payment_info={} )
     headers  = []
 
@@ -159,24 +169,23 @@ module Get
     headers  = student_keys.map{ |k| "student_" + k.to_s } unless student_keys.nil? or student_keys.empty?
 
     # figure out guardian headers
-    unless guardian_info.nil? or guardian_info.empty? or
-            guardian_info[:keys].nil? or guardian_info[:keys].empty?
-      guardian_count = guardian_info[:count] || 1
-      # TODO: if guardian_info[:count].nil? - find the max number of parents
+    if process_key_info?(guardian_info)
+      guardian_count = info_count(guardian_info)
+      # add the correct headers
       (1..guardian_count).each do |i|
         headers += guardian_info[:keys].map{|k| "guardian#{i}_" + k.to_s }
       end
     end
 
     # calculate payment headers
-    unless payment_info.nil? or payment_info.empty? or
-            payment_info[:keys].nil? or payment_info[:keys].empty?
-      payment_count = payment_info[:count] || 1
-      # TODO: if guardian_info[:count].nil? - find the max number of parents
+    if process_key_info?(payment_info)
+      payment_count = info_count(payment_info)
+      # add the correct headers
       (1..payment_count).each do |i|
         headers += payment_info[:keys].map{|k| "payment#{i}_" + k.to_s }
       end
     end
+
     return headers
   end
 
@@ -191,12 +200,29 @@ module Get
       # next if student.nil? or student.empty? or
       #         student[:record].nil? or student[:record].empty?
 
-      student_keys.each{ |key| row << student[:record][key] }
+      kid_record = student[:record]
+      guardians  = student[:guardians]
+      payments   = student[:payments]
+
+      student_keys.each{ |key| row << kid_record[key] }
+
+      if process_key_info?(guardian_info)
+        count = info_count(guardian_info) - 1
+        # loop through the correct number of parents
+        (0..count).each do |i|
+          # add nils if there isn't a parent record
+          if guardians.count < i or guardians[i].nil? or guardians[i].empty?
+            guardian_info[:keys].each{ |key| row << nil }
+          else
+            guardian_info[:keys].each{ |key| row << guardians[i][key] }
+          end
+        end
+      end
 
       # # add the first (primary) parent / guardian
       # gaurdian_1 = record[:gaurdians].first
       # @gaurdian_fields.each{ |key| row << nil }                 if gaurdian_1.blank?
-      # @gaurdian_fields.each{ |key| row << gaurdian_1[key] } unless gaurdian_1.blank?
+      # @gaurdian_fields.each{ |key| row << gaurdian[key] } unless gaurdian_1.blank?
       #
       # # add the second (other) parent / guardian
       # gaurdian_2 = record[:gaurdians].second
