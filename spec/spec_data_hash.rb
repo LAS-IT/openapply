@@ -12,9 +12,10 @@ require_relative './data/hash/student_106_flattened'
 require_relative './data/hash/status_applied_page_1'
 require_relative './data/hash/status_applied_page_2'
 require_relative './data/hash/status_applied_page_3'
-require_relative './data/hash/status_applied_all_data'
 require_relative './data/hash/status_applied_pages_all'
 require_relative './data/hash/status_applied_collected'
+require_relative './data/hash/status_applied_all_details'
+require_relative './data/hash/status_applied_all_flattened'
 
 module SpecData
   # puts "#{File.expand_path File.dirname(__FILE__)}"

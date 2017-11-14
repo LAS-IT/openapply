@@ -62,49 +62,49 @@ RSpec.describe Openapply do
     stub_request(:get, "http://#{@oa.api_url}#{@url_kid_268}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_RECORD_HASH.to_json)
+                      body: SpecData::STUDENT_268_RECORD_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240/payments?auth_token=demo_site_api_key")
     @url_pay_268  = "#{@oa.api_path}268/payments?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_pay_268}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_PAYMENTS_HASH.to_json)
+                      body: SpecData::STUDENT_268_PAYMENTS_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240?auth_token=demo_site_api_key")
     @url_kid_269  = "#{@oa.api_path}269?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_kid_269}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_RECORD_HASH.to_json)
+                      body: SpecData::STUDENT_269_RECORD_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240/payments?auth_token=demo_site_api_key")
     @url_pay_269  = "#{@oa.api_path}269/payments?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_pay_269}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_PAYMENTS_HASH.to_json)
+                      body: SpecData::STUDENT_269_PAYMENTS_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240?auth_token=demo_site_api_key")
     @url_kid_270  = "#{@oa.api_path}270?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_kid_270}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_RECORD_HASH.to_json)
+                      body: SpecData::STUDENT_270_RECORD_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240/payments?auth_token=demo_site_api_key")
     @url_pay_270  = "#{@oa.api_path}270/payments?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_pay_270}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_PAYMENTS_HASH.to_json)
+                      body: SpecData::STUDENT_270_PAYMENTS_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240?auth_token=demo_site_api_key")
     @url_kid_271  = "#{@oa.api_path}271?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_kid_271}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_RECORD_HASH.to_json)
+                      body: SpecData::STUDENT_271_RECORD_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/240/payments?auth_token=demo_site_api_key")
     @url_pay_271  = "#{@oa.api_path}271/payments?auth_token=#{ @oa.api_key }"
     stub_request(:get, "http://#{@oa.api_url}#{@url_pay_271}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
-                      body: SpecData::STUDENT_267_PAYMENTS_HASH.to_json)
+                      body: SpecData::STUDENT_271_PAYMENTS_HASH.to_json)
 
     # https://demo.openapply.com/api/v1/students?status=applied&count=3&auth_token=demo_site_api_key
     @url_status_summary_p_1 = "#{@oa.api_path}?status=applied&count=3&auth_token=#{ @oa.api_key }"
@@ -256,41 +256,63 @@ RSpec.describe Openapply do
     it "finds all student data on all students of a status" do
       allow(@oa).to receive(:api_records) { 10 }
       test_answer = @oa.students_details_by_status('applied')
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DATA_HASH
+      pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
     end
     it "convert a empty hash of students_details into an array - no keys" do
-      allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
+      # allow(@oa).to receive(:api_records) { 10 }
       student_hash = {}
       test_answer = @oa.students_hash_to_array(student_hash)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_EMPTY
     end
     it "convert a empty hash of students_details into an array" do
-      allow(@oa).to receive(:api_records) { 10 }
+      # allow(@oa).to receive(:api_records) { 10 }
       student_keys = [:id, :name]
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys)
+      students_hash = {}
+      test_answer = @oa.students_hash_to_array(students_hash, student_keys)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_EMPTY
     end
-    it "convert a empty hash of students_details into an array" do
-      allow(@oa).to receive(:api_records) { 10 }
+    it "convert a empty hash of students_details into an array with 2 guardian headers" do
+      # allow(@oa).to receive(:api_records) { 10 }
       student_keys = [:id, :name]
-      parent_keys = [:name]
+      # get first two parents
+      guardian_keys = { count: 2, keys: [:id, :name] }
       student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys, parent_keys)
+      test_answer = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_RENTS_EMPTY
     end
-    xit "convert a hash of students_details into an array" do
-      allow(@oa).to receive(:api_records) { 10 }
+    it "convert a empty hash of students_details into an array with 2 payment headers" do
+      # allow(@oa).to receive(:api_records) { 10 }
       student_keys = [:id, :name]
-      student_hash = SpecData::STATUS_APPLIED_COLLECTED_HASH
+      # get max number of parent records
+      payment_keys = { count: 2, keys: [:invoice_number, :amount] }
+      student_hash = {}
+      test_answer = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_PAY_EMPTY
+    end
+    it "convert a empty hash of students_details into an array wo kid keys, but guardian and payment keys" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      # student_keys = [:id, :name]
+      guardian_keys = { count: 2, keys: [:id, :name] }
+      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
+      student_hash = {}
+      test_answer = @oa.students_hash_to_array(student_hash, nil, guardian_keys, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_KEYS_EMPTY
+    end
+    it "convert a hash of students_details into an array - just kid names" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      student_keys  = [:id, :name]
+      # guardian_keys = { count: 1, keys: [:id, :name] }
+      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
+      student_hash  = SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
       test_answer = @oa.students_hash_to_array(student_hash, student_keys)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS
     end
     xit "convert an array of students_details into a csv string object" do
       allow(@oa).to receive(:api_records) { 10 }
@@ -333,34 +355,34 @@ RSpec.describe Openapply do
 
     it "builds a correct url with NO parameters" do
       @placeholder = nil
-      test_answer  = @oa.students_custom_url()
+      test_answer  = @oa.students_query_url()
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on date" do
       # format: YYYY-MM-DD -- not yet 2013-09-25 02:10:39
       since_date   = Date.today - 2
       @placeholder = "since_date=#{since_date}&"
-      test_answer  = @oa.students_custom_url(nil,nil,since_date)
+      test_answer  = @oa.students_query_url(nil,nil,since_date)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status" do
       status       = 'applied'
       @placeholder = "status=#{status}&"
-      test_answer  = @oa.students_custom_url(status)
+      test_answer  = @oa.students_query_url(status)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & since_id" do
       status       = 'applied'
       since_id     = '95'
       @placeholder = "status=#{status}&since_id=#{since_id}&"
-      test_answer  = @oa.students_custom_url(status,since_id)
+      test_answer  = @oa.students_query_url(status,since_id)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & date" do
       status       = 'applied'
       since_date   = '2017-11-01'
       @placeholder = "status=#{status}&since_date=#{since_date}&"
-      test_answer  = @oa.students_custom_url(status,nil,since_date)
+      test_answer  = @oa.students_query_url(status,nil,since_date)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & date" do
@@ -368,7 +390,7 @@ RSpec.describe Openapply do
       since_id     = '95'
       since_date   = '2017-11-01'
       @placeholder = "status=#{status}&since_id=#{since_id}&since_date=#{since_date}&"
-      test_answer  = @oa.students_custom_url(status,since_id,since_date)
+      test_answer  = @oa.students_query_url(status,since_id,since_date)
       expect( test_answer ).to eq correct_answer
     end
   end
