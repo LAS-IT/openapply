@@ -9,6 +9,67 @@ RSpec.describe Openapply do
     @options = {}
     @oa = Openapply::Client.new
 
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/1?auth_token=demo_site_api_key")
+    @url_kid_1  = "#{@oa.api_path}1?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_kid_1}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_1_RECORD_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/1/payments?auth_token=demo_site_api_key")
+    @url_pay_1  = "#{@oa.api_path}1/payments?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_pay_1}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_1_PAYMENTS_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/4?auth_token=demo_site_api_key")
+    @url_kid_4  = "#{@oa.api_path}4?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_kid_4}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_4_RECORD_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/4/payments?auth_token=demo_site_api_key")
+    @url_pay_4  = "#{@oa.api_path}4/payments?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_pay_4}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_4_PAYMENTS_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/5?auth_token=demo_site_api_key")
+    @url_kid_5  = "#{@oa.api_path}5?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_kid_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_5_RECORD_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/5/payments?auth_token=demo_site_api_key")
+    @url_pay_5  = "#{@oa.api_path}5/payments?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_pay_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_5_PAYMENTS_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/6?auth_token=demo_site_api_key")
+    @url_kid_6  = "#{@oa.api_path}6?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_kid_6}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_6_RECORD_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/6/payments?auth_token=demo_site_api_key")
+    @url_pay_6  = "#{@oa.api_path}6/payments?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_pay_6}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_6_PAYMENTS_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/7?auth_token=demo_site_api_key")
+    @url_kid_7  = "#{@oa.api_path}7?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_kid_7}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_7_RECORD_HASH.to_json)
+    # stub_request(:get, "http://demo.openapply.com/api/v1/students/7/payments?auth_token=demo_site_api_key")
+    @url_pay_7  = "#{@oa.api_path}7/payments?auth_token=#{@oa.api_key}"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_pay_7}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STUDENT_7_PAYMENTS_HASH.to_json)
+
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
     @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
     stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
@@ -124,9 +185,31 @@ RSpec.describe Openapply do
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
                       body: SpecData::STATUS_APPLIED_PAGE_3_HASH.to_json)
+
+    # COUNT RETURN 5
+    # https://demo.openapply.com/api/v1/students/?status=applied&count=5&auth_token=demo_site_api_key
+    @url_status_applied_5 = "#{@oa.api_path}?status=applied&count=5&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_applied_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STATUS_5_APPLIED_RECORDS_HASH.to_json)
+    # https://demo.openapply.com/api/v1/students/?status=accepted&count=5&auth_token=demo_site_api_key
+    @url_status_accepted_5 = "#{@oa.api_path}?status=accepted&count=5&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_accepted_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STATUS_5_ACCEPTED_RECORDS_HASH.to_json)
+    # https://demo.openapply.com/api/v1/students/?status=enrolled&count=5&auth_token=demo_site_api_key
+    @url_status_enrolled_5 = "#{@oa.api_path}?status=enrolled&count=5&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_enrolled_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STATUS_5_ENROLLED_RECORDS_HASH.to_json)
+    #
+    # COUNT RETURN 10
     # https://demo.openapply.com/api/v1/students/?status=applied&count=10&auth_token=demo_site_api_key
-    @url_status_summary_8 = "#{@oa.api_path}?status=applied&count=10&auth_token=#{ @oa.api_key }"
-    stub_request(:get, "http://#{@oa.api_url}#{@url_status_summary_8}")
+    @url_status_applied_10 = "#{@oa.api_path}?status=applied&count=10&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_applied_10}")
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
@@ -308,6 +391,21 @@ RSpec.describe Openapply do
       test_answer = @oa.students_array_to_xlsx(student_array)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+    end
+  end
+
+  context "multiple status tests" do
+    it "creates the correct csv with two statuses" do
+      allow(@oa).to receive(:api_records) { 5 }
+      status = ['applied','enrolled']
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
     end
   end
 

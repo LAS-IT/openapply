@@ -59,7 +59,7 @@ module Get
   # so returns the entire list - even if that list is longer than the api_return_count)
   #
   # ==== Attributes
-  # * +status+ - match status (be sure it is in the list of OpenApply status)
+  # +status+ - match status (be sure it is in the list of OpenApply status)
   #
   # ==== Example code
   #  @demo = Openapply.new
@@ -68,15 +68,22 @@ module Get
   # ==== Return Format
   # {:student_ids=>[95, 106, 240, ..., 582]}
   def student_ids_by_status(status)
-    answer = students_by_status(status)
-    return { error: "nil answer" }   if answer.nil?
-    return { error: "nil students" } if answer[:students].nil?
-    return { student_ids: [] }       if answer[:students].empty?
+    ids = []
+    # when a single status is sent
+    states = [status] if status.is_a? String
+    states = status   if status.is_a? Array
+    states.each do |state|
+      answer = students_by_status(state)
 
-    ids  = answer[:students].map{ |l| l[:id] }
+      ids   += answer[:students].map{ |l| l[:id] } unless answer.nil? or
+                                                      answer[:students].nil? or
+                                                      answer[:students].empty?
+    end
+    return { student_ids: [] }       if ids.nil? or ids.empty?
     return { student_ids: ids }
   end
   alias_method :all_student_ids_by_status, :student_ids_by_status
+  alias_method :student_ids_by_statuses, :student_ids_by_status
 
 
   # returns a list of student summaries (in OpenApply's format) that
@@ -84,7 +91,7 @@ module Get
   # even if that list is longer than the api_return_count)
   #
   # ==== Attributes
-  # * +status+ - match status (be sure it is in the list of OpenApply status)
+  # +status+ - match status (be sure it is in the list of OpenApply status)
   def students_by_status(status)
     url = students_custom_url(status)
     answer = oa_answer( url )
@@ -118,9 +125,17 @@ module Get
   # * +status+ - match status (be sure it is in the list of OpenApply status)
   def students_details_by_status( status, flatten_keys=[], reject_keys=[] )
     ids = student_ids_by_status(status)
-    return { error: 'answer nil' }  if ids.nil?
-    return { error: 'ids nil' }     if ids[:student_ids].nil?
-    return { error: 'ids empty' }   if ids[:student_ids].empty?
+    # ids = []
+    # # when a single status is sent
+    # ids = student_ids_by_status(status) if status.is_a? String
+    # # process an array of statuses
+    # status.each do |s|
+    #   ids += student_ids_by_status(s)
+    # end                                 if status.is_a? Array
+    # hand unexpected conditions
+    return { error: 'answer nil' }      if ids.nil?
+    return { error: 'ids nil' }         if ids[:student_ids].nil?
+    return { error: 'ids empty' }       if ids[:student_ids].empty?
 
     # loop through each student
     error_ids       = []
@@ -128,18 +143,19 @@ module Get
     ids[:student_ids].each do |id|
       student = student_details_by_id( "#{id}", flatten_keys, reject_keys )
 
-      error_ids << id                       if student.nil? or
-                                                    student[:student].nil? or
-                                                    student[:student].empty?
-      student_records << student[:student]  unless student.nil? or
-                                                    student[:student].nil? or
-                                                    student[:student].empty?
+      error_ids << id                          if student.nil? or
+                                                  student[:student].nil? or
+                                                  student[:student].empty?
+      student_records << student[:student] unless student.nil? or
+                                                  student[:student].nil? or
+                                                  student[:student].empty?
     end
 
     return { students: [], error_ids: error_ids } if student_records.empty?
     return { students: student_records }
   end
   alias_method :students_details, :students_details_by_status
+  alias_method :students_details_by_statuses, :students_details_by_status
 
   # # TODO: build queries that collects changed by date
   # # get summary info with a status (useful to get ids - no custom_fields)

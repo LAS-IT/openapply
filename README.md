@@ -7,13 +7,24 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 * test timeouts
 * write PUTS methods
-* **write method to flatten data structures**
 * **write a recursive query to pull students with Multiple statuses**
-* **write a to transform return hash of students to an array**
-* **write a to transform return hash of students to a csv**
 * write a recursive query to pull students by since date
 * write a recursive query to pull students by since id
 * **investigate slow response when returning large number of records**
+* **allow xlsx export**
+
+
+### CHANGE LOG
+
+* 0.1.0 - pre-release - out of date
+* 0.2.0 - first release
+  - get student details of a give status (and pure api calls)
+* 0.2.1 - update
+  - allow data flattening for simplier post processing
+  - recursive searching of data until all records of a given status are aquired
+  - create an array or csv strings for easier usage by other consumers
+  - allow scp string to file export - use with caution - not tested
+
 
 
 ### Installation
@@ -56,6 +67,8 @@ OA_API_PATH=/api/v1/students/
 OA_BASE_URI=demo.openapply.com
 
 # this is the demo site key - you will need your own key for your own site
+# from https://demo.openapply.com/admin/dashboard (it will reset every hour)
+# navigate to Settings > Integrations, and enable the API, and generate a token
 OA_AUTH_TOKEN=demo_site_api_key
 ```
 

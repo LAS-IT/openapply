@@ -1,8 +1,18 @@
 require 'csv'
+# require 'axlsx'
 
 module Convert
 
-  # assuming a single status (required) - this method returns a list csv
+  # Queries by status to get a list of students details of a given status
+  # and converts the result to an array with headers (based on keys sent)
+  #
+  # ==== Attributes
+  # * +status+ - match status (be sure it is in the list of OpenApply status)
+  # * +flatten_keys+ -
+  # * +reject_keys+ -
+  # * +student_keys+ -
+  # * +guardian_info+ -
+  # * +payment_info+ -
   def students_as_array_by_status(status,
                                   flatten_keys=[], reject_keys=[],
                                   student_keys=[],
@@ -15,7 +25,23 @@ module Convert
                                   student_keys, guardian_info, payment_info)
   end
 
-  # assuming a single status (required) - this method returns a list csv
+  # XLSX CODE
+  ###########
+
+
+  # CSV CODE
+  ##########
+
+  # Queries by status to get a list of students details of a given status
+  # and converts the result to a CSV string with headers (based on keys sent)
+  #
+  # ==== Attributes
+  # * +status+ - match status (be sure it is in the list of OpenApply status)
+  # * +flatten_keys+ -
+  # * +reject_keys+ -
+  # * +student_keys+ -
+  # * +guardian_info+ -
+  # * +payment_info+ -
   def students_as_csv_by_status(  status,
                                   flatten_keys=[], reject_keys=[],
                                   student_keys=[],
@@ -28,7 +54,10 @@ module Convert
     student_csv_txt = students_array_to_csv( students_array )
   end
 
-
+  # Given an array convert to CSV string
+  #
+  # ==== Attributes
+  # +array+ - expects a hash of students_details (should be flattened to use custom fields)
   def students_array_to_csv(array)
     return ""              if array.nil? or array.empty?
     # https://stackoverflow.com/questions/4822422/output-array-to-csv-in-ruby
@@ -40,9 +69,16 @@ module Convert
     return csv_string
   end
 
+  # Given an hash of students_details converts to an arrary
+  #
+  # ==== Attributes
+  # * +students+ - hash to convert to an array
+  # * +student_keys+ - include student record keys
+  # * +guardian_info+ - include guardian record keys
+  # * +payment_info+ - include payment keys
   def students_hash_to_array(students, student_keys=[], guardian_info={}, payment_info={})
     array   = []
-    array  << create_csv_headers( student_keys, guardian_info, payment_info )
+    array  << create_headers( student_keys, guardian_info, payment_info )
     return array      if students.nil? or students.empty?
 
     students[:students].each do |student|
@@ -97,24 +133,30 @@ module Convert
     return array
   end
 
-
+  # internal key to process given info or not
   def process_key_info?(info)
     return true unless info.nil? or info.empty? or
                         info[:keys].nil? or info[:keys].empty?
     return false
   end
 
+  # determine count - may extend later to self-discover max number of records
   def info_count(info)
     info[:count] || 1
   end
 
-  def create_csv_headers( student_keys=[], guardian_info={}, payment_info={} )
+  # given the parameters passed in create the create csv / arrary headers
+  #
+  # ==== Attributes
+  # * +students+ - hash to convert to an array
+  # * +student_keys+ - include student record keys
+  # * +guardian_info+ - include guardian record keys
+  # * +payment_info+ - include payment keys
+  def create_headers( student_keys=[], guardian_info={}, payment_info={} )
     headers  = []
-
     # figure out student headers
     headers  = ["student_id"]       if student_keys.nil? or student_keys.empty?
     headers  = student_keys.map{ |k| "student_" + k.to_s } unless student_keys.nil? or student_keys.empty?
-
     # figure out guardian headers
     if process_key_info?(guardian_info)
       guardian_count = info_count(guardian_info)
@@ -123,7 +165,6 @@ module Convert
         headers += guardian_info[:keys].map{|k| "guardian#{i}_" + k.to_s }
       end
     end
-
     # calculate payment headers
     if process_key_info?(payment_info)
       payment_count = info_count(payment_info)
@@ -132,7 +173,27 @@ module Convert
         headers += payment_info[:keys].map{|k| "payment#{i}_" + k.to_s }
       end
     end
-
     return headers
   end
+
+  # send csv to a file on a server
+  # setup using ssh keys - not sure how to test - use at own risk
+  def send_string_to_server_file(string, srv_hostname, srv_username,
+                      srv_path_file, file_permissions="0750")
+    # https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch06s15.html
+    xfer = StringIO.new( string )
+
+    # http://www.rubydoc.info/github/delano/net-scp/Net/SCP
+    Net::SCP.start(srv_hostname, srv_username) do |scp|
+      # asynchronous upload; call returns immediately
+      channel = scp.upload( xfer, srv_path_file )
+      channel.wait
+    end
+    # ensure file has desired permissions
+    Net::SSH.start(srv_hostname, srv_username) do |ssh|
+      # Capture all stderr and stdout output from a remote process
+      output = ssh.exec!("chmod #{file_permissions} #{srv_path_file}")
+    end
+  end
+
 end
