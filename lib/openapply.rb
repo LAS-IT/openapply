@@ -17,7 +17,7 @@ module Openapply
 
     # GET api calls
     include Get
-    
+
     # Convert student data to various formats
     include Convert
 
@@ -55,14 +55,12 @@ module Openapply
     def api_path
       ENV['OA_API_PATH'] || "/api/v1/students/"
     end
-    # alias_method :base_path, :api_path
 
     # Defines the maximum records OpenApply should return with each api call
-    # with ENV-VARS - (code default is 100 - OpenApply default is 10)
+    # with ENV-VARS - (code default is 50 - OA default is 10 - doc says 100)
     def api_records
-      ENV['OA_REPLY_RECORDS'] || '100'
+      ENV['OA_REPLY_RECORDS'] || '50'
     end
-    # alias_method :record_count, :api_max_records
 
     # Handles httparty timeout errors - tries 3x before quitting
     # https://stackoverflow.com/questions/26251422/handling-netreadtimeout-error-in-httparty

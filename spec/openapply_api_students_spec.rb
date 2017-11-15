@@ -270,13 +270,13 @@ RSpec.describe Openapply do
   end
 
   context "join one student record with one student payments" do
-    it "student_details_by_id - sends back all info on a given student in ONE hash" do
-      # pp @oa.student_details_by_id(95)
-      expect(@oa.student_details_by_id(95)).to eq SpecData::STUDENT_95_ALL_DATA_HASH
-    end
+    # it "student_details_by_id - sends back all info on a given student in ONE hash" do
+    #   # pp @oa.student_details_by_id(95)
+    #   expect(@oa.student_details_by_id(95)).to eq SpecData::STUDENT_95_DETAILS_HASH
+    # end
     it "student_details_by_id - sends back all info on a given student in ONE hash" do
       # pp @oa.student_details_by_id(106)
-      expect(@oa.student_details_by_id(106)).to eq SpecData::STUDENT_106_ALL_DATA_HASH
+      expect(@oa.student_details_by_id(106)).to eq SpecData::STUDENT_106_DETAILS_HASH
     end
   end
 

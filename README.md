@@ -5,27 +5,25 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
+* xlsx export
 * test timeouts
 * write PUTS methods
-* **write a recursive query to pull students with Multiple statuses**
-* write a recursive query to pull students by since date
 * write a recursive query to pull students by since id
+* write a recursive query to pull students by since date
 * **investigate slow response when returning large number of records**
-* **allow xlsx export**
 
 
 ### CHANGE LOG
 
-* 0.1.0 - pre-release - out of date
-* 0.2.0 - first release
+* **v0.1.0** - test release -- 2017-11-01
+* **v0.2.0** - first release -- NOT compatible with 0.1.0 -- 2017-11-07
   - get student details of a give status (and pure api calls)
-* 0.2.1 - update
-  - allow data flattening for simplier post processing
-  - recursive searching of data until all records of a given status are aquired
-  - create an array or csv strings for easier usage by other consumers
-  - allow scp string to file export - use with caution - not tested
-
-
+  - recursive query until all receipt of all records received
+* **v0.2.1** - update compatible with 0.2.0 - 2017-11-15
+  - create an array or csv strings
+  - allow data flattening prep for post processing
+  - allow scp string object to file export - no tests
+  - allow queries to lookup students with multiple statuses
 
 ### Installation
 
@@ -43,11 +41,16 @@ Or install it yourself as:
 
     $ gem install openapply
 
-## Usage
 
-### Full Docs
+### Docs
 
 * http://www.rubydoc.info/gems/openapply
+
+
+#### Examples Code
+
+see /examples in repo -- https://github.com/btihen/openapply/tree/master/examples/demo
+
 
 ### Configuration
 
@@ -58,7 +61,8 @@ Or install it yourself as:
 OA_TIMEOUT=5
 
 # 100 records is the advertised default record count, but in reality it is 10
-OA_RELPY_RECORDS=100
+# this gem uses 50 as the default
+OA_RELPY_RECORDS=50
 
 # currently this is the only API path available
 OA_API_PATH=/api/v1/students/
@@ -80,7 +84,9 @@ Associates the above settings with HTTParty
 @oa = OpenApply::Client.new
 ```
 
-#### Example Usage
+###  USAGE
+
+#### USAGE SUMMARY
 
 ```ruby
 # instantiate
@@ -91,141 +97,137 @@ Associates the above settings with HTTParty
 @oa.api_key
 @oa.base_path
 @oa.api_timeout
-@oa.record_count
-# replace record_count with reply count
-# oa.reply_count
-```
-
-#### Method list
-
-* individual student details
-
-```ruby
-# all student info & parents info
-def student_by_id(student_id, options ={})
-# all payments associated with a student
-def payments_by_id(student_id, options={})
-# this is all student details (combines studnet, parent and payments)
-def student_details_by_id(id, flatten = false)
-```
-
-* group of students (summary data) -- **(recursive - collects all pages of records if return_count < total_records)**
-
-```ruby
-# summary info of students with a given status
-def students_by_status(status)
-# only student ids of students with a given status
-def student_ids_by_status(status)
+@oa.api_records
 #
-# returns all student details for all students of a given status **returned as a hash)**
-def students_details_by_status(status)
+# directly call against the OA API
+@oa.oa_api_call('/api/v1/students/?status=accepted&count=5&auth_token=add_api_key')
 #
-# TODO: add in v0.2.1
-# # returns all student details for all students of a given status **(returned as a csv string - only returns data matching the keys given)**
-# def students_details_by_status_as_csv(status,keys)
-# # returns all student details for all students of a given status **(returned as an array - only returns data matching the keys given)**
-# def students_details_by_status_as_array(status,keys)
+
+# Individual students records (separated)
+@oa.student_by_id(95)
+@oa.payments_by_id(95)
+#
+# individual student records combined & possible pre-processing
+# ATTRIBUTES: id, [:keys_to_un-nest], [:keys_to_exclude]
+@oa.student_details_by_id(95)
+@oa.student_details_by_id(95, [:custom_fields], [:parent_guardian])
+#
+# student summaries of a given status (recursively if more than on page)
+@oa.students_by_status('applied')
+#
+# student details of a given status (recursively if more than on page)
+@oa.students_details_by_status('applied')
+@oa.students_details_by_status('applied', [:custom_fields])
+@oa.students_details_by_status('applied', nil, [:parent_guardian])
+@oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian])
+#
+# student details with multiple status (recursively if more than on page)
+@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields])
+@oa.students_details_by_statuses(['applied','enrolled'], nil, [:parent_guardian])
+@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian])
+#
+# create an array
+@oa.students_as_array_by_status('applied', [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# Create a csv string
+csv_string = @oa.students_as_array_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# send CSV to a remote server as a file - using ssh-keys
+@oa.send_string_to_server_file(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 ```
 
-* custom grouping
-```ruby
-def custom_students_query(status=nil, since_id=nil, since_date=nil, count=api_records)
-def custom_students_url(status=nil, since_id=nil, since_date=nil, count=api_records)
-```
-
-#### Get Individual student information
-
-* Get a complete student record using student id -- includes: *(demographic, custom_fields, parent info & sibling ids)*
+#### INDIVIDUAL STUDENT QUERIES
 
 ```ruby
-# def one_student_record_by_id(student_id, options ={})
+# all student info & parents info -- returns the data straight from OpenApply
+student_record = @oa.student_by_id(95)
 
-@oa = OpenApply::Client.new
-@answer = @oa.student_by_id(95)
+# all payments associated with a student -- returns the data straight from OpenApply
+student_payments = @oa.payments_by_id(95)
 
-# answer formats include:
-# { student:
-#   { id: value1,
-#     name: kid_name,
-#     custom_fields: {
-#       key3: value3,
-#       key4: value4
+# Returns all student details (combines studnet, parent and payments)
+# **flatten_keys** - brings these keys to the top level - prepending the group name to the key name -- we usually use:
+#  flatten_keys = [:custom_fields]
+# **reject keys** -- removes the data matching these keys -- we usually use:
+#  reject_keys = [:parent_guardian] (since this is duplicated)
+# returns the data structured as:
+#   { student: {
+#       id: xxx,
+#       record: {xxx}      # complete student record
+#       guardians: [ {} ]  # all guardian information
+#       payments: [ {} ]   # all payments made via openapply
 #     }
-#   },
-#   linked: {
-#     parents: [
-#       id: value5,
-#       name: parent_name,
-#       custom_fields: {
-#         key6: value6,
-#         ...
-#       }
-#     ]
 #   }
-# }
+@oa.student_details_by_id(95)
+# or
+@oa.student_details_by_id(95, [:custom_fields], [:parent_guardian])
 ```
 
-* Get a student's payment records
+#### DATA OF GROUPS OF STUDENTS
+
+searched recursively - collects all pages of records
 
 ```ruby
-@oa = OpenApply::Client.new
-@answer = @oa.payments_by_id(95)
+# SUMMARY INFO of students with a given status - ONLY ONE STATUS string!
+@oa.students_by_status('applied')
 
-# answer format is:
-# {
-#    payments: [
-#       {key1: value1, key2: value2},
-#       {key1: value3, key2: value3}
-#    ],
-# }
+# STUDENT IDs of students with a given status or array of statuses
+ids = @oa.student_ids_by_status('applied')
+ids = @oa.student_ids_by_statuses(['applied','enrolled'])
+# [1, 2, 60]
+#
+# FULL STUDENT DETAILS for all students of a given status or statuses
+# **returned as a hash)** -- attributes are (status, flatten_keys, reject_keys)
+# example usage:
+@oa.students_details_by_status('applied')
+@oa.students_details_by_status('applied',[:custom_fields])
+@oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian])
+@oa.students_details_by_status(['applied','enrolled'])
+@oa.students_details_by_status(['applied','enrolled'], nil, [:parent_guardian])
 ```
 
-* Get all student data about one individual - includes: *(demographic, gardians, sibling ids, & payment records)*
+
+#### STUDENT DATA TRANFORMATIONS
 
 ```ruby
-@oa = OpenApply::Client.new
-@answer = @oa.student_details_by_id(95)
-
-# answer format is:
-# { student:
-#   {
-#     id: id,
-#     record:
-#       { id: id,
-#         name: kid_name,
-#         ... ,
-#         custom_fields: {
-#           key2: value2,
-#           ...
-#         }
-#       },
-#     payments: [
-#       {payment1},
-#       {payment2}
-#     ],
-#     guardians: [
-#       { id: id,
-#         name: guardian1,
-#         ... ,
-#         custom_fields: {
-#           key2: value2,
-#           ...
-#         }
-#       },
-#       { id: id,
-#         name: guardian2,
-#         ... ,
-#         custom_fields: {
-#           key2: value2,
-#           ...
-#         }
-#       }
-#     ]
-#   }
-# }
+# student details - in an array format (instead of hash)
+# ATTRIBUTES - status, flatten_keys, reject_keys, student_keys(into array), guardian_info(into array), payment_info(into array)
+# guardian and payment info options:
+# count - how many records to return
+# keys - which keys to return to array/csv
+# order: :newest/:oldest (for payments) - return newest or oldest payments first
+@oa.students_as_array_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
+# all options
+@oa.students_as_array_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# Create a csv string
+@oa.students_as_csv_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
+# all options
+@oa.students_as_array_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# send CSV to a remote server as a file - using ssh-keys
+# attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
+@oa.send_string_to_server_file(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 ```
 
-#### Group queries (by status)
+#### CUSTOM GROUP QUERIES - summary data
+
+```ruby
+# status = 'applied'        # all records matching a valid openapply status
+# since_id = 95             # all records with ids after 95
+# since_date = '2017-11-12' # all records modified after 2017-11-12 (& time)
+# count = 20                # records per page
+
+# build a custom url query to send to OA api
+# returns a url that can be passed to api
+@oa.students_query_url('applied', 106, '2017-11-12', 25)
+
+# executes a custom query and returns a group of student summaries matching criteria
+@oa.students_query('applied', 106, '2017-11-12', 25)
+```
+
+
+#### OpenApply's allowed statuses
 
 * **valid status includes:**
   - Status
@@ -238,270 +240,6 @@ def custom_students_url(status=nil, since_id=nil, since_date=nil, count=api_reco
   - Graduated
   - Withdrawn
 
-
-* Get student summary info of all students of a given status **(all pages - uses recursion)**
-
-```ruby
-# def all_student_summaries_by_status(status)
-
-@oa = OpenApply::Client.new
-@answer = @oa.students_by_status('applied')
-
-# answer format is:
-# { students: [
-#      { id: id1,
-#        name: kid1,
-#        ...,
-#      { id: id2,
-#        name: kid_name_2,
-#        ...,
-#      }
-#   ],
-#   linked: {
-#     parents: [
-#       id: value5,
-#       name: parent_name,
-#       custom_fields: {
-#         key6: value6,
-#         ...
-#       }
-#     ]
-#   }
-# }
-```
-
-* Get a list of student ids of all students of a given status **(all pages - uses recursion)**
-
-```ruby
-# def all_student_ids_by_status(status)
-
-@oa = OpenApply::Client.new
-@answer = @oa.student_ids_by_status('applied')
-
-# answer format is:
-# { student_ids: [95, 160, 240] }
-```
-
-* Get all student data of all students of a given status **(all pages - uses recursion)**
-
-```ruby
-# def all_students_all_data_by_status(status)
-
-@oa = OpenApply::Client.new
-@answer = @oa.students_details_by_status('enrolled')
-
-# TODO: add correct info
-# answer formats include:
-# { students:
-#   [
-#     { id: value1,
-#       key2: value2,
-#       custom_fields: {
-#         key3: value3,
-#         key4: value4
-#       }
-#     },
-#     { id: valueX,
-#       key2: valueY,
-#       custom_fields: {
-#         key3: valueZ,
-#         key4: valueA
-#       }
-#     }
-#   ],
-#   guardians: [
-#     {
-#       id: value5,
-#       custom_fields: {
-#         key6: value6,
-#         ...
-#      },
-#     {
-#       id: value6,
-#       custom_fields: {
-#         key6: value7,
-#         ...
-#      },
-#   ]
-# }
-```
-
-
-* Get all student data of all students of a given status **(all pages - uses recursion)**
-
-```ruby
-# FLATTEN RECORDS
-# def all_students_all_data_by_status(status,true)
-
-@oa = OpenApply::Client.new
-@answer = @oa.students_details_by_status('enrolled',true)
-
-# answer formats include:
-# { students:
-#   [
-#     { id: value1,
-#       name: kid_1,
-#       key3: value3,
-#       key4: value4
-#     },
-#     { id: valueX,
-#       name: kid_2,
-#       key3: valueZ,
-#       key4: valueA
-#     }
-#   ],
-#   guardians: [
-#     { id: value5,
-#       name: guardian_1
-#       key6: value6,
-#       ...
-#     },
-#     { id: value6,
-#       name: guardian_2
-#       key6: value7,
-#       ...
-#     },
-#   ]
-# }
-```
-
-#### Custom URL (GET) API calls
-
-* Get student summary info of students with a custom query - supporting the description here: https://dev.faria.co/oa/#responses **(one page - no recursion)**
-
-```ruby
-# def custom_student_summaries(status=nil, since_id=nil, since_date=nil, count=self.record_count)
-
-@oa = OpenApply::Client.new
-# status -- return records matching this status
-# since_id -- return records with ids after this id
-# since_date (format: 'YYYY-MM-DD') -- return records updated after this date
-# count (>= 1) -- is the number of records to return
-@answer = @oa.students_custom('applied',240,nil,3)
-@answer = @oa.students_custom('applied',nil,'2015-09-12',3)
-
-# answer formats include:
-# { students:
-#   [
-#     { id: value1,
-#       name: kid_1,
-#       ...,
-#       custom_fields: {
-#         key3: value3,
-#         key4: value4
-#       }
-#     },
-#     { id: valueX,
-#       name: kid_2,
-#       ...,
-#       custom_fields: {
-#         key3: valueZ,
-#         key4: valueA
-#       }
-#     }
-#   ],
-#   linked: {}
-#     parents: [
-#       {
-#         id: value5,
-#         name: parent_1,
-#         ...,
-#         custom_fields: {
-#           key6: value6,
-#           ...
-#       },
-#       {
-#         id: value6,
-#         name: parent_2,
-#         ...,
-#         custom_fields: {
-#           key6: value7,
-#           ...
-#       },
-#     ]
-#   }
-#   meta: {
-#     page: 3,
-#     per_page": "2"
-#   }
-# }
-```
-
-* Get a response to a custom url query - this is the lowest level access
-
-```ruby
-# def oa_answer( url, options={} )
-
-url = "api/v1/students?since_id=269&auth_token=demo_site_api_key"
-
-@oa = OpenApply::Client.new
-@oa_answer = @oa.oa_answer( url )
-
-# answer format like:
-#<HTTParty::Response:0x7f851fa20408 parsed_response="{\"payments\":[]}", @response=#<Net::HTTPOK 200  readbody=true>, @headers={}>
-#
-# access data using something like:
-return { error: "no answer" } unless @oa_answer.responds_to? 'response'
-return { error: "no answer" } unless (@oa_answer.response).responds_to? 'body'
-return JSON.parse( @api_answer.response.body, symbolize_names: true )
-
-# answer formats include:
-# { student:
-#   { id: value1,
-#     key2: value2,
-#     custom_fields: {
-#       key3: value3,
-#       key4: value4
-#     }
-#   },
-#   linked: {
-#     parents: [
-#       id: value5,
-#       custom_fields: {
-#         key6: value6,
-#         ...
-#       }
-#     ]
-#   }
-# }
-#   or
-# {
-#    payments: [
-#       {key1: value1, key2: value2},
-#       {key1: value3, key2: value3}
-#    ],
-# }
-#   or
-# {
-#   students: [
-#     {id: value1, key2: value2, custom_fields: {key3: value3, key4: value4} },
-#     {id: value3, key2: value3, custom_fields: {key3: value3, key5: value5} }
-#   ],
-#   linked: {
-#     parents: [
-#       id: value5,
-#       custom_fields: {
-#         key6: value6,
-#         ...
-#       }
-#     ]
-#   }
-#   meta: {
-#     page: 3,
-#     per_page": "10"
-#   }
-# }
-```
-
-#### Group queries with recursion (by since_date)
-not done (just code stubs)- not yet needed
-
-#### Group queries with recursion (by since_id)
-not done (just code stubs)- not yet needed
-
-#### See Examples Folder
-
-for an actual complete code examples
 
 ## Development
 

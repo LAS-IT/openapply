@@ -73,22 +73,4 @@ class DemoSite < Openapply::Client
     return csv_string
   end
 
-  def send_csv_to_server(csv_string, host_name, user_name, remote_path_n_file)
-    # https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch06s15.html
-    xfer_csv = StringIO.new( csv_string )
-
-    # setup using an SSH KEY instead of password
-    # http://www.rubydoc.info/github/delano/net-scp/Net/SCP
-    Net::SCP.start(host_name, user_name) do |scp|
-      # asynchronous upload; call returns immediately
-      channel = scp.upload( xfer_csv, remote_path_n_file )
-      channel.wait
-    end
-    # ensure file has proper permissions
-    Net::SSH.start(host_name, user_name) do |ssh|
-      # Capture all stderr and stdout output from a remote process
-      output = ssh.exec!("chmod 0775 #{remote_path_n_file}")
-    end
-  end
-
 end
