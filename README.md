@@ -5,12 +5,12 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* xlsx export
+* xlsx export?
 * test timeouts
 * write PUTS methods
-* write a recursive query to pull students by since id
 * write a recursive query to pull students by since date
-* **investigate slow response when returning large number of records**
+* investigate slow response when returning large number of records
+* write a recursive query to pull students by since id (sort of already done)
 
 
 ### CHANGE LOG
