@@ -37,9 +37,9 @@ module Get
   #   }
   def students_details_by_status( status, flatten_keys=[], reject_keys=[] )
     ids = student_ids_by_status(status)
-    return { error: 'answer nil' }      if ids.nil?
-    return { error: 'ids nil' }         if ids[:student_ids].nil?
-    return { error: 'ids empty' }       if ids[:student_ids].empty?
+    return { error: 'answer nil' }  if ids.nil?
+    return { error: 'ids nil' }     if ids[:student_ids].nil?
+    return { students: [] }         if ids[:student_ids].empty?
 
     # loop through each student
     error_ids       = []
@@ -54,8 +54,6 @@ module Get
                                                   student[:student].nil? or
                                                   student[:student].empty?
     end
-
-    return { students: [], error_ids: error_ids } if student_records.empty?
     return { students: student_records }
   end
   alias_method :students_details, :students_details_by_status
@@ -80,6 +78,8 @@ module Get
   #
   # === Return
   #   {student_ids: [1, 3, 40]}
+  # TODO: test with a  mix of good and bad keys
+  #       only use good keys be sure count >= 1
   def student_ids_by_status(status)
     ids = []
     # when a single status is sent
@@ -113,11 +113,11 @@ module Get
   def students_by_status(status)
     url = students_custom_url(status)
     answer = oa_answer( url )
-    return { error: "no students found" } if answer[:students].nil?
-    return { students: [] }               if answer[:students].empty?
+    return { error: "nil" }             if answer[:students].nil?
+    return { students: [] }             if answer[:students].empty?
 
     page_number = answer[:meta][:pages]
-    return answer                         if page_number == 1
+    return answer                       if page_number == 1
 
     # inspect meta data -- loop until page = 1 (all students found)
     all_students = answer[:students]

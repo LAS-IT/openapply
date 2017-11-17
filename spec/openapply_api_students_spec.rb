@@ -204,6 +204,12 @@ RSpec.describe Openapply do
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
                       body: SpecData::STATUS_5_ENROLLED_RECORDS_HASH.to_json)
+    # https://demo.openapply.com/api/v1/students/?status=bad&count=5&auth_token=demo_site_api_key
+    @url_status_bad_5 = "#{@oa.api_path}?status=bad&count=5&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_bad_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STATUS_5_BAD_RECORDS_HASH.to_json)
     #
     # COUNT RETURN 10
     # https://demo.openapply.com/api/v1/students/?status=applied&count=10&auth_token=demo_site_api_key
@@ -325,6 +331,12 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_COLLECTED_HASH
     end
+    it "gets all pages when of a bad status" do
+      allow(@oa).to receive(:api_records) { 5 }
+      test_answer = @oa.students_by_status('bad')
+      # pp test_answer
+      expect( test_answer ).to eq( {students: []} )
+    end
     it "correctly makes a student ids of a given status - from a single pages" do
       allow(@oa).to receive(:api_records) { 10 }
       test_ids = @oa.student_ids_by_status('applied')
@@ -335,11 +347,22 @@ RSpec.describe Openapply do
       test_ids = @oa.student_ids_by_status('applied')
       expect( test_ids ).to eq ( { student_ids: @correct_ids } )
     end
+    it "correctly makes a student ids of a bad status - from multiple pages" do
+      allow(@oa).to receive(:api_records) { 5 }
+      test_ids = @oa.student_ids_by_status('bad')
+      expect( test_ids ).to eq ( { student_ids: [] } )
+    end
     it "finds all student data on all students of a status" do
       allow(@oa).to receive(:api_records) { 10 }
       test_answer = @oa.students_details_by_status('applied')
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
+    end
+    it "finds all student data on all students of a bad status" do
+      allow(@oa).to receive(:api_records) { 5 }
+      test_answer = @oa.students_details_by_status('bad')
+      # pp test_answer
+      expect( test_answer ).to eq( students: [] )
     end
     it "finds all student data on all students of a status and flattens the data" do
       allow(@oa).to receive(:api_records) { 10 }
@@ -361,6 +384,13 @@ RSpec.describe Openapply do
       allow(@oa).to receive(:api_records) { 5 }
       # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
       test_answer = @oa.student_ids_by_statuses(['applied','accepted','enrolled'])
+      correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+      expect( test_answer ).to eq correct_ans
+    end
+    it "gets the right list of ids with three statuses (one bad status - accepted)" do
+      allow(@oa).to receive(:api_records) { 5 }
+      # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+      test_answer = @oa.student_ids_by_statuses(['applied','bad','enrolled'])
       correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
       expect( test_answer ).to eq correct_ans
     end
