@@ -37,20 +37,68 @@ require 'pp'
 require 'openapply'
 require_relative './demo_site'
 
+# site - uses only code from gem
+@oa = Openapply.new()
+
+# student summarys with applied status
+summaries  = @oa.students_by_status('applied')
+
+# get first 5 records with status applied with student_ids greater than 150
+# updated after 5th of Nov 2016
+custom = @oa.custom_student_summaries('applied', '150', '2016-11-05', 5)
+
+# complete student record
+complete = @oa.student_details_by_id(95)
+
+# get students with applied and enrolled status, flatten no fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and no payment info
+csv = students_as_csv_by_status( 'applied', nil, :parent_guardian,
+                            [:id, :name], {keys: [:address, :country]}, nil )
+# save csv string as a file
+open('test_file.csv', 'w') { |f| f.puts csv }
+
+# get students with applied and enrolled status, flatten the custom_fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and the oldest three payment amounts & dates
+xlsx = @oa.students_as_xlsx_by_status(['applied','enrolled'], [:custom_fields],
+                                      [:parent_guardian], [:id, :name],
+                                      {count: 2, keys: [:address, :country]},
+                                      {count: 3, order: newest, keys: [:amount, :date]})
+# save as a xlsx file
+xlsx.serialize('test_file.xlsx')
+
+
 # use a class override in order to interact with multiple oa sites
-@demo  = DemoSite.new()
+# or extend functionality
+@mine  = MySite.new()
 
-# get 5 summary records
-hash  = @demo.custom_student_summaries('applied', nil, nil, 5)
 
-# get all students
-hash  = students_by_status('applied')
-array = @demo.students_hash_to_students_array(hash)
-csv_1 = @demo.students_array_into_csv_string(array)
-# @demo.send_csv_to_server(csv_1, 'host.example.io', 'user', '/home/user/file1.csv')
+# get students with applied and enrolled status, flatten no fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and no payment info
+@mine.records_as_csv_to_file(   'applied', nil, :parent_guardian, [:id, :name],
+                                {keys: [:address, :country]}, nil , 'test.csv' )
 
-# SLOW takes minutes
-csv_2 = @demo.student_ids_names_by_status_to_csv('applied')
-# @demo.send_csv_to_server(csv_2, 'host.example.io', 'user', '/home/user/file2.csv')
+@mine.records_as_csv_to_server( 'applied', nil, :parent_guardian, [:id, :name],
+                                {keys: [:address, :country]}, nil )
 
+# get students with applied and enrolled status, flatten the custom_fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and the oldest three payment amounts & dates
+@mine.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
+                                [:parent_guardian], [:id, :name],
+                                {count: 2, keys: [:address, :country]},
+                                {count: 3, order: newest, keys: [:amount, :date]}, 'test.xlsx')
+
+@mine.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
+                                [:parent_guardian], [:id, :name],
+                                {count: 2, keys: [:address, :country]},
+                                {count: 3, order: newest, keys: [:amount, :date]})
+
+# use cron or other similar tools to automate these processes
 ```
