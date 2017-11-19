@@ -1,4 +1,6 @@
 require 'csv'
+require 'roo'
+require 'axlsx'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -205,6 +207,12 @@ RSpec.describe Openapply do
           .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
           .to_return( status: 200, headers: {},
                       body: SpecData::STATUS_5_ENROLLED_RECORDS_HASH.to_json)
+    # https://demo.openapply.com/api/v1/students/?status=bad&count=5&auth_token=demo_site_api_key
+    @url_status_bad_5 = "#{@oa.api_path}?status=bad&count=5&auth_token=#{ @oa.api_key }"
+    stub_request(:get, "http://#{@oa.api_url}#{@url_status_bad_5}")
+          .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+          .to_return( status: 200, headers: {},
+                      body: SpecData::STATUS_5_BAD_RECORDS_HASH.to_json)
     #
     # COUNT RETURN 10
     # https://demo.openapply.com/api/v1/students/?status=applied&count=10&auth_token=demo_site_api_key
@@ -373,28 +381,66 @@ RSpec.describe Openapply do
       student_keys  = [:id, :name]
       flatten_keys  = [:custom_fields]
       reject_keys   = [:parent_guardian]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      guardian_info = { count: 1, keys: [:id, :name] }
+      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
-    xit "collect multiple statuses into a single student details hash" do
-      allow(@oa).to receive(:api_records) { 10 }
-      test_answer = @oa.students_details_by_statuses(['applied','accepted'])
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV
-    end
-    xit "convert an array of students_details into a xlsx string object" do
+    xit "convert an empty array of students_details into a xlsx object" do
       allow(@oa).to receive(:api_records) { 10 }
       student_array = []
       test_answer = @oa.students_array_to_xlsx(student_array)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+      # expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+    end
+    xit "convert an populated array of students_details into a xlsx object" do
+      allow(@oa).to receive(:api_records) { 5 }
+      student_array = SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+      test_answer = @oa.students_array_to_xlsx(student_array)
+      # pp test_answer
+      # expect( test_answer ).to eq SpecData::STATUS_APPLIED_XLSX
+    end
+    xit "returns the correct xlsx object given a status" do
+      allow(@oa).to receive(:api_records) { 10 }
+      status = 'applied'
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_info = { count: 1, keys: [:id, :name] }
+      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_xlsx_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
+      # pp test_answer
+      # expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
   end
 
-  context "multiple status tests" do
+  # probably not necessary since statuses to hashes work
+  context "multiple statuses tests" do
+    it "using two status return an array object" do
+      allow(@oa).to receive(:api_records) { 5 }
+      status = ['applied','enrolled']
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+    end
+    it "using multiple good and a bad status return an array object" do
+      allow(@oa).to receive(:api_records) { 5 }
+      status = ['applied','bad','enrolled']
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+    end
     it "creates the correct csv with two statuses" do
       allow(@oa).to receive(:api_records) { 5 }
       status = ['applied','enrolled']
@@ -406,6 +452,40 @@ RSpec.describe Openapply do
       test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
+    end
+    it "creates the correct csv with two statuses" do
+      allow(@oa).to receive(:api_records) { 5 }
+      status = ['applied','bad','enrolled']
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_keys = { count: 1, keys: [:id, :name] }
+      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_csv_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
+    end
+    it "using multiple statuses return a xlsx object" do
+      allow(@oa).to receive(:api_records) { 5 }
+      status = ['applied','enrolled']
+      student_keys  = [:id, :name]
+      flatten_keys  = [:custom_fields]
+      reject_keys   = [:parent_guardian]
+      guardian_info = { count: 1, keys: [:id, :name] }
+      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_xlsx_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
+      # pp test_answer.class
+      # pp test_answer.is_a? Axlsx::Package
+      stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
+      # roo_file = Roo::Excelx.new( stream )
+      wb = nil
+      expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
+      expect( wb.cell(1,1) ).to eq('student_id')
+      expect( wb.cell(2,1) ).to eq(95)
+      expect( wb.cell(2,2) ).to eq('Richard Washington')
+      # adds quotes and removes .0 in numbers
+      pp wb.to_csv
+      expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
     end
   end
 

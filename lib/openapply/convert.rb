@@ -1,5 +1,5 @@
 require 'csv'
-# require 'axlsx'
+require 'axlsx'
 
 module Convert
 
@@ -29,9 +29,8 @@ module Convert
     students_array  = students_hash_to_array( students_hash,
                                   student_keys, guardian_info, payment_info)
   end
+  alias_method :students_as_array_by_statuses, :students_as_array_by_status
 
-  # XLSX CODE
-  ###########
 
 
   # CSV CODE
@@ -63,6 +62,7 @@ module Convert
     #
     student_csv_txt = students_array_to_csv( students_array )
   end
+  alias_method :students_as_csv_by_statuses, :students_as_csv_by_status
 
   # Given an array convert to CSV string
   #
@@ -78,6 +78,62 @@ module Convert
     end
     return csv_string
   end
+
+
+  # XLSX CODE
+  ###########
+
+
+  # Queries by status to get a list of students details of a given status
+  # and converts the result to a XLSX Object (Axlsx::Package) with headers
+  # (based on keys sent)
+  #
+  # ==== Attributes
+  # * +status+ - hash to convert to an array
+  # * +flatten_keys+ - an array of keys to bring to the top level
+  # (with this key prepened) -- default (blank does nothing)
+  # * +reject_keys+ - an array of keys to remove from the data -- default (blank does nothing)
+  # * +student_keys+ - [:id, :name] - include student record keys
+  # * +guardian_info+ - include guardian record info {count: 2, keys: [:id, :name]}
+  # * +payment_info+ - include payment info {count: 2, order: :newest, keys: [:date, :amount]}
+  # * guardian & payment info options:
+  #  count: 2 -- how many parent or payment records to return)
+  #  keys: [:id, :date] -- an array of keys of data to return
+  #  order: :newest -- the order to return payments :newest (most recent first - default) or :oldest
+  def students_as_xlsx_by_status( status,
+                                  flatten_keys=[], reject_keys=[],
+                                  student_keys=[],
+                                  guardian_info={}, payment_info={})
+    #
+    students_array  = students_as_array_by_status(  status,
+                                  flatten_keys, reject_keys,
+                                  student_keys, guardian_info, payment_info )
+    #
+    students_xlsx    = students_array_to_xlsx( students_array )
+
+    # example how to save the xlsx object as a file
+    # students_xlsx.serialize("spec/data/xlsx/students_from_oa.xlsx")
+
+    return students_xlsx
+  end
+  alias_method :students_as_xlsx_by_statuses, :students_as_xlsx_by_status
+
+
+  # Given an array convert to XLSX Object (Axlsx::Package)
+  #
+  # ==== Attributes
+  # +array+ - expects a hash of students_details (should be flattened to use custom fields)
+  def students_array_to_xlsx(student_array)
+    xlsx_obj = Axlsx::Package.new do |p|
+      p.workbook.add_worksheet(:name => "Students from OpenApply") do |sheet|
+        student_array.each{ |r| sheet.add_row r }
+      end
+      # to save the xlsx object as a file
+      # p.serialize("spec/data/xlsx/students_from_oa.xlsx")
+    end
+    return xlsx_obj
+  end
+
 
   # ARRAY CODE
   ############
@@ -204,16 +260,24 @@ module Convert
   # setup using ssh keys - not sure how to test - use at own risk
   #
   # === Attributes
-  # * +string+ - string to convert to a file on a remote server
+  # * +data+ - object to be converted to a file on a remote system --
+  # object can be a CSV String, Axlsx::Package or File object to be transfered
   # * +srv_hostname+ - fqdn or IP address of the remote host
   # * +srv_hostname+ - username to access the remote host
   # * +srv_path_file+ - full path and file name of the file on the remote host
   # * +file_permissions+ - permissions to make the file on the remote host (default is: 0750)
-  def send_string_to_server_file( string, srv_hostname, srv_username,
+  def send_data_to_remote_server( data, srv_hostname, srv_username,
                                   srv_path_file, file_permissions='0750')
     # https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch06s15.html
     # convert the string to a stringio object (which can act as a file)
-    xfer = StringIO.new( string )
+    return "Unrecognized Object"  unless known_transfer_object?(data)
+    # convert string into a SteamIO - "FILE" like object
+    xfer = StringIO.new data          if data.is_a? String
+    # convert Axlsx object into a SteamIO - "FILE" like object
+    xfer = data.to_stream()           if data.is_a? Axlsx::Package
+
+    # just move the file via SCP
+    # xfer = data                       if data.is_a? File
 
     # http://www.rubydoc.info/github/delano/net-scp/Net/SCP
     # send the stringio object to the remote host via scp
@@ -227,6 +291,12 @@ module Convert
       # Capture all stderr and stdout output from a remote process
       output = ssh.exec!("chmod #{file_permissions} #{srv_path_file}")
     end
+  end
+  alias_method :send_string_to_server_file, :send_data_to_remote_server
+
+  def known_transfer_object?( object )
+    return true  if data.is_a? String or data.is_a? Axlsx::Package or data.is_a? File
+    return false
   end
 
 end

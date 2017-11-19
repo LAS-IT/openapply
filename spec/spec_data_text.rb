@@ -37,6 +37,9 @@ module SpecData
   file = File.join( path, 'status_applied_enrolled_csv.txt' )
   STATUS_APPLIED_ENROLLED_CSV_TEXT = File.read(file) #.chomp
 
+  file = File.join( path, 'roo.csv' )
+  ROO_CSV_TEXT = File.read(file) #.chomp
+
   # # # https://demo.openapply.com/api/v1/students/?status=applied&count=100&since_id=106&auth_token=demo_site_api_key
   # file = File.join( path, 'status_applied_pages_all.txt' )
   # STATUS_APPLIED_PAGES_All_TEXT = File.read(file).chomp

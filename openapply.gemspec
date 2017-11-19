@@ -32,13 +32,15 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "httparty", "~> 0.15"
   spec.add_dependency "json" , "~> 2.1"
-  # spec.add_dependency "axlsx" , "~> 2.1"
+  # need this version of axlsx to match roo's rubyzip needs
+  spec.add_dependency "axlsx" , "2.1.0.pre"
   # spec.add_dependency "axlsx" , "~> 2.0"
 
   spec.add_development_dependency "webmock" , "~> 3.1"
   spec.add_development_dependency "bundler", "~> 1.15"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.7"
+  spec.add_development_dependency "roo", "~> 2.7"
   # spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov", "~> 0.15"
   # spec.add_development_dependency "rspec-nc", "~> 3.0"

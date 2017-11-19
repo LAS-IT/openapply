@@ -16,14 +16,16 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 ### CHANGE LOG
 
 * **v0.1.0** - test release -- 2017-11-01
-* **v0.2.0** - first release -- NOT compatible with 0.1.0 -- 2017-11-07
+
+* **v0.2.0** - first release -- **NOT** compatible with 0.1.0 -- 2017-11-07
   - get student details of a give status (and pure api calls)
   - recursive query until all receipt of all records received
-* **v0.2.1** - update compatible with 0.2.0 - 2017-11-15
-  - create an array or csv strings
+
+* **v0.2.1** - update compatible with 0.2.0 - 2017-11-20
+  - convert api data into an array, csv or xlsx
   - allow data flattening prep for post processing
-  - allow scp string object to file export - no tests
   - allow queries to lookup students with multiple statuses
+  - allow scp string object to file export (no automated tests)
 
 ### Installation
 
@@ -128,12 +130,24 @@ Associates the above settings with HTTParty
 #
 # create an array
 @oa.students_as_array_by_status('applied', [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+# multiple statuses into an array
+@oa.students_as_array_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
 #
 # Create a csv string
-csv_string = @oa.students_as_array_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+@oa.students_as_csv_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# multiple status into
+csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 #
 # send CSV to a remote server as a file - using ssh-keys
-@oa.send_string_to_server_file(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+@oa.send_data_to_remote_server(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+
+# Create XLSX file
+@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# multiple status into
+xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# send XLSX to a remote server as a file - using ssh-keys
+@oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
 ```
 
 #### INDIVIDUAL STUDENT QUERIES
@@ -203,11 +217,20 @@ ids = @oa.student_ids_by_statuses(['applied','enrolled'])
 # Create a csv string
 @oa.students_as_csv_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
 # all options
-@oa.students_as_array_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+csv=@oa.students_as_csv_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
 #
 # send CSV to a remote server as a file - using ssh-keys
 # attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
-@oa.send_string_to_server_file(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+@oa.send_data_to_remote_server(csv, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+#
+# Create a XLSX package
+@oa.students_as_xlsx_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
+# all options
+xlsx=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+#
+# send CSV to a remote server as a file - using ssh-keys
+# attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
+@oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 ```
 
 #### CUSTOM GROUP QUERIES - summary data
