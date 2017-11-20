@@ -114,7 +114,7 @@ module Get
 
   # UTILITIES
   ###########
-  
+
   # return value & remove linebreaks & trim spaces (if a string)
   def clean_data( value )
     return value.gsub("\n",' ').strip   if value.is_a? String
@@ -132,6 +132,9 @@ module Get
   def flatten_record(hash, flatten_keys=[:flatten_no_keys],reject_keys=[:reject_no_keys])
     answer = {}
 
+    # TODO: add tests for bad keys - not an array or not symbol
+    return {error: "invalid flatten keys - need array"}  unless flatten_keys.is_a? Array
+    return {error: "invalid reject keys - need array"}   unless reject_keys.is_a? Array
     # loop through each key value of the student record
     hash.each do |key,val|
       # skip loop if this key matches a value to remove

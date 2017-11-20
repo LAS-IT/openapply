@@ -1,5 +1,7 @@
 require 'csv'
 require 'axlsx'
+require 'net/scp'
+require 'net/ssh'
 
 module Convert
 
@@ -270,14 +272,18 @@ module Convert
                                   srv_path_file, file_permissions='0750')
     # https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch06s15.html
     # convert the string to a stringio object (which can act as a file)
-    return "Unrecognized Object"  unless known_transfer_object?(data)
+
+    # just move the file via SCP
+    xfer = data                       if data.is_a? File
     # convert string into a SteamIO - "FILE" like object
-    xfer = StringIO.new data          if data.is_a? String
+    xfer = data                       if data.is_a? StringIO
+    # convert string into a SteamIO - "FILE" like object
+    xfer = StringIO.new( data )       if data.is_a? String
     # convert Axlsx object into a SteamIO - "FILE" like object
     xfer = data.to_stream()           if data.is_a? Axlsx::Package
 
-    # just move the file via SCP
-    # xfer = data                       if data.is_a? File
+    # be sure its a file type that can be sent
+    return "Unrecognized Object"  unless known_transfer_object?(data)
 
     # http://www.rubydoc.info/github/delano/net-scp/Net/SCP
     # send the stringio object to the remote host via scp
@@ -294,8 +300,9 @@ module Convert
   end
   alias_method :send_string_to_server_file, :send_data_to_remote_server
 
-  def known_transfer_object?( object )
-    return true  if data.is_a? String or data.is_a? Axlsx::Package or data.is_a? File
+  def known_transfer_object?( data )
+    return true  if data.is_a? String or data.is_a? Axlsx::Package or
+                    data.is_a? File   or data.is_a? StringIO
     return false
   end
 
