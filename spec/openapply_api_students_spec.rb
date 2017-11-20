@@ -401,22 +401,24 @@ RSpec.describe Openapply do
       correct_ans = SpecData::STATUS_APPLIED_ENROLLED_FLATTENED_HASH
       expect( test_answer ).to eq correct_ans
     end
-    it "students_details_by_status - error gracefully when given invalid flatten_keys - non-arrary" do
+  end
+  context "check students_details_by_status to error gracefully" do
+    it "when given invalid flatten_keys - non-arrary" do
       test_answer = @oa.students_details_by_status('applied',:custom_fields,[:parent_guardian])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
     end
-    it "students_details_by_status - error gracefully when given invalid reject_keys - non-array" do
+    it "when given invalid reject_keys - non-array" do
       test_answer = @oa.students_details_by_status('applied',[:custom_fields],:parent_guardian)
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
     end
-    it "students_details_by_status - error gracefully when given invalid flatten_keys - strings" do
+    it "when given invalid flatten_keys - strings" do
       test_answer = @oa.students_details_by_status('applied',['custom_fields'],[:parent_guardian])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
     end
-    it "students_details_by_status - error gracefully when given invalid reject_keys - strings" do
+    it "when given invalid reject_keys - strings" do
       test_answer = @oa.students_details_by_status('applied',[:custom_fields],['parent_guardian'])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})

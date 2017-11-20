@@ -25,6 +25,9 @@ module Convert
                                   student_keys=[],
                                   guardian_info={}, payment_info={})
     #
+    check = check_details_keys_validity(flatten_keys, reject_keys)
+    return check     unless check.nil? # or check[:error].nil?
+    #
     students_hash   = students_details_by_status( status,
                                   flatten_keys, reject_keys)
     #
@@ -58,9 +61,16 @@ module Convert
                                   student_keys=[],
                                   guardian_info={}, payment_info={})
     #
+    check = check_details_keys_validity(flatten_keys, reject_keys)
+    return check     unless check.nil? # or check[:error].nil?
+    # check = check_header_keys_validity(student_keys, guardian_info, payment_info)
+    # return check    unless check.nil?
+    #
     students_array  = students_as_array_by_status(  status,
                                   flatten_keys, reject_keys,
                                   student_keys, guardian_info, payment_info )
+    #
+    return students_array     if students_array.is_a? Hash
     #
     student_csv_txt = students_array_to_csv( students_array )
   end
@@ -107,9 +117,16 @@ module Convert
                                   student_keys=[],
                                   guardian_info={}, payment_info={})
     #
+    check = check_details_keys_validity(flatten_keys, reject_keys)
+    return check     unless check.nil? # or check[:error].nil?
+    # check = check_header_keys_validity(student_keys, guardian_info, payment_info)
+    # return check    unless check.nil?
+    #
     students_array  = students_as_array_by_status(  status,
                                   flatten_keys, reject_keys,
                                   student_keys, guardian_info, payment_info )
+    #
+    return students_array     if students_array.is_a? Hash
     #
     students_xlsx    = students_array_to_xlsx( students_array )
 
@@ -152,6 +169,10 @@ module Convert
   #  keys: [:id, :date] -- an array of keys of data to return
   #  order: :newest -- the order to return payments :newest (most recent first - default) or :oldest
   def students_hash_to_array(students, student_keys=[], guardian_info={}, payment_info={})
+
+    check = check_header_keys_validity(student_keys, guardian_info, payment_info)
+    return check    unless check.nil?
+
     array   = []
     array  << create_headers( student_keys, guardian_info, payment_info )
     return array      if students.nil? or students.empty?
@@ -234,8 +255,8 @@ module Convert
   def create_headers( student_keys=[], guardian_info={}, payment_info={} )
     headers  = []
     # figure out student headers
-    headers  = ["student_id"]       if student_keys.nil? or student_keys.empty?
-    headers  = student_keys.map{ |k| "student_" + k.to_s } unless student_keys.nil? or student_keys.empty?
+    student_keys = [:id]    if student_keys.nil? or student_keys.empty?
+    headers  = student_keys.map{ |k| "student_" + k.to_s }
     # figure out guardian headers
     if process_key_info?(guardian_info)
       guardian_count = info_count(guardian_info)
@@ -304,6 +325,37 @@ module Convert
     return true  if data.is_a? String or data.is_a? Axlsx::Package or
                     data.is_a? File   or data.is_a? StringIO
     return false
+  end
+
+  def check_header_keys_validity(student_keys, guardian_info, payment_info)
+    # prepare keys for testing
+    student_keys  ||= []
+    #
+    #
+    guardian_info ||= {}
+    return {error: "invalid guardian_info - use hash"}  unless guardian_info.is_a? Hash
+    guardian_keys   = guardian_info[:keys]              #unless guardian_keys[:keys].nil?
+    guardian_keys ||= []
+    #
+    payment_info  ||= {}
+    return {error: "invalid payment_info - use hash"}   unless payment_info.is_a? Hash
+    payment_keys    = payment_info[:keys]               #unless payment_keys[:keys].nil?
+    payment_keys  ||= []
+
+    # be sure keys are in an array
+    return {error: "invalid student_keys - need array"}  unless student_keys.is_a? Array
+    return {error: "invalid guardian_keys - need array"} unless guardian_keys.is_a? Array
+    return {error: "invalid payment_keys - need array"}  unless payment_keys.is_a? Array
+
+    # test if any key values are non-symbols (remain after removing symbols)
+    return {error: "invalid student_keys - use symbols"}     if student_keys.reject{|k| k.is_a? Symbol}.count > 0
+    return {error: "invalid guardian_keys - use symbols"}    if guardian_keys.reject{|k| k.is_a? Symbol}.count > 0
+    return {error: "invalid payment_keys - use symbols"}     if payment_keys.reject{|k| k.is_a? Symbol}.count > 0
+
+    # check that if guardian info is given - it also has keys
+    return {error: "invalid guardian_keys - keys missing"}   if not guardian_info.empty? and guardian_info[:keys].nil?
+    return {error: "invalid payment_keys - keys missing"}    if not payment_info.empty? and payment_info[:keys].nil?
+
   end
 
 end

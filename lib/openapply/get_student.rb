@@ -64,14 +64,8 @@ module Get
   #   }
   def student_details_by_id(id, flatten_keys=[], reject_keys=[])
 
-    # # be sure flatten_keys are in an array
-    return {error: "invalid flatten_keys - need array"}  unless flatten_keys.is_a? Array
-    # # be sure reject_keys are in an array
-    return {error: "invalid reject_keys - need array"}   unless reject_keys.is_a? Array
-    # # test if any values are non-symbols (remain after removing symbols)
-    return {error: "invalid flatten_keys - use symbols"} if flatten_keys.reject{|k| k.is_a? Symbol}.count > 0
-    # # test if any values are non-symbols (remain after removing symbols)
-    return {error: "invalid reject_keys - use symbols"}  if reject_keys.reject{|k| k.is_a? Symbol}.count > 0
+    check = check_details_keys_validity(flatten_keys, reject_keys)
+    return check     unless check.nil? # or check[:error].nil?
 
     # get full student record and guardian information
     student_info = student_by_id( "#{id}" )
@@ -164,6 +158,17 @@ module Get
                                             not val.empty?
     end
     return answer
+  end
+
+  def check_details_keys_validity(flatten_keys, reject_keys)
+    # # be sure flatten_keys are in an array
+    return {error: "invalid flatten_keys - need array"}  unless flatten_keys.is_a? Array
+    # # be sure reject_keys are in an array
+    return {error: "invalid reject_keys - need array"}   unless reject_keys.is_a? Array
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid flatten_keys - use symbols"} if flatten_keys.reject{|k| k.is_a? Symbol}.count > 0
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid reject_keys - use symbols"}  if reject_keys.reject{|k| k.is_a? Symbol}.count > 0
   end
 
 end
