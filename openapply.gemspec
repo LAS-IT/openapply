@@ -34,7 +34,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "json" , "~> 2.1"
   # need this version of axlsx to match roo's rubyzip needs
   spec.add_dependency "axlsx" , "2.1.0.pre"
-  # spec.add_dependency "axlsx" , "~> 2.0"
+  spec.add_dependency "net-ssh" , "~> 4.2"
+  spec.add_dependency "net-scp" , "~> 1.2"
 
   spec.add_development_dependency "webmock" , "~> 3.1"
   spec.add_development_dependency "bundler", "~> 1.15"

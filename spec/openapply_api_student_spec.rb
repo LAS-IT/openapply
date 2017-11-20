@@ -106,6 +106,26 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STUDENT_106_FLATTENED_HASH
     end
+    it "student_details_by_id - error gracefully when given invalid flatten_keys - non-arrary" do
+      test_answer = @oa.student_details_by_id(106,:custom_fields,[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
+    end
+    it "student_details_by_id - error gracefully when given invalid reject_keys - non-array" do
+      test_answer = @oa.student_details_by_id(106,[:custom_fields],:parent_guardian)
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
+    end
+    it "student_details_by_id - error gracefully when given invalid flatten_keys - strings" do
+      test_answer = @oa.student_details_by_id(106,['custom_fields'],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
+    end
+    it "student_details_by_id - error gracefully when given invalid reject_keys - strings" do
+      test_answer = @oa.student_details_by_id(106,[:custom_fields],['parent_guardian'])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
+    end
   end
 
 end

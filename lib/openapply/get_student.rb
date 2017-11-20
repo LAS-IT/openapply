@@ -63,6 +63,16 @@ module Get
   #     }
   #   }
   def student_details_by_id(id, flatten_keys=[], reject_keys=[])
+
+    # # be sure flatten_keys are in an array
+    return {error: "invalid flatten_keys - need array"}  unless flatten_keys.is_a? Array
+    # # be sure reject_keys are in an array
+    return {error: "invalid reject_keys - need array"}   unless reject_keys.is_a? Array
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid flatten_keys - use symbols"} if flatten_keys.reject{|k| k.is_a? Symbol}.count > 0
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid reject_keys - use symbols"}  if reject_keys.reject{|k| k.is_a? Symbol}.count > 0
+
     # get full student record and guardian information
     student_info = student_by_id( "#{id}" )
     # get student payment records
@@ -132,9 +142,6 @@ module Get
   def flatten_record(hash, flatten_keys=[:flatten_no_keys],reject_keys=[:reject_no_keys])
     answer = {}
 
-    # TODO: add tests for bad keys - not an array or not symbol
-    return {error: "invalid flatten keys - need array"}  unless flatten_keys.is_a? Array
-    return {error: "invalid reject keys - need array"}   unless reject_keys.is_a? Array
     # loop through each key value of the student record
     hash.each do |key,val|
       # skip loop if this key matches a value to remove

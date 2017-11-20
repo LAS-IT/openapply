@@ -36,6 +36,16 @@ module Get
   #     ]
   #   }
   def students_details_by_status( status, flatten_keys=[], reject_keys=[] )
+
+    # # be sure flatten_keys are in an array
+    return {error: "invalid flatten_keys - need array"}  unless flatten_keys.is_a? Array
+    # # be sure reject_keys are in an array
+    return {error: "invalid reject_keys - need array"}   unless reject_keys.is_a? Array
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid flatten_keys - use symbols"} if flatten_keys.reject{|k| k.is_a? Symbol}.count > 0
+    # # test if any values are non-symbols (remain after removing symbols)
+    return {error: "invalid reject_keys - use symbols"}  if reject_keys.reject{|k| k.is_a? Symbol}.count > 0
+
     ids = student_ids_by_status(status)
     return { error: 'answer nil' }  if ids.nil?
     return { error: 'ids nil' }     if ids[:student_ids].nil?

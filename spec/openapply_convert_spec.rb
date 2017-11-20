@@ -484,7 +484,7 @@ RSpec.describe Openapply do
       expect( wb.cell(2,1) ).to eq(95)
       expect( wb.cell(2,2) ).to eq('Richard Washington')
       # adds quotes and removes .0 in numbers
-      pp wb.to_csv
+      # pp wb.to_csv
       expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
     end
   end

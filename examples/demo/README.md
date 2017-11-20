@@ -101,12 +101,12 @@ require_relative './demo_site'
 @mine.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
                                 [:parent_guardian], [:id, :name],
                                 {count: 2, keys: [:address, :country]},
-                                {count: 3, order: newest, keys: [:amount, :date]}, 'test.xlsx')
+                                {count: 3, order: :oldest, keys: [:amount, :date]}, 'test.xlsx')
 
 @mine.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
                                 [:parent_guardian], [:id, :name],
                                 {count: 2, keys: [:address, :country]},
-                                {count: 3, order: newest, keys: [:amount, :date]})
+                                {count: 3, order: :newest, keys: [:amount, :date]})
 
 # use cron or other similar tools to automate these processes
 ```
