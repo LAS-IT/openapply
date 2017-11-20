@@ -286,13 +286,6 @@ RSpec.describe Openapply do
     end
   end
 
-  context "test the custom summary (non-recursive) api call" do
-    it "gets first 3 records of status 'applied' with ids larger than '240'"
-    # @answer = @oa.custom_student_summaries('applied',240,nil,3)
-    it "gets first 3 records of status 'applied' with updates after '2015-09-12'"
-    # @answer = @oa.custom_student_summaries('applied',nil,'2015-09-12',3)
-  end
-
   context "test the student summary api call" do
     before(:each) do
       allow(@oa).to receive(:api_records) { 3 }

@@ -418,29 +418,31 @@ RSpec.describe Openapply do
       expect( wb.cell(2,2) ).to eq('Richard Washington')
       # adds quotes and removes .0 in numbers
       # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
+      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
     end
-    xit "returns the correct xlsx object given a status" do
-      allow(@oa).to receive(:api_records) { 10 }
+    it "returns the correct xlsx object given a status" do
+      allow(@oa).to receive(:api_records) { 5 }
       status = 'applied'
       student_keys  = [:id, :name]
       flatten_keys  = [:custom_fields]
       reject_keys   = [:parent_guardian]
       guardian_info = { count: 1, keys: [:id, :name] }
       payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_xlsx_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
-      # pp test_answer.class
+      test_answer   = @oa.students_as_xlsx_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
+      # # pp test_answer.class
       # pp test_answer.is_a? Axlsx::Package
       stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-      # roo_file = Roo::Excelx.new( stream )
+      # pp stream.is_a? StringIO
+      # # roo_file = Roo::Excelx.new( stream )
       wb = nil
       expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
       expect( wb.cell(1,1) ).to eq('student_id')
       expect( wb.cell(2,1) ).to eq(95)
       expect( wb.cell(2,2) ).to eq('Richard Washington')
-      # adds quotes and removes .0 in numbers
-      # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
+      # # adds quotes and removes .0 in numbers
+      # # pp wb.to_csv
+      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_CSV_TEXT
+      # expect( true ).to eq SpecData::ROO_APPLIED_CSV_TEXT
     end
   end
 
@@ -514,7 +516,7 @@ RSpec.describe Openapply do
       expect( wb.cell(2,2) ).to eq('Richard Washington')
       # adds quotes and removes .0 in numbers
       # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
+      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
     end
   end
 
