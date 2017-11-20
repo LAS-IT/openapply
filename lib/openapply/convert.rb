@@ -321,12 +321,22 @@ module Convert
   end
   alias_method :send_string_to_server_file, :send_data_to_remote_server
 
+  # Check that the data to transfer is of a known data type
+  #
+  # === Attributes
+  # * +data+ - is it an Axlsx::Package, Sting, StringIO or a File class?
   def known_transfer_object?( data )
     return true  if data.is_a? String or data.is_a? Axlsx::Package or
                     data.is_a? File   or data.is_a? StringIO
     return false
   end
 
+  # Check header info before processing
+  #
+  # === Attributes
+  # * +student_keys+ - that this is an arrary of symbols
+  # * +guardian_info+ - that this is a hash with keys: using symbols
+  # * +payment_info+ - that this is a hash with keys: using symbols
   def check_header_keys_validity(student_keys, guardian_info, payment_info)
     # prepare keys for testing
     student_keys  ||= []

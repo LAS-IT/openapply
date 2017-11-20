@@ -160,6 +160,11 @@ module Get
     return answer
   end
 
+  # Check the validity of keys to process student_details
+  #
+  # === Attributes
+  # * +flatten_keys+ - is an array of symbols
+  # * +reject_keys+ - is an array of symbols
   def check_details_keys_validity(flatten_keys, reject_keys)
     # # be sure flatten_keys are in an array
     return {error: "invalid flatten_keys - need array"}  unless flatten_keys.is_a? Array
