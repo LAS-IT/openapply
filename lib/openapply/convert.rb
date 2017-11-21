@@ -3,6 +3,9 @@ require 'axlsx'
 require 'net/scp'
 require 'net/ssh'
 
+# CODE THAT TRANSFORMS STUDENT DATA
+###################################
+
 module Convert
 
   # Queries by status to get a list of students details of a given status

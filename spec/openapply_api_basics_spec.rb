@@ -15,7 +15,7 @@ RSpec.describe Openapply do
       expect(Openapply::VERSION).not_to be nil
     end
     it "has correct version number" do
-      expect(Openapply::VERSION).to eq "0.2.1"
+      expect(Openapply::VERSION).to eq "0.2.2"
     end
     it "has a url" do
       expect(@oa.api_url).not_to be nil
@@ -49,9 +49,53 @@ RSpec.describe Openapply do
       # setup api timeout mocks
     end
 
-    it "returns an answer after one timeout"
-    it "returns an aswer after two timeouts"
-    it "returns an error after three timeouts"
+    it "returns an answer after one timeout" do
+      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
+      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+            .to_timeout.times(1).then
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .to_return( status: 200, headers: {},
+                        body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+      test_ans = @oa.student_by_id(95)
+      # pp test_ans
+      expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+    end
+    it "returns an answer after two timeouts" do
+      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
+      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+            .to_timeout.times(2).then
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .to_return( status: 200, headers: {},
+                        body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+      test_ans = @oa.student_by_id(95)
+      expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+    end
+    it "returns an error after three timeouts" do
+      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
+      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+            .to_timeout.times(3).then
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .to_return( status: 200, headers: {},
+                        body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+      test_ans  = @oa.student_by_id(95)
+      error_ans = { error: "SITE TIMEOUT - 3 Consecutive FAILURES"  }
+      expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+    end
+    it "returns an error after three timeouts" do
+      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
+      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+            .to_timeout.times(4).then
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .to_return( status: 200, headers: {},
+                        body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+      test_ans  = @oa.student_by_id(95)
+      error_ans = { error: "no response (timeout) from URL: #{@url_kid_95}" }
+      expect( test_ans ).to eql( error_ans )
+    end
   end
 
   context "oa_answer - test invalid url conditions" do

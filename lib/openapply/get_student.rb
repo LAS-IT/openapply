@@ -1,8 +1,7 @@
+# SINGLE STUDENT API GET CALLS
+##############################
+
 module Get
-
-  # SINGLE STUDENT CODE
-  #####################
-
 
   # STUDENT FULL RECORD
   #####################
