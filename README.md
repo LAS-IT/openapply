@@ -5,18 +5,17 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* write PUTS method
-* investigate slow response when returning large number of records
-* write a recursive custom query to pull students by since id (sort-of already done)
+* write PUTS methods
+* write a recursive custom query
+* speed response when returning large number of records
+* allow flattening and reject to work at any depth (recursion?)
 
 
 ### CHANGE LOG
 
-* **v0.1.0** - test release -- 2017-11-01
-
-* **v0.2.0** - first release -- **NOT** compatible with 0.1.0 -- 2017-11-07
-  - get student details of a give status (and pure api calls)
-  - recursive query until all receipt of all records received
+* **v0.2.2** - update compatible with 0.2.x - 2017-11-21
+  - refactor and test url timeouts
+  - refactor openapply client
 
 * **v0.2.1** - update compatible with 0.2.x - 2017-11-20
   - convert api data into an array, csv or xlsx
@@ -24,9 +23,11 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
   - allow queries to lookup students with multiple statuses
   - allow scp string object to file export (no automated tests)
 
-* **v0.2.2** - update compatible with 0.2.x - 2017-11-21
-  - refactor and test url timeouts
-  - refactor openapply client
+* **v0.2.0** - first release -- **NOT** compatible with 0.1.0 -- 2017-11-07
+  - get student details of a give status (and pure api calls)
+  - recursive query until all receipt of all records received
+
+* **v0.1.0** - test release -- 2017-11-01
 
 ### Installation
 
