@@ -7,7 +7,10 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 * write PUTS methods
 * write a recursive custom query
+* check recursion on summary info
+* allow detailed queries to skip payment information
 * speed response when returning large number of records
+* allow csv and xlsx reports to generate from summary info?
 * allow flattening and reject to work at any depth (recursion?)
 
 

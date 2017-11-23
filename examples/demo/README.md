@@ -1,7 +1,9 @@
 ## Usage
-Start irb
+
+In the terminal:
+
 ```bash
-bundle install
+gem install openapply
 
 # irb
 # or
