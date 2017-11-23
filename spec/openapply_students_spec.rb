@@ -363,6 +363,14 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
     end
+    it "finds all student details on all students (without payments)" do
+      allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.students_details_by_status('applied',[],[], false)
+      # test_answer = @oa.students_details_by_status('applied',[:custom_fields],[:parent_guardian],false)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_NO_PAYMENTS_HASH
+      # expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
+    end
   end
 
   context "multiple status tests" do

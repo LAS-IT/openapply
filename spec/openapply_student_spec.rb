@@ -91,11 +91,6 @@ RSpec.describe Openapply do
   end
 
   context "join one student record with one student payments" do
-    # it "student_details_by_id - kid 95 w/no payments -- sends back all kid data - with custom fields" do
-    #   test_answer = @oa.student_details_by_id(95)
-    #   # pp test_answer
-    #   expect( test_answer ).to eq SpecData::STUDENT_95_DETAILS_HASH
-    # end
     it "student_details_by_id - kid 106 w/payments -- sends back all kid data - with custom fields" do
       test_answer = @oa.student_details_by_id(106)
       # pp test_answer
@@ -127,6 +122,11 @@ RSpec.describe Openapply do
       test_answer = @oa.student_details_by_id(106,[:custom_fields],['parent_guardian'])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
+    end
+    it "student_details_by_id - kid 95 -- sends back all kid data except payment info" do
+      test_answer = @oa.student_details_by_id(106,[],[],false)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STUDENT_106_DETAILS_NO_PAYMENTS_HASH
     end
   end
 

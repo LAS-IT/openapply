@@ -51,6 +51,13 @@ module Get
   # * +flatten_keys+ - an array of keys to bring to the top level
   # (with this key prepened) -- default (blank does nothing)
   # * +reject_keys+ - an array of keys to remove from the data -- default (blank does nothing)
+  # * +get_payments+ - default is true (but needs double lookup) - faster when false!
+  #
+  # === Usage
+  #  students_details_by_id(95)
+  #  students_details_by_id(95, [], [], false)
+  #  students_details_by_id(95, [:custom_fields], [:parent_guardian])
+  #  students_details_by_id(95, [:custom_fields], [:parent_guardian], false)
   #
   # === Returned Data
   # returns the data structured as:
@@ -61,7 +68,7 @@ module Get
   #       payments: [ {} ]   # all payments made via openapply
   #     }
   #   }
-  def student_details_by_id(id, flatten_keys=[], reject_keys=[])
+  def student_details_by_id(id, flatten_keys=[], reject_keys=[], get_payments=true)
 
     check = check_details_keys_validity(flatten_keys, reject_keys)
     return check     unless check.nil? # or check[:error].nil?
@@ -69,7 +76,7 @@ module Get
     # get full student record and guardian information
     student_info = student_by_id( "#{id}" )
     # get student payment records
-    payment_info = payments_by_id( "#{id}" )
+    payment_info = payments_by_id( "#{id}" )     if get_payments.eql? true
 
     # be sure there is student data to process -- if not return an empty record
     return {student: {id: id, empty: []}}        if student_info.nil? or

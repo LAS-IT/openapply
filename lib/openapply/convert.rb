@@ -29,10 +29,14 @@ module Convert
                                   guardian_info={}, payment_info={})
     #
     check = check_details_keys_validity(flatten_keys, reject_keys)
-    return check     unless check.nil? # or check[:error].nil?
+    return check           unless check.nil? # or check[:error].nil?
     #
+    # by default get payment info (unless no payment info is requested)
+    get_payments    = true
+    get_payments    = false    if payment_info.nil? or payment_info.empty?
+    # go get student details from api
     students_hash   = students_details_by_status( status,
-                                  flatten_keys, reject_keys)
+                                  flatten_keys, reject_keys, get_payments )
     #
     students_array  = students_hash_to_array( students_hash,
                                   student_keys, guardian_info, payment_info)
@@ -65,7 +69,7 @@ module Convert
                                   guardian_info={}, payment_info={})
     #
     check = check_details_keys_validity(flatten_keys, reject_keys)
-    return check     unless check.nil? # or check[:error].nil?
+    return check           unless check.nil? # or check[:error].nil?
     # check = check_header_keys_validity(student_keys, guardian_info, payment_info)
     # return check    unless check.nil?
     #
@@ -73,7 +77,7 @@ module Convert
                                   flatten_keys, reject_keys,
                                   student_keys, guardian_info, payment_info )
     #
-    return students_array     if students_array.is_a? Hash
+    return students_array      if students_array.is_a? Hash
     #
     student_csv_txt = students_array_to_csv( students_array )
   end
@@ -121,7 +125,7 @@ module Convert
                                   guardian_info={}, payment_info={})
     #
     check = check_details_keys_validity(flatten_keys, reject_keys)
-    return check     unless check.nil? # or check[:error].nil?
+    return check           unless check.nil? # or check[:error].nil?
     # check = check_header_keys_validity(student_keys, guardian_info, payment_info)
     # return check    unless check.nil?
     #
@@ -129,7 +133,7 @@ module Convert
                                   flatten_keys, reject_keys,
                                   student_keys, guardian_info, payment_info )
     #
-    return students_array     if students_array.is_a? Hash
+    return students_array      if students_array.is_a? Hash
     #
     students_xlsx    = students_array_to_xlsx( students_array )
 

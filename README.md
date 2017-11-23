@@ -5,22 +5,24 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* write PUTS methods
-* write a recursive custom query
-* check recursion on summary info
-* allow detailed queries to skip payment information
-* speed response when returning large number of records
-* allow csv and xlsx reports to generate from summary info?
-* allow flattening and reject to work at any depth (recursion?)
+* allow csv and xlsx reports with default summary info only?
+* write PUTS methods - *currently api only allows status update*
+* allow flattening and reject to work at any depth (with recursion?)
+* write a recursive custom query - when results are more than one page
+* speed up response when returning large number of records? - **looks like API is slow not sure if this can be sped up**
 
 
 ### CHANGE LOG
 
-* **v0.2.2** - update compatible with 0.2.x - 2017-11-21
+* **v0.2.3** - compatible with 0.2.x - 2017-11-23
+  - allow detailed queries *(_by_id & _by_status)* to skip payment information
+  - allow array, csv & xlsx transformations to skip payment queries (when no payment_info requested)
+
+* **v0.2.2** - compatible with 0.2.x - 2017-11-21
   - refactor and test url timeouts
   - refactor openapply client
 
-* **v0.2.1** - update compatible with 0.2.x - 2017-11-20
+* **v0.2.1** - compatible with 0.2.x - 2017-11-20
   - convert api data into an array, csv or xlsx
   - allow data flattening prep for post processing
   - allow queries to lookup students with multiple statuses
@@ -118,6 +120,9 @@ Associates the above settings with HTTParty
 # ATTRIBUTES: id, [:keys_to_un-nest], [:keys_to_exclude]
 @oa.student_details_by_id(95)
 @oa.student_details_by_id(95, [:custom_fields], [:parent_guardian])
+# skip payment info -- (payments: [])
+@oa.student_details_by_id(95, [], [], false)
+@oa.student_details_by_id(95, [:custom_fields], [:parent_guardian], false)
 #
 # student summaries of a given status (recursively if more than on page)
 @oa.students_by_status('applied')
@@ -125,13 +130,20 @@ Associates the above settings with HTTParty
 # student details of a given status (recursively if more than on page)
 @oa.students_details_by_status('applied')
 @oa.students_details_by_status('applied', [:custom_fields])
-@oa.students_details_by_status('applied', nil, [:parent_guardian])
+@oa.students_details_by_status('applied', [], [:parent_guardian])
 @oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian])
+# skip payment info (payments: [])
+@oa.students_details_by_status('applied', [], [], false)
+@oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian], false)
 #
 # student details with multiple status (recursively if more than on page)
 @oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields])
 @oa.students_details_by_statuses(['applied','enrolled'], nil, [:parent_guardian])
 @oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian])
+# speed up and skip payment info - returns [] in payment area
+@oa.students_details_by_statuses(['applied','enrolled'], [], [], false)
+# speed up and skip payment info - returns [] in payment area
+@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], false)
 #
 # create an array
 @oa.students_as_array_by_status('applied', [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )

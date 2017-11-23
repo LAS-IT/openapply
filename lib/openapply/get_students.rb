@@ -10,16 +10,20 @@ module Get
   #
   # === Attributes
   #
-  # **flatten_keys** - brings these keys to the top level - prepending the group name to the key name -- we usually use:
+  # +flatten_keys+ - brings these keys to the top level - prepending the group name to the key name -- we usually use:
   #  flatten_keys = [:custom_fields]
-  # **reject keys** -- removes the data matching these keys -- we usually use:
+  # +reject keys+ -- removes the data matching these keys -- we usually use:
   #  reject_keys = [:parent_guardian] (since this is duplicated)
+  # * +get_payments+ - default is true (but needs double lookup) - faster when false!
   #
   # === Usage
   #  students_details_by_status('applied')
+  #  students_details_by_status('applied', [], [],false)
   #  students_details_by_status('applied', [:custom_fields], [:parent_guardian])
+  #  students_details_by_status('applied', [:custom_fields], [:parent_guardian], false)
   #  students_details_by_statuses(['applied','enrolled'])
   #  students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian])
+  #  students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], false)
   #
   # === Returned Data
   # returns the data structured as:
@@ -38,7 +42,7 @@ module Get
   #       }
   #     ]
   #   }
-  def students_details_by_status( status, flatten_keys=[], reject_keys=[] )
+  def students_details_by_status( status, flatten_keys=[], reject_keys=[], get_payments=true )
 
     check = check_details_keys_validity(flatten_keys, reject_keys)
     return check     unless check.nil? # or check[:error].nil?
@@ -52,7 +56,7 @@ module Get
     error_ids       = []
     student_records = []
     ids[:student_ids].each do |id|
-      student = student_details_by_id( "#{id}", flatten_keys, reject_keys )
+      student = student_details_by_id( "#{id}", flatten_keys, reject_keys, get_payments )
 
       error_ids << id                          if student.nil? or
                                                   student[:student].nil? or
