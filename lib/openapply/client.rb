@@ -39,7 +39,7 @@ module Openapply
     end
 
     # make OpenApply timeout visible
-    def api_reply_count
+    def api_timeout
       API_TIMEOUT
     end
     alias_method :api_timeout, :api_reply_count
