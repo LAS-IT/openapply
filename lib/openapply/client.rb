@@ -42,7 +42,6 @@ module Openapply
     def api_timeout
       API_TIMEOUT
     end
-    alias_method :api_timeout, :api_reply_count
 
     # Defines & makes visible OpenApply secret access key with ENV-VARS
     def api_key
