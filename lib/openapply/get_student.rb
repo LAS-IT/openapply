@@ -150,19 +150,47 @@ module Get
       # put data back into hash if not to be flattened
       answer[key] = clean_data(val)  unless flatten_keys.include? key
 
-      # if current key matches a flatten value & HAS nested data values
-      # then bring nested data to top level
-      val.each do |k,v|
-        # remove any nested values if they match a reject_key
-        next if reject_keys.include? k
+      # add multiple hash values returned to answer
+      if (val.is_a? Hash or val.is_a? Array) and
+          flatten_keys.include?(key) and not val.empty?
+        answer.merge!( flatten_key_vals(key, val, flatten_keys, reject_keys) )
+      end
 
-        # (prepend flatten_key_to_current_key to prevent conflicts)
-        new_key = "#{key.to_s}_#{k.to_s}".to_sym
-        # clean the data and add back to to top level with a new key
-        answer[new_key] = clean_data(v)
-      end                                if flatten_keys.include?(key) and
-                                            not val.empty?
+
+
+      # if current key matches a flatten value & HAS nested data values
+      # if flatten_keys.include?(key) and not val.empty?
+      #
+      #   # un-nest a array of values
+      #   #                                  if val.is_a? Array
+      #   # un-nest a hash a to top level keys
+      #   val.each do |k,v|
+      #     # remove any nested values if they match a reject_key
+      #     next if reject_keys.include? k
+      #
+      #     # (prepend flatten_key_to_current_key to prevent conflicts)
+      #     new_key = "#{key.to_s}_#{k.to_s}".to_sym
+      #     # clean the data and add back to to top level with a new key
+      #     answer[new_key] = clean_data(v)
+      #   end                                if val.is_a? Hash
+      #
+      # end
+
     end
+    return answer
+  end
+
+  def flatten_key_vals(key, val, flatten_keys, reject_keys)
+    answer = {}
+    val.each do |k,v|
+      # remove any nested values if they match a reject_key
+      next if reject_keys.include? k
+
+      # (prepend flatten_key_to_current_key to prevent conflicts)
+      new_key = "#{key.to_s}_#{k.to_s}".to_sym
+      # clean the data and add back to to top level with a new key
+      answer[new_key] = clean_data(v)
+    end                                if val.is_a? Hash
     return answer
   end
 
