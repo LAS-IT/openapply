@@ -5,12 +5,14 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
+* **add google sheets to convert**
+* **update axlsx with rubyzip 1.2.1**
 * make tests for scp / ssh (at least data type conversions)
 * allow csv and xlsx reports with default summary info only?
 * write PUTS methods - *currently api only allows status update*
-* allow flattening and reject to work at any depth (with recursion?)
 * write a recursive custom query - when results are more than one page
-* speed up response when returning large number of records? - **looks like API is slow not sure if this can be sped up**
+* **allow flattening and reject to work at any depth (with recursion?)**
+* speed up response when returning large number of records? - **looks like API**
 
 
 ### CHANGE LOG
