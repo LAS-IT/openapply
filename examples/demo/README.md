@@ -4,13 +4,58 @@ In the terminal:
 
 ```bash
 gem install openapply
+# or better still
+bundle install
 
-# irb
-# or
+irb
+# or better still
 pry
 ```
+Once in the REPL - follow the below instructions
 
-and run this code (or play )
+### Standard Usage - multiple classes accomodates multiple OpenApply Sites
+```ruby
+
+require 'pp'
+require 'date'
+require_relative './demo_site'
+
+# use a class override in order to interact with multiple oa sites
+# or extend functionality
+@my  = MySite.new()
+
+
+# get students with applied and enrolled status, flatten no fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and no payment info
+@my.records_as_csv_to_file('applied', nil, [:parent_guardian],
+                              [:id, :name],
+                              {keys: [:address, :country]}, nil , "test-#{Date.today}.csv" )
+
+@my.records_as_csv_to_server( 'applied', nil, [:parent_guardian],
+                              [:id, :name],
+                              {keys: [:address, :country]}, nil )
+
+# get students with applied and enrolled status, flatten the custom_fields,
+# remove the parent_guardian (duplicate) info,
+# move into the xlsx file the following data: studnet id and student name
+# parent address (line 1) and country, and the oldest three payment amounts & dates
+@my.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
+                              [:parent_guardian], [:id, :name],
+                              {count: 2, keys: [:address, :country]},
+                              {count: 3, order: :oldest, keys: [:amount, :date]}, "test-#{Date.today}.xlsx")
+
+@my.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
+                              [:parent_guardian], [:id, :name],
+                              {count: 2, keys: [:address, :country]},
+                              {count: 3, order: :newest, keys: [:amount, :date]})
+
+# use cron or other similar tools to automate these processes
+```
+
+
+### Basic Usage using the gem directly - can only access one site
 ```ruby
 require 'openapply'
 
@@ -72,43 +117,4 @@ xlsx = @oa.students_as_xlsx_by_status(['applied','accepted'], [:custom_fields],
 # save as a xlsx file locally
 xlsx.serialize('test_file.xlsx')
 
-```
-
-* or More advanced - multiple OA sites
-```ruby
-
-# require 'pp'
-require 'openapply'
-require_relative './demo_site'
-
-# use a class override in order to interact with multiple oa sites
-# or extend functionality
-@mine  = MySite.new()
-
-
-# get students with applied and enrolled status, flatten no fields,
-# remove the parent_guardian (duplicate) info,
-# move into the xlsx file the following data: studnet id and student name
-# parent address (line 1) and country, and no payment info
-@mine.records_as_csv_to_file(   'applied', nil, [:parent_guardian], [:id, :name],
-                                {keys: [:address, :country]}, nil , 'test.csv' )
-
-@mine.records_as_csv_to_server( 'applied', nil, [:parent_guardian], [:id, :name],
-                                {keys: [:address, :country]}, nil )
-
-# get students with applied and enrolled status, flatten the custom_fields,
-# remove the parent_guardian (duplicate) info,
-# move into the xlsx file the following data: studnet id and student name
-# parent address (line 1) and country, and the oldest three payment amounts & dates
-@mine.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
-                                [:parent_guardian], [:id, :name],
-                                {count: 2, keys: [:address, :country]},
-                                {count: 3, order: :oldest, keys: [:amount, :date]}, 'test.xlsx')
-
-@mine.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
-                                [:parent_guardian], [:id, :name],
-                                {count: 2, keys: [:address, :country]},
-                                {count: 3, order: :newest, keys: [:amount, :date]})
-
-# use cron or other similar tools to automate these processes
 ```
