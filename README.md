@@ -5,19 +5,28 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
+* **add google sheets to convert**
+* **update axlsx with rubyzip 1.2.1**
+* make tests for scp / ssh (at least data type conversions)
 * allow csv and xlsx reports with default summary info only?
 * write PUTS methods - *currently api only allows status update*
-* allow flattening and reject to work at any depth (with recursion?)
 * write a recursive custom query - when results are more than one page
-* speed up response when returning large number of records? - **looks like API is slow not sure if this can speed up**
+* **allow flattening and reject to work at any depth (with recursion?)**
+* speed up response when returning large number of records? - **looks like API**
 
 
 ### CHANGE LOG
 
-* **v0.2.4** - compatible with 0.2.x - 2017-11-??
+* **v0.2.6** - compatible with 0.2.x - 2017-12-xx
   - allow flattening to work with arrays
   - allow flattening and reject to work at 2 levels of depth
   - allow flattening and reject to work at any depth (with recursion?)
+
+* **v0.2.5** - compatible with 0.2.x - 2017-11-30
+  - removed a reference to AXLSX in scp transfers *(haven't figured out how to test that yet!)*
+
+* **v0.2.4** - compatible with 0.2.x - 2017-11-30
+  - rubyzip 1.1.7 - has a serious security flaw - Axlsx and Roo cannot use rubyzip 1.2.1 -- YET (which doesn't have the flaw) - so xlsx features are disabled until rubyzip 1.2.1 can be used by both roo and axlsx.  **CSV** conversions are still usable.  **BIG THANKS TO GitHub for the notification!**
 
 * **v0.2.3** - compatible with 0.2.x - 2017-11-23
   - allow detailed queries *(_by_id & _by_status)* to skip payment information
@@ -164,12 +173,13 @@ csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_field
 @oa.send_data_to_remote_server(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 
 # Create XLSX file
-@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-# multiple status into
-xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-#
-# send XLSX to a remote server as a file - using ssh-keys
-@oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
+# XLSX features DISABLED UNTIL AXLSX can work with RubyZip 1.2.1
+# @oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# # multiple status into
+# xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# #
+# # send XLSX to a remote server as a file - using ssh-keys
+# @oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
 ```
 
 #### INDIVIDUAL STUDENT QUERIES
@@ -245,14 +255,16 @@ csv=@oa.students_as_csv_by_status('applied',[:custom_fields], [:parent_guardian]
 # attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
 @oa.send_data_to_remote_server(csv, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 #
-# Create a XLSX package
-@oa.students_as_xlsx_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
-# all options
-xlsx=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+# # Create a XLSX package
+# disabled until axlsx works with rubyzip 1.2.1
 #
-# send CSV to a remote server as a file - using ssh-keys
-# attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
-@oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+# @oa.students_as_xlsx_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
+# # all options
+# xlsx=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+# #
+# # send CSV to a remote server as a file - using ssh-keys
+# # attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
+# @oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 ```
 
 #### CUSTOM GROUP QUERIES - summary data

@@ -32,10 +32,15 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "httparty", "~> 0.15"
   spec.add_dependency "json" , "~> 2.1"
-  # need this version of axlsx to match roo's rubyzip needs
-  spec.add_dependency "axlsx" , "2.1.0.pre"
-  spec.add_dependency "net-ssh" , "~> 4.2"
-  spec.add_dependency "net-scp" , "~> 1.2"
+  spec.add_dependency "net-ssh", "~> 4.2"
+  spec.add_dependency "net-scp", "~> 1.2"
+
+  # # need this version of axlsx to match roo's rubyzip needs
+  # # axlsx 2.1.0.pre uses rubyzip 1.1.7 - which has a security flaw
+  # # using the newest version of rubyzip 1.2.1 or larger
+  # spec.add_dependency "axlsx", "2.1.0.pre"
+  # spec.add_dependency "rubyzip", "~> 1.2"
+  # spec.add_development_dependency "roo", "~> 2.7"
 
   spec.add_development_dependency "simplecov", "~> 0.15"
   spec.add_development_dependency "webmock" , "~> 3.1"
@@ -43,5 +48,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.7"
   spec.add_development_dependency "pry", "~> 0.11"
-  spec.add_development_dependency "roo", "~> 2.7"
 end

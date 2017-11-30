@@ -37,19 +37,20 @@ require_relative './demo_site'
                               [:id, :name],
                               {keys: [:address, :country]}, nil )
 
-# get students with applied and enrolled status, flatten the custom_fields,
-# remove the parent_guardian (duplicate) info,
-# move into the xlsx file the following data: studnet id and student name
-# parent address (line 1) and country, and the oldest three payment amounts & dates
-@my.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
-                              [:parent_guardian], [:id, :name],
-                              {count: 2, keys: [:address, :country]},
-                              {count: 3, order: :oldest, keys: [:amount, :date]}, "test-#{Date.today}.xlsx")
-
-@my.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
-                              [:parent_guardian], [:id, :name],
-                              {count: 2, keys: [:address, :country]},
-                              {count: 3, order: :newest, keys: [:amount, :date]})
+# DISABLED UNTIL AXLSX works with RubyZip 1.2.1
+# # get students with applied and enrolled status, flatten the custom_fields,
+# # remove the parent_guardian (duplicate) info,
+# # move into the xlsx file the following data: studnet id and student name
+# # parent address (line 1) and country, and the oldest three payment amounts & dates
+# @my.records_as_xlsx_to_file(  ['applied','enrolled'], [:custom_fields],
+#                               [:parent_guardian], [:id, :name],
+#                               {count: 2, keys: [:address, :country]},
+#                               {count: 3, order: :oldest, keys: [:amount, :date]}, "test-#{Date.today}.xlsx")
+#
+# @my.records_as_xlsx_to_server(['applied','enrolled'], [:custom_fields],
+#                               [:parent_guardian], [:id, :name],
+#                               {count: 2, keys: [:address, :country]},
+#                               {count: 3, order: :newest, keys: [:amount, :date]})
 
 # use cron or other similar tools to automate these processes
 ```
@@ -103,18 +104,20 @@ csv = @oa.students_as_csv_by_status( 'applied', nil, [:parent_guardian],
 # save csv string as a file locally
 open('test_file.csv', 'w') { |f| f.puts csv }
 
-# get students with applied and enrolled status, flatten the custom_fields,
-# remove the parent_guardian (duplicate) info,
-# move into the xlsx file the following data: studnet id and student name
-# parent address (line 1) and country, and the oldest three payment amounts & dates
-xlsx = @oa.students_as_xlsx_by_status(['applied','accepted'], [:custom_fields],
-                                      [:parent_guardian], [:id, :name],
-                                      {count: 2, keys: [:address, :country]},
-                                      {count: , order: :oldest, keys: [:amount, :date]})
+# DISABLED UNTIL AXLSX works with RubyZip 1.2.1
 #
-@oa.send_data_to_remote_server( xlsx, ENV['REMOTE_HOSTNAME'],    
-                                      ENV['REMOTE_USERNAME'], "#{ENV['REMOTE_PATH_FILE']}.xlsx", ENV['REMOTE_PERMISSIONS'])
-# save as a xlsx file locally
-xlsx.serialize('test_file.xlsx')
+# # get students with applied and enrolled status, flatten the custom_fields,
+# # remove the parent_guardian (duplicate) info,
+# # move into the xlsx file the following data: studnet id and student name
+# # parent address (line 1) and country, and the oldest three payment amounts & dates
+# xlsx = @oa.students_as_xlsx_by_status(['applied','accepted'], [:custom_fields],
+#                                       [:parent_guardian], [:id, :name],
+#                                       {count: 2, keys: [:address, :country]},
+#                                       {count: , order: :oldest, keys: [:amount, :date]})
+# #
+# @oa.send_data_to_remote_server( xlsx, ENV['REMOTE_HOSTNAME'],    
+#                                       ENV['REMOTE_USERNAME'], "#{ENV['REMOTE_PATH_FILE']}.xlsx", ENV['REMOTE_PERMISSIONS'])
+# # save as a xlsx file locally
+# xlsx.serialize('test_file.xlsx')
 
 ```
