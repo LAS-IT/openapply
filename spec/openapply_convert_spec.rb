@@ -1,6 +1,6 @@
 require 'csv'
-require 'roo'
-require 'axlsx'
+# require 'roo'
+# require 'axlsx'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -387,7 +387,8 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
-    it "convert an empty array of students_details into a xlsx object" do
+    # DISABLED until AXLSX can use RubyZip 1.2.1 or later
+    xit "convert an empty array of students_details into a xlsx object" do
       allow(@oa).to receive(:api_records) { 10 }
       student_array = []
       test_answer = @oa.students_array_to_xlsx(student_array)
@@ -403,7 +404,7 @@ RSpec.describe Openapply do
       # pp wb.to_csv
       # expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
     end
-    it "convert an populated array of students_details into a xlsx object" do
+    xit "convert an populated array of students_details into a xlsx object" do
       allow(@oa).to receive(:api_records) { 5 }
       student_array = SpecData::STATUS_APPLIED_ENROLLED_ARRAY
       test_answer = @oa.students_array_to_xlsx(student_array)
@@ -420,7 +421,7 @@ RSpec.describe Openapply do
       # pp wb.to_csv
       expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
     end
-    it "returns the correct xlsx object given a status" do
+    xit "returns the correct xlsx object given a status" do
       allow(@oa).to receive(:api_records) { 5 }
       status = 'applied'
       student_keys  = [:id, :name]
@@ -496,7 +497,7 @@ RSpec.describe Openapply do
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
     end
-    it "using multiple statuses return a xlsx object" do
+    xit "using multiple statuses return a xlsx object" do
       allow(@oa).to receive(:api_records) { 5 }
       status = ['applied','enrolled']
       student_keys  = [:id, :name]
@@ -567,7 +568,7 @@ RSpec.describe Openapply do
     end
   end
 
-  context "students_as_xlsx_by_status - error gracefully" do
+  xcontext "students_as_xlsx_by_status - error gracefully" do
     it "when given invalid flatten_keys - non-arrary" do
       test_answer = @oa.students_as_xlsx_by_status('applied',:custom_fields,[:parent_guardian])
       # pp test_answer
@@ -670,7 +671,8 @@ RSpec.describe Openapply do
     end
   end
 
-  context "students_as_xlsx_by_status handles bad headers - gracefully and errors" do
+  # # DISABLED UNTIL AXLSX works with RubyZip 1.2.1
+  xcontext "students_as_xlsx_by_status handles bad headers - gracefully and errors" do
     it "with bad student_keys - not an array" do
       test_answer = @oa.students_as_xlsx_by_status([],[],[],:id)
       expect( test_answer ).to eq({error: "invalid student_keys - need array"})

@@ -71,21 +71,22 @@ class MySite < Openapply::Client
                                 "#{REMOTE_PATH_FILE}.csv", REMOTE_PERMISSIONS)
   end
 
-  def records_as_xlsx_to_file( status, flatten_keys=[],
-                                reject_keys=[], student_keys=[],
-                                guardian_info={}, payment_info={}, file )
-    data = students_as_xlsx_by_status( status, flatten_keys, reject_keys,
-                                student_keys, guardian_info, payment_info)
-    data.serialize(file)
-  end
-
-  def records_as_xlsx_to_server( status, flatten_keys=[],
-                                reject_keys=[], student_keys=[],
-                                guardian_info={}, payment_info={})
-    data = students_as_xlsx_by_status( status, flatten_keys, reject_keys,
-                                student_keys, guardian_info, payment_info)
-    send_data_to_remote_server( data, REMOTE_HOSTNAME, REMOTE_USERNAME,
-                                "#{REMOTE_PATH_FILE}.xlsx", REMOTE_PERMISSIONS)
-  end
+  # DISABLED UNTIL AXLSX works with rubyzip 1.2.1 or later
+  # def records_as_xlsx_to_file( status, flatten_keys=[],
+  #                               reject_keys=[], student_keys=[],
+  #                               guardian_info={}, payment_info={}, file )
+  #   data = students_as_xlsx_by_status( status, flatten_keys, reject_keys,
+  #                               student_keys, guardian_info, payment_info)
+  #   data.serialize(file)
+  # end
+  #
+  # def records_as_xlsx_to_server( status, flatten_keys=[],
+  #                               reject_keys=[], student_keys=[],
+  #                               guardian_info={}, payment_info={})
+  #   data = students_as_xlsx_by_status( status, flatten_keys, reject_keys,
+  #                               student_keys, guardian_info, payment_info)
+  #   send_data_to_remote_server( data, REMOTE_HOSTNAME, REMOTE_USERNAME,
+  #                               "#{REMOTE_PATH_FILE}.xlsx", REMOTE_PERMISSIONS)
+  # end
 
 end
