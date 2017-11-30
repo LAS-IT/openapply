@@ -1,28 +1,18 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    axlsx (2.1.0.pre)
-      htmlentities (~> 4.3.1)
-      nokogiri (>= 1.4.1)
-      rubyzip (~> 1.1.7)
-    htmlentities (4.3.4)
     httparty (0.15.6)
       multi_xml (>= 0.5.2)
     json (2.1.0)
-    mini_portile2 (2.3.0)
     multi_xml (0.6.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.2.0)
-    nokogiri (1.8.1)
-      mini_portile2 (~> 2.3.0)
-    openapply (0.2.3)
-      axlsx (= 2.1.0.pre)
+    openapply (0.2.4)
       httparty (~> 0.15)
       json (~> 2.1)
       net-scp (~> 1.2)
       net-ssh (~> 4.2)
-    rubyzip (1.1.7)
 
 PLATFORMS
   ruby
