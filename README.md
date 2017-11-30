@@ -5,6 +5,7 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
+* make tests for scp / ssh (at least data type conversions)
 * allow csv and xlsx reports with default summary info only?
 * write PUTS methods - *currently api only allows status update*
 * allow flattening and reject to work at any depth (with recursion?)
@@ -14,8 +15,11 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-* **v0.2.4** - compatible with 0.2.x - 2017-11-23
-  - rubyzip 1.1.7 - has a serious security flaw - Axlsx and Roo cannot use rubyzip 1.2.1 -- YET (which doesn't have the flaw) - so xlsx features are disabled until rubyzip 1.2.1 can be used by both roo and axlsx.  **CSV** conversions are still usable
+* **v0.2.5** - compatible with 0.2.x - 2017-11-30
+  - removed a reference to AXLSX in scp transfers *(haven't figured out how to test that yet!)*
+
+* **v0.2.4** - compatible with 0.2.x - 2017-11-30
+  - rubyzip 1.1.7 - has a serious security flaw - Axlsx and Roo cannot use rubyzip 1.2.1 -- YET (which doesn't have the flaw) - so xlsx features are disabled until rubyzip 1.2.1 can be used by both roo and axlsx.  **CSV** conversions are still usable.  **BIG THANKS TO GitHub for the notification!**
 
 * **v0.2.3** - compatible with 0.2.x - 2017-11-23
   - allow detailed queries *(_by_id & _by_status)* to skip payment information

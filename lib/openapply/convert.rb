@@ -307,8 +307,9 @@ module Convert
     xfer = data                       if data.is_a? StringIO
     # convert string into a SteamIO - "FILE" like object
     xfer = StringIO.new( data )       if data.is_a? String
-    # convert Axlsx object into a SteamIO - "FILE" like object
-    xfer = data.to_stream()           if data.is_a? Axlsx::Package
+    # disabled until AXLSX can use rubyzip 1.2.1
+    # # convert Axlsx object into a SteamIO - "FILE" like object
+    # xfer = data.to_stream()           if data.is_a? Axlsx::Package
 
     # be sure its a file type that can be sent
     return "Unrecognized Object"  unless known_transfer_object?(data)
