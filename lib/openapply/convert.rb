@@ -297,7 +297,7 @@ module Convert
   # * +srv_path_file+ - full path and file name of the file on the remote host
   # * +file_permissions+ - permissions to make the file on the remote host (default is: 0750)
   def send_data_to_remote_server( data, srv_hostname, srv_username,
-                                  srv_path_file, file_permissions='0750')
+                                  srv_path_file, srv_file_permissions="0750")
     # https://www.safaribooksonline.com/library/view/ruby-cookbook/0596523696/ch06s15.html
     # convert the string to a stringio object (which can act as a file)
 
@@ -323,7 +323,7 @@ module Convert
     # ensure file has desired permissions (via remote ssh command)
     Net::SSH.start(srv_hostname, srv_username) do |ssh|
       # Capture all stderr and stdout output from a remote process
-      output = ssh.exec!("chmod #{file_permissions} #{srv_path_file}")
+      output = ssh.exec!("chmod #{srv_file_permissions} #{srv_path_file}")
     end
   end
   alias_method :send_string_to_server_file, :send_data_to_remote_server

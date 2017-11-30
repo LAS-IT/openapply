@@ -91,15 +91,30 @@ RSpec.describe Openapply do
   end
 
   context "join one student record with one student payments" do
-    it "student_details_by_id - kid 106 w/payments -- sends back all kid data - with custom fields" do
+    it "student_details_by_id - kid 106 w/payments -- as is" do
       test_answer = @oa.student_details_by_id(106)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STUDENT_106_DETAILS_HASH
     end
-    it "student_details_by_id - kid 106 w/payments -- sends back all kid data - FLATTENED" do
+    it "student_details_by_id - Flatten hash 1 level" do
       test_answer = @oa.student_details_by_id(106,[:custom_fields],[:parent_guardian])
       # pp test_answer
       expect( test_answer ).to eq SpecData::STUDENT_106_FLATTENED_HASH
+    end
+    xit "student_details_by_id - Flatten array 1 level" do
+      test_answer = @oa.student_details_by_id(106,[:custom_fields],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STUDENT_106_FLATTENED_ARRAY
+    end
+    xit "student_details_by_id - flatten hashes - 2 levels" do
+      test_answer = @oa.student_details_by_id(106,[:custom_fields,:custom_fields_signature_of_parent],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STUDENT_106_FLATTENED_2X_HASH
+    end
+    xit "student_details_by_id - FLATTEN hash or array - 2 levels" do
+      test_answer = @oa.student_details_by_id(106,[:custom_fields,:school_list,:custom_fields_signature_of_parent],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STUDENT_106_FLATTENED_2X_HASH_ARRAY
     end
   end
   context "student_details_by_id - error gracefully" do

@@ -9,10 +9,15 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 * write PUTS methods - *currently api only allows status update*
 * allow flattening and reject to work at any depth (with recursion?)
 * write a recursive custom query - when results are more than one page
-* speed up response when returning large number of records? - **looks like API is slow not sure if this can be sped up**
+* speed up response when returning large number of records? - **looks like API is slow not sure if this can speed up**
 
 
 ### CHANGE LOG
+
+* **v0.2.4** - compatible with 0.2.x - 2017-11-??
+  - allow flattening to work with arrays
+  - allow flattening and reject to work at 2 levels of depth
+  - allow flattening and reject to work at any depth (with recursion?)
 
 * **v0.2.3** - compatible with 0.2.x - 2017-11-23
   - allow detailed queries *(_by_id & _by_status)* to skip payment information
