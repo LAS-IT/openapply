@@ -17,10 +17,13 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-* **v0.2.6** - compatible with 0.2.x - 2017-12-xx
+* **v0.2.7** - compatible with 0.2.x - 2017-12-xx
   - allow flattening to work with arrays
   - allow flattening and reject to work at 2 levels of depth
   - allow flattening and reject to work at any depth (with recursion?)
+
+* **v0.2.6** - compatible with 0.2.x - 2017-12-08
+  - allow ssh/scp options to be passed
 
 * **v0.2.5** - compatible with 0.2.x - 2017-11-30
   - removed a reference to AXLSX in scp transfers *(haven't figured out how to test that yet!)*
