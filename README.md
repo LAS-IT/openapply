@@ -6,7 +6,6 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 ### Still TODO
 
 * **add google sheets to convert**
-* **update axlsx with rubyzip 1.2.1**
 * make tests for scp / ssh (at least data type conversions)
 * allow csv and xlsx reports with default summary info only?
 * write PUTS methods - *currently api only allows status update*
@@ -17,11 +16,13 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-* **v0.2.7** - compatible with 0.2.x - 2017-12-xx
-*(https://github.com/straydogstudio/axlsx_rails/issues/77)*
+* **v0.2.8** - compatible with 0.2.x - 2017-12-?? *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
   - allow flattening to work with arrays
   - allow flattening and reject to work at 2 levels of depth
   - allow flattening and reject to work at any depth (with recursion?)
+
+* **v0.2.7** - compatible with 0.2.x - 2017-12-10
+  - safely re-enabled axlsx by using the master branch and upgradeing rubyzip
 
 * **v0.2.6** - compatible with 0.2.x - 2017-12-08
   - allow ssh/scp options to be passed
@@ -177,13 +178,12 @@ csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_field
 @oa.send_data_to_remote_server(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 
 # Create XLSX file
-# XLSX features DISABLED UNTIL AXLSX can work with RubyZip 1.2.1
-# @oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 # # multiple status into
-# xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 # #
 # # send XLSX to a remote server as a file - using ssh-keys
-# @oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
+@oa.send_data_to_remote_server(xlsx_obj, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
 ```
 
 #### INDIVIDUAL STUDENT QUERIES
@@ -260,15 +260,13 @@ csv=@oa.students_as_csv_by_status('applied',[:custom_fields], [:parent_guardian]
 @oa.send_data_to_remote_server(csv, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 #
 # # Create a XLSX package
-# disabled until axlsx works with rubyzip 1.2.1
-#
-# @oa.students_as_xlsx_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
+@oa.students_as_xlsx_by_status('applied', nil, nil, [:id, :name], nil, {count: 2, order: :newest, keys: [:date, :amount]} )
 # # all options
-# xlsx=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
+xlsx_obj=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
 # #
 # # send CSV to a remote server as a file - using ssh-keys
 # # attributes: csv_string, srv_hostname, srv_username, srv_path_file, file_permissions(0750 - default if not specified)
-# @oa.send_data_to_remote_server(xlsx, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+@oa.send_data_to_remote_server(xlsx_obj, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
 ```
 
 #### CUSTOM GROUP QUERIES - summary data
