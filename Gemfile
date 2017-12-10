@@ -7,7 +7,8 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 #               ref: '776037c0fc799bb09da8c9ea47980bd3bf296874'
 
 # https://github.com/randym/axlsx/issues/501
-gem 'axlsx',  git: 'https://github.com/randym/axlsx', branch: 'master'
+# gem 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
+# gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: '776037c0fc799bb09da8c9ea47980bd3bf296874'
 
 # Specify your gem's dependencies in openapply.gemspec
 gemspec
