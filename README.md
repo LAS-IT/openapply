@@ -18,6 +18,7 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 ### CHANGE LOG
 
 * **v0.2.7** - compatible with 0.2.x - 2017-12-xx
+*(https://github.com/straydogstudio/axlsx_rails/issues/77)*
   - allow flattening to work with arrays
   - allow flattening and reject to work at 2 levels of depth
   - allow flattening and reject to work at any depth (with recursion?)

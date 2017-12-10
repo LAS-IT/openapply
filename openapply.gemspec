@@ -38,9 +38,19 @@ Gem::Specification.new do |spec|
   # # need this version of axlsx to match roo's rubyzip needs
   # # axlsx 2.1.0.pre uses rubyzip 1.1.7 - which has a security flaw
   # # using the newest version of rubyzip 1.2.1 or larger
+  # # https://github.com/randym/axlsx/issues/501
+  # gem 'axlsx', git: 'https://github.com/randym/axlsx',
+  #              branch: 'master'
+  # https://github.com/straydogstudio/axlsx_rails/issues/77
+  # gem 'axlsx', git: 'https://github.com/randym/axlsx.git',
+  #              ref: '776037c0fc799bb09da8c9ea47980bd3bf296874'
+  spec.add_dependency 'axlsx'
+
+  # # Rubyzip before 1.2.1 has a directory traversal vulnerability: CVE-2017-5946
+  spec.add_dependency  'rubyzip', '>= 1.2.1'
+  # don't use official release - use above
   # spec.add_dependency "axlsx", "2.1.0.pre"
   # spec.add_dependency "rubyzip", "~> 1.2"
-  # spec.add_development_dependency "roo", "~> 2.7"
 
   spec.add_development_dependency "simplecov", "~> 0.15"
   spec.add_development_dependency "webmock" , "~> 3.1"
@@ -48,4 +58,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.7"
   spec.add_development_dependency "pry", "~> 0.11"
+  spec.add_development_dependency "roo", "~> 2.7"
+
 end
