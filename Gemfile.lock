@@ -19,6 +19,7 @@ PATH
       net-scp (~> 1.2)
       net-ssh (~> 4.2)
       rubyzip (>= 1.2.1)
+      zip-zip
 
 GEM
   remote: https://rubygems.org/
@@ -76,6 +77,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    zip-zip (0.3)
+      rubyzip (>= 1.0.0)
 
 PLATFORMS
   ruby
