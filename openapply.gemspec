@@ -44,12 +44,12 @@ Gem::Specification.new do |spec|
   # https://github.com/straydogstudio/axlsx_rails/issues/77
   # gem 'axlsx', git: 'https://github.com/randym/axlsx.git',
   #              ref: '776037c0fc799bb09da8c9ea47980bd3bf296874'
-  spec.add_dependency 'axlsx', "2.1.0.pre"
+  # spec.add_dependency 'axlsx', "2.1.0.pre"
   # # https://github.com/randym/axlsx/issues/234
   # # spec.add_dependency 'zip-zip'
   #
   # # # Rubyzip before 1.2.1 has a directory traversal vulnerability: CVE-2017-5946
-  spec.add_dependency  'rubyzip', '1.2.1'
+  # spec.add_dependency  'rubyzip', '1.2.1'
   # spec.add_dependency  'rubyzip', '>= 1.2.1'
   # don't use official release - use above
   # spec.add_dependency "axlsx", "2.1.0.pre"

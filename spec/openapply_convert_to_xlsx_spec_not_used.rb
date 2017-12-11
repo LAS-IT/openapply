@@ -1,4 +1,4 @@
-require 'csv'
+# require 'csv'
 require 'roo'
 require 'axlsx'
 require 'spec_helper'

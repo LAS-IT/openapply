@@ -17,12 +17,13 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 ### CHANGE LOG
 
 * **v0.2.9** - compatible with 0.2.x - 2017-12-?? *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
+  - separated convert (& its dependencies) into separate modules that can be loaded on need in the next version (0.3.x)
   - allow flattening to work with arrays
   - allow flattening and reject to work at 2 levels of depth
   - allow flattening and reject to work at any depth (with recursion?)
 
 * **v0.2.8** - compatible with 0.2.x - 2017-12-11 *(https://github.com/randym/axlsx/issues/234)*
-  - axlsx - passes tests - but won't run embedded in a rails app - pulling axlsx again!
+  - axlsx - passes tests - but won't properly install inside another project (even using gem install ./openapply-0.2.7) - will look for a solution
 
 * **v0.2.7** - compatible with 0.2.x - 2017-12-10
   - safely re-enabled axlsx by using the master branch and upgradeing rubyzip
