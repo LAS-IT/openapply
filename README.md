@@ -179,6 +179,9 @@ csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_field
 #
 # send CSV to a remote server as a file - using ssh-keys
 @oa.send_data_to_remote_server(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
+#
+# send CSV to a remote server as a file - using ssh-keys - don't check host_key of remote server
+@oa.send_data_to_remote_server( csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750', {verify_host_key: false} )
 
 # Create XLSX file
 @oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
