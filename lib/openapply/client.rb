@@ -1,3 +1,7 @@
+
+require "openapply/convert_to_xlsx"
+require "openapply/convert_to_csv"
+require "openapply/send_to_remote"
 require "openapply/get_students"
 require "openapply/get_student"
 require "openapply/convert"
@@ -14,12 +18,16 @@ module Openapply
 
     # PUT api calls
     include Put
-
     # GET api calls
     include Get
-
     # Convert student data to various formats
     include Convert
+    # AXLSX files
+    include ConvertToCsv
+    # AXLSX files
+    include ConvertToXlsx
+    # Send To Remote ssh
+    include SendToRemote
 
     # Library for API calls to OpenApply
     include HTTParty

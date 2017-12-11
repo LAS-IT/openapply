@@ -1,4 +1,4 @@
-# require 'csv'
+require 'csv'
 # require 'roo'
 # require 'axlsx'
 require 'spec_helper'
@@ -223,156 +223,33 @@ RSpec.describe Openapply do
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
   end
 
-  context "data conversions" do
-    it "convert a empty hash of students_details into an array - no keys" do
+  context "arrary into csv" do
+    it "convert an array of students_details into a csv string object" do
       # allow(@oa).to receive(:api_records) { 10 }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash)
+      student_array = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
+      test_answer   = @oa.students_array_to_csv(student_array)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_EMPTY
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
-    it "convert a empty hash of students_details into an array" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      students_hash = {}
-      test_answer = @oa.students_hash_to_array(students_hash, student_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_EMPTY
-    end
-    it "convert a empty hash of students_details into an array with 2 guardian headers" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      # get first two parents
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_RENTS_EMPTY
-    end
-    it "convert a empty hash of students_details into an array with 2 payment headers" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      # get max number of parent records
-      payment_keys = { count: 2, keys: [:invoice_number, :amount] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_PAY_EMPTY
-    end
-    it "convert a empty hash of students_details into an array wo kid keys, but guardian and payment keys" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      # student_keys = [:id, :name]
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, nil, guardian_keys, payment_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_KEYS_EMPTY
-    end
-    it "convert a hash of students_details into an array - just kid names" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS
-    end
-    it "convert a hash of students_details into an array - w kid names & ONE parent name" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_1_GUARDIAN
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & TWO parent records" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_2_GUARDIANS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment implied" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment - explicit" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & LAST TWO NEWEST payments" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_NEWEST_PAYMENTS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & TWO OLDEST payments" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_OLDEST_PAYMENTS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w KID & PARENT & PAYMENTS" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "using a status return an array object" do
+  end
+
+  context "status to csv" do
+    it "using a status return a csv string" do
       allow(@oa).to receive(:api_records) { 10 }
       status = 'applied'
       student_keys  = [:id, :name]
       flatten_keys  = [:custom_fields]
       reject_keys   = [:parent_guardian]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      guardian_info = { count: 1, keys: [:id, :name] }
+      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+      test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_CSV_TEXT
     end
   end
 
-  # probably not necessary since statuses to hashes work
-  context "multiple statuses tests" do
-    it "using two status return an array object" do
+  context "multiple statuses to csv" do
+    it "creates the correct csv with two statuses" do
       allow(@oa).to receive(:api_records) { 5 }
       status = ['applied','enrolled']
       student_keys  = [:id, :name]
@@ -380,11 +257,11 @@ RSpec.describe Openapply do
       reject_keys   = [:parent_guardian]
       guardian_keys = { count: 1, keys: [:id, :name] }
       payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      test_answer   = @oa.students_as_csv_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
     end
-    it "using multiple good and a bad status return an array object" do
+    it "creates the correct csv with two statuses" do
       allow(@oa).to receive(:api_records) { 5 }
       status = ['applied','bad','enrolled']
       student_keys  = [:id, :name]
@@ -392,31 +269,30 @@ RSpec.describe Openapply do
       reject_keys   = [:parent_guardian]
       guardian_keys = { count: 1, keys: [:id, :name] }
       payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      test_answer   = @oa.students_as_csv_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_CSV_TEXT
     end
   end
 
-
-  context "students_as_array_by_status - error gracefully" do
+  context "students_as_csv_by_status - error gracefully" do
     it "when given invalid flatten_keys - non-arrary" do
-      test_answer = @oa.students_as_array_by_status('applied',:custom_fields,[:parent_guardian])
+      test_answer = @oa.students_as_csv_by_status('applied',:custom_fields,[:parent_guardian])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
     end
     it "when given invalid reject_keys - non-array" do
-      test_answer = @oa.students_as_array_by_status('applied',[:custom_fields],:parent_guardian)
+      test_answer = @oa.students_as_csv_by_status('applied',[:custom_fields],:parent_guardian)
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
     end
     it "when given invalid flatten_keys - strings" do
-      test_answer = @oa.students_as_array_by_status('applied',['custom_fields'],[:parent_guardian])
+      test_answer = @oa.students_as_csv_by_status('applied',['custom_fields'],[:parent_guardian])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
     end
     it "when given invalid reject_keys - strings" do
-      test_answer = @oa.students_as_array_by_status('applied',[:custom_fields],['parent_guardian'])
+      test_answer = @oa.students_as_csv_by_status('applied',[:custom_fields],['parent_guardian'])
       # pp test_answer
       expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
     end
@@ -461,6 +337,65 @@ RSpec.describe Openapply do
     end
     it "with bad payment_keys - uses strings not symbols" do
       test_answer = @oa.students_hash_to_array({},[],{},{keys: ['id']})
+      expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
+    end
+  end
+
+
+  context "students_as_csv_by_status - error gracefully" do
+    it "when given invalid flatten_keys - non-arrary" do
+      test_answer = @oa.students_as_csv_by_status('applied',:custom_fields,[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
+    end
+    it "when given invalid reject_keys - non-array" do
+      test_answer = @oa.students_as_csv_by_status('applied',[:custom_fields],:parent_guardian)
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
+    end
+    it "when given invalid flatten_keys - strings" do
+      test_answer = @oa.students_as_csv_by_status('applied',['custom_fields'],[:parent_guardian])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
+    end
+    it "when given invalid reject_keys - strings" do
+      test_answer = @oa.students_as_csv_by_status('applied',[:custom_fields],['parent_guardian'])
+      # pp test_answer
+      expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
+    end
+  end
+
+  context "students_as_csv_by_status handles bad headers - gracefully and errors" do
+    it "with bad student_keys - not an array" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],:id)
+      expect( test_answer ).to eq({error: "invalid student_keys - need array"})
+    end
+    it "with bad student_keys - uses strings not symbols" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],['id'])
+      expect( test_answer ).to eq({error: "invalid student_keys - use symbols"})
+    end
+    it "with bad guardian_info - not a hash" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],:id)
+      expect( test_answer ).to eq({error: "invalid guardian_info - use hash"})
+    end
+    it "with bad guardian_keys - not an array" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],{keys: :id})
+      expect( test_answer ).to eq({error: "invalid guardian_keys - need array"})
+    end
+    it "with bad guardian_keys - uses strings not symbols" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],{keys: ['id']})
+      expect( test_answer ).to eq({error: "invalid guardian_keys - use symbols"})
+    end
+    it "with bad payment_info - not a hash" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],{},:id)
+      expect( test_answer ).to eq({error: "invalid payment_info - use hash"})
+    end
+    it "with bad payment_keys - not an array" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],{},{keys: :id})
+      expect( test_answer ).to eq({error: "invalid payment_keys - need array"})
+    end
+    it "with bad payment_keys - uses strings not symbols" do
+      test_answer = @oa.students_as_csv_by_status([],[],[],[],{},{keys: ['id']})
       expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
     end
   end
