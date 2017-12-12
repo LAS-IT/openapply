@@ -65,7 +65,7 @@ module Openapply
     # Defines and makes visible the maximum records OpenApply should return
     # (code default is 50 - OA default is 10 - doc says 100)
     def api_records
-      ENV['OA_REPLY_RECORDS'] || '50'
+      ENV['OA_RECORD_COUNT'] || '50'
     end
 
     # Does the actual api call to OpenApply & handles API timeouts gracefully

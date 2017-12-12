@@ -44,7 +44,8 @@ Gem::Specification.new do |spec|
   # https://github.com/straydogstudio/axlsx_rails/issues/77
   # gem 'axlsx', git: 'https://github.com/randym/axlsx.git',
   #              ref: '776037c0fc799bb09da8c9ea47980bd3bf296874'
-  # spec.add_dependency 'axlsx', "2.1.0.pre"
+  # spec.add_dependency 'axlsx', git: 'https://github.com/randym/axlsx', branch: 'master'
+  # spec.add_dependency 'axlsx', "2.1.0.pre", git: 'https://github.com/randym/axlsx', branch: 'master'
   # # https://github.com/randym/axlsx/issues/234
   # # spec.add_dependency 'zip-zip'
   #
@@ -54,6 +55,8 @@ Gem::Specification.new do |spec|
   # don't use official release - use above
   # spec.add_dependency "axlsx", "2.1.0.pre"
   # spec.add_dependency "rubyzip", "~> 1.2"
+  # spec.add_runtime_dependency "axlsx", "2.1.0.pre"
+  # spec.add_runtime_dependency "rubyzip", "~> 1.2"
 
   spec.add_development_dependency "simplecov", "~> 0.15"
   spec.add_development_dependency "webmock" , "~> 3.1"
@@ -61,6 +64,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.7"
   spec.add_development_dependency "pry", "~> 0.11"
-  spec.add_development_dependency "roo", "~> 2.7"
+  # spec.add_development_dependency "roo", "~> 2.7"
 
 end
