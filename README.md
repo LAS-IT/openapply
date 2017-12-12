@@ -5,22 +5,20 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* **add google sheets to convert**
-* make tests for scp / ssh (at least data type conversions)
-* allow csv and xlsx reports with default summary info only?
+* allow flattening to work with arrays?
+* allow flattening and reject to work at 2 levels of depth?
+* make tests for scp / ssh (at least data type conversions)?
 * write PUTS methods - *currently api only allows status update*
 * write a recursive custom query - when results are more than one page
-* **allow flattening and reject to work at any depth (with recursion?)**
+* allow flattening and reject to work at any depth (with recursion)?
 * speed up response when returning large number of records? - **looks like API**
 
 
 ### CHANGE LOG
 
-* **v0.2.9** - compatible with 0.2.x - 2017-12-?? *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
+* **v0.2.9** - compatible with 0.2.x - 2017-12-12 *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
   - separated convert (& its dependencies) into separate modules that can be loaded on need in the next version (0.3.x)
-  - allow flattening to work with arrays
-  - allow flattening and reject to work at 2 levels of depth
-  - allow flattening and reject to work at any depth (with recursion?)
+  - hash to array now handles both student_details and student_summaries (this also allows conversion then to csv)
 
 * **v0.2.8** - compatible with 0.2.x - 2017-12-11 *(https://github.com/randym/axlsx/issues/234)*
   - axlsx - passes tests - but won't properly install inside another project (even using gem install ./openapply-0.2.7) - will look for a solution

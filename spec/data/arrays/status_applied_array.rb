@@ -36,6 +36,16 @@ module SpecData
       ],
     ]
 
+  STATUS_APPLIED_5_SUMMARY_ARRAY =
+  [
+    ["student_id", "student_name", "student_gender"],
+    [95, "Richard Washington", "male"],
+    [106, "Samuel Epelbaum", "male"],
+    [240, "Jesse Hawkins", "male"],
+    [267, "John Jean", "male"],
+    [268, "Lucille Austero", "female"]
+  ]
+
   STATUS_APPLIED_ARRAY_POPULATED_KIDS =
     [
       ["student_id", "student_name"],

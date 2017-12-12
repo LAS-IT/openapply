@@ -75,9 +75,18 @@ module ConvertToArray
       # next if student.nil? or student.empty? or
       #         student[:record].nil? or student[:record].empty?
 
-      kid_record = student[:record]
-      guardians  = student[:guardians]
-      payments   = student[:payments]
+      # when student summary data
+      if student[:record].nil?
+        kid_record = student
+        guardians  = []
+        payments   = []
+      end
+      # when student detailed data
+      if student[:record]
+        kid_record = student[:record]
+        guardians  = student[:guardians]
+        payments   = student[:payments]
+      end
 
       # inject student record info into the array
       student_keys.each{ |key| row << kid_record[key] }

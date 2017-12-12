@@ -223,7 +223,17 @@ RSpec.describe Openapply do
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
   end
 
-  context "data conversions" do
+  context "student_summary hash into an array" do
+    it "converts an student summary hash into an array with keys" do
+      student_keys  = [:id, :name, :gender]
+      students_hash = SpecData::STATUS_5_APPLIED_RECORDS_HASH
+      test_answer   = @oa.students_hash_to_array(students_hash, student_keys)
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_5_SUMMARY_ARRAY
+    end
+  end
+
+  context "students_details into an array" do
     it "convert a empty hash of students_details into an array - no keys" do
       # allow(@oa).to receive(:api_records) { 10 }
       student_hash = {}
