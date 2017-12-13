@@ -16,7 +16,7 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-* **v0.2.9** - compatible with 0.2.x - 2017-12-12 *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
+* **v0.2.9** - compatible with 0.2.x - 2017-12-13 *(https://github.com/straydogstudio/axlsx_rails/issues/77)*
   - separated convert (& its dependencies) into separate modules that can be loaded on need in the next version (0.3.x)
   - hash to array now handles both student_details and student_summaries (this also allows conversion then to csv)
 
