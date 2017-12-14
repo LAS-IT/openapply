@@ -183,12 +183,12 @@ csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_field
 @oa.send_data_to_remote_server( csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750', {verify_host_key: false} )
 
 # Create XLSX file
-@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-# # multiple status into
-xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# @oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
+# # # multiple status into
+# xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 # #
 # # send XLSX to a remote server as a file - using ssh-keys
-@oa.send_data_to_remote_server(xlsx_obj, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
+# @oa.send_data_to_remote_server(xlsx_obj, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
 ```
 
 #### INDIVIDUAL STUDENT QUERIES
