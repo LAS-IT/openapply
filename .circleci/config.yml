@@ -2,6 +2,11 @@
 #
 # Check https://circleci.com/docs/2.0/language-ruby/ for more details
 #
+dependencies:
+  pre:
+    - gem install bundler -v 1.16.0
+    # - rvm install rubygems 2.4.8 --force
+
 version: 2
 jobs:
   build:
