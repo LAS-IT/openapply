@@ -138,11 +138,12 @@ Associates the above settings with HTTParty
 @oa.payments_by_id(95)
 #
 # individual student records combined & possible pre-processing
-# ATTRIBUTES: id, [:keys_to_un-nest], [:keys_to_exclude]
 @oa.student_details_by_id(95)
+
+# ATTRIBUTES: id, [:keys_to_un-nest], [:keys_to_exclude]
 @oa.student_details_by_id(95, [:custom_fields], [:parent_guardian])
+
 # skip payment info -- (payments: [])
-@oa.student_details_by_id(95, [], [], false)
 @oa.student_details_by_id(95, [:custom_fields], [:parent_guardian], false)
 #
 # student summaries of a given status (recursively if more than on page)
@@ -150,21 +151,12 @@ Associates the above settings with HTTParty
 #
 # student details of a given status (recursively if more than on page)
 @oa.students_details_by_status('applied')
-@oa.students_details_by_status('applied', [:custom_fields])
-@oa.students_details_by_status('applied', [], [:parent_guardian])
 @oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian])
 # skip payment info (payments: [])
-@oa.students_details_by_status('applied', [], [], false)
 @oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian], false)
 #
 # student details with multiple status (recursively if more than on page)
 @oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields])
-@oa.students_details_by_statuses(['applied','enrolled'], nil, [:parent_guardian])
-@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian])
-# speed up and skip payment info - returns [] in payment area
-@oa.students_details_by_statuses(['applied','enrolled'], [], [], false)
-# speed up and skip payment info - returns [] in payment area
-@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], false)
 #
 # create an array
 @oa.students_as_array_by_status('applied', [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
@@ -172,7 +164,6 @@ Associates the above settings with HTTParty
 @oa.students_as_array_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
 #
 # Create a csv string
-@oa.students_as_csv_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 # multiple status into
 csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
 #
