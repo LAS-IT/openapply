@@ -15,7 +15,7 @@ RSpec.describe Openapply do
       expect(Openapply::VERSION).not_to be nil
     end
     it "has correct version number" do
-      expect(Openapply::VERSION).to eq "0.2.9"
+      expect(Openapply::VERSION).to eq "0.2.10"
     end
     it "has a url" do
       expect(@oa.api_url).not_to be nil

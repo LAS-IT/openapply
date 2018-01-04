@@ -59,9 +59,11 @@ Gem::Specification.new do |spec|
   # spec.add_runtime_dependency "rubyzip", "~> 1.2"
 
   spec.add_development_dependency "simplecov", "~> 0.15"
-  spec.add_development_dependency "webmock" , "~> 3.1"
+  # spec.add_development_dependency "webmock" , "~> 3.1"
+  spec.add_development_dependency "webmock" , "~> 3.2"
   spec.add_development_dependency "bundler", "~> 1.15"
-  spec.add_development_dependency "rake", "~> 10.0"
+  # spec.add_development_dependency "rake", "~> 10.0"
+  spec.add_development_dependency "rake", "~> 12.3"
   spec.add_development_dependency "rspec", "~> 3.7"
   spec.add_development_dependency "pry", "~> 0.11"
   # spec.add_development_dependency "roo", "~> 2.7"

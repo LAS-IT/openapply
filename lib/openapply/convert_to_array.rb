@@ -1,7 +1,5 @@
-# require 'csv'
-# require 'axlsx'
-require 'net/scp'
-require 'net/ssh'
+# require 'net/scp'
+# require 'net/ssh'
 
 # CODE THAT TRANSFORMS STUDENT DATA
 ###################################

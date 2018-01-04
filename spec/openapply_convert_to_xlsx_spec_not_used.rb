@@ -1,6 +1,6 @@
 # require 'csv'
-require 'roo'
-require 'axlsx'
+# require 'roo'
+# require 'axlsx'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -223,149 +223,149 @@ RSpec.describe Openapply do
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
   end
 
-  context "axlsx basic tests" do
-    # DISABLED until AXLSX can use RubyZip 1.2.1 or later
-    it "convert an empty array of students_details into a xlsx object" do
-      allow(@oa).to receive(:api_records) { 10 }
-      student_array = []
-      test_answer = @oa.students_array_to_xlsx(student_array)
-      # pp test_answer.class
-      # pp test_answer.is_a? Axlsx::Package
-      stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-      # roo_file = Roo::Excelx.new( stream )
-      wb = nil
-      expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-      expect( wb.cell(1,1) ).to eq(nil)
-      expect( wb.cell(2,1) ).to eq(nil)
-      # adds quotes and removes .0 in numbers
-      # pp wb.to_csv
-      # expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
-    end
-    it "convert an populated array of students_details into a xlsx object" do
-      allow(@oa).to receive(:api_records) { 5 }
-      student_array = SpecData::STATUS_APPLIED_ENROLLED_ARRAY
-      test_answer = @oa.students_array_to_xlsx(student_array)
-      # pp test_answer.class
-      # pp test_answer.is_a? Axlsx::Package
-      stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-      # roo_file = Roo::Excelx.new( stream )
-      wb = nil
-      expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-      expect( wb.cell(1,1) ).to eq('student_id')
-      expect( wb.cell(2,1) ).to eq(95)
-      expect( wb.cell(2,2) ).to eq('Richard Washington')
-      # adds quotes and removes .0 in numbers
-      # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
-    end
-    it "returns the correct xlsx object given a status" do
-      allow(@oa).to receive(:api_records) { 5 }
-      status = 'applied'
-      student_keys  = [:id, :name]
-      flatten_keys  = [:custom_fields]
-      reject_keys   = [:parent_guardian]
-      guardian_info = { count: 1, keys: [:id, :name] }
-      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_xlsx_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
-      # # pp test_answer.class
-      # pp test_answer.is_a? Axlsx::Package
-      stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-      # pp stream.is_a? StringIO
-      # # roo_file = Roo::Excelx.new( stream )
-      wb = nil
-      expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-      expect( wb.cell(1,1) ).to eq('student_id')
-      expect( wb.cell(2,1) ).to eq(95)
-      expect( wb.cell(2,2) ).to eq('Richard Washington')
-      # # adds quotes and removes .0 in numbers
-      # # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_CSV_TEXT
-      # expect( true ).to eq SpecData::ROO_APPLIED_CSV_TEXT
-    end
-  end
+  # context "axlsx basic tests" do
+  #   # DISABLED until AXLSX can use RubyZip 1.2.1 or later
+  #   it "convert an empty array of students_details into a xlsx object" do
+  #     allow(@oa).to receive(:api_records) { 10 }
+  #     student_array = []
+  #     test_answer = @oa.students_array_to_xlsx(student_array)
+  #     # pp test_answer.class
+  #     # pp test_answer.is_a? Axlsx::Package
+  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
+  #     # roo_file = Roo::Excelx.new( stream )
+  #     wb = nil
+  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
+  #     expect( wb.cell(1,1) ).to eq(nil)
+  #     expect( wb.cell(2,1) ).to eq(nil)
+  #     # adds quotes and removes .0 in numbers
+  #     # pp wb.to_csv
+  #     # expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
+  #   end
+  #   it "convert an populated array of students_details into a xlsx object" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     student_array = SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+  #     test_answer = @oa.students_array_to_xlsx(student_array)
+  #     # pp test_answer.class
+  #     # pp test_answer.is_a? Axlsx::Package
+  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
+  #     # roo_file = Roo::Excelx.new( stream )
+  #     wb = nil
+  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
+  #     expect( wb.cell(1,1) ).to eq('student_id')
+  #     expect( wb.cell(2,1) ).to eq(95)
+  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
+  #     # adds quotes and removes .0 in numbers
+  #     # pp wb.to_csv
+  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
+  #   end
+  #   it "returns the correct xlsx object given a status" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     status = 'applied'
+  #     student_keys  = [:id, :name]
+  #     flatten_keys  = [:custom_fields]
+  #     reject_keys   = [:parent_guardian]
+  #     guardian_info = { count: 1, keys: [:id, :name] }
+  #     payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+  #     test_answer   = @oa.students_as_xlsx_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
+  #     # # pp test_answer.class
+  #     # pp test_answer.is_a? Axlsx::Package
+  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
+  #     # pp stream.is_a? StringIO
+  #     # # roo_file = Roo::Excelx.new( stream )
+  #     wb = nil
+  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
+  #     expect( wb.cell(1,1) ).to eq('student_id')
+  #     expect( wb.cell(2,1) ).to eq(95)
+  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
+  #     # # adds quotes and removes .0 in numbers
+  #     # # pp wb.to_csv
+  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_CSV_TEXT
+  #     # expect( true ).to eq SpecData::ROO_APPLIED_CSV_TEXT
+  #   end
+  # end
 
-  context "multiple status axlsx reports" do
-    it "using multiple statuses return a xlsx object" do
-      allow(@oa).to receive(:api_records) { 5 }
-      status = ['applied','enrolled']
-      student_keys  = [:id, :name]
-      flatten_keys  = [:custom_fields]
-      reject_keys   = [:parent_guardian]
-      guardian_info = { count: 1, keys: [:id, :name] }
-      payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_xlsx_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
-      # pp test_answer.class
-      # pp test_answer.is_a? Axlsx::Package
-      stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-      # roo_file = Roo::Excelx.new( stream )
-      wb = nil
-      expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-      expect( wb.cell(1,1) ).to eq('student_id')
-      expect( wb.cell(2,1) ).to eq(95)
-      expect( wb.cell(2,2) ).to eq('Richard Washington')
-      # adds quotes and removes .0 in numbers
-      # pp wb.to_csv
-      expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
-    end
-  end
+  # context "multiple status axlsx reports" do
+  #   it "using multiple statuses return a xlsx object" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     status = ['applied','enrolled']
+  #     student_keys  = [:id, :name]
+  #     flatten_keys  = [:custom_fields]
+  #     reject_keys   = [:parent_guardian]
+  #     guardian_info = { count: 1, keys: [:id, :name] }
+  #     payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
+  #     test_answer   = @oa.students_as_xlsx_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
+  #     # pp test_answer.class
+  #     # pp test_answer.is_a? Axlsx::Package
+  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
+  #     # roo_file = Roo::Excelx.new( stream )
+  #     wb = nil
+  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
+  #     expect( wb.cell(1,1) ).to eq('student_id')
+  #     expect( wb.cell(2,1) ).to eq(95)
+  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
+  #     # adds quotes and removes .0 in numbers
+  #     # pp wb.to_csv
+  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
+  #   end
+  # end
 
-  context "students_as_xlsx_by_status - error gracefully" do
-    it "when given invalid flatten_keys - non-arrary" do
-      test_answer = @oa.students_as_xlsx_by_status('applied',:custom_fields,[:parent_guardian])
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
-    end
-    it "when given invalid reject_keys - non-array" do
-      test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],:parent_guardian)
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
-    end
-    it "when given invalid flatten_keys - strings" do
-      test_answer = @oa.students_as_xlsx_by_status('applied',['custom_fields'],[:parent_guardian])
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
-    end
-    it "when given invalid reject_keys - strings" do
-      test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],['parent_guardian'])
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
-    end
-  end
+  # context "students_as_xlsx_by_status - error gracefully" do
+  #   it "when given invalid flatten_keys - non-arrary" do
+  #     test_answer = @oa.students_as_xlsx_by_status('applied',:custom_fields,[:parent_guardian])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
+  #   end
+  #   it "when given invalid reject_keys - non-array" do
+  #     test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],:parent_guardian)
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
+  #   end
+  #   it "when given invalid flatten_keys - strings" do
+  #     test_answer = @oa.students_as_xlsx_by_status('applied',['custom_fields'],[:parent_guardian])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
+  #   end
+  #   it "when given invalid reject_keys - strings" do
+  #     test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],['parent_guardian'])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
+  #   end
+  # end
 
-  # # DISABLED UNTIL AXLSX works with RubyZip 1.2.1
-  context "students_as_xlsx_by_status handles bad headers - gracefully and errors" do
-    it "with bad student_keys - not an array" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],:id)
-      expect( test_answer ).to eq({error: "invalid student_keys - need array"})
-    end
-    it "with bad student_keys - uses strings not symbols" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],['id'])
-      expect( test_answer ).to eq({error: "invalid student_keys - use symbols"})
-    end
-    it "with bad guardian_info - not a hash" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],:id)
-      expect( test_answer ).to eq({error: "invalid guardian_info - use hash"})
-    end
-    it "with bad guardian_keys - not an array" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: :id})
-      expect( test_answer ).to eq({error: "invalid guardian_keys - need array"})
-    end
-    it "with bad guardian_keys - uses strings not symbols" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: ['id']})
-      expect( test_answer ).to eq({error: "invalid guardian_keys - use symbols"})
-    end
-    it "with bad payment_info - not a hash" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},:id)
-      expect( test_answer ).to eq({error: "invalid payment_info - use hash"})
-    end
-    it "with bad payment_keys - not an array" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: :id})
-      expect( test_answer ).to eq({error: "invalid payment_keys - need array"})
-    end
-    it "with bad payment_keys - uses strings not symbols" do
-      test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: ['id']})
-      expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
-    end
-  end
+  # # # DISABLED UNTIL AXLSX works with RubyZip 1.2.1
+  # context "students_as_xlsx_by_status handles bad headers - gracefully and errors" do
+  #   it "with bad student_keys - not an array" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],:id)
+  #     expect( test_answer ).to eq({error: "invalid student_keys - need array"})
+  #   end
+  #   it "with bad student_keys - uses strings not symbols" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],['id'])
+  #     expect( test_answer ).to eq({error: "invalid student_keys - use symbols"})
+  #   end
+  #   it "with bad guardian_info - not a hash" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],:id)
+  #     expect( test_answer ).to eq({error: "invalid guardian_info - use hash"})
+  #   end
+  #   it "with bad guardian_keys - not an array" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: :id})
+  #     expect( test_answer ).to eq({error: "invalid guardian_keys - need array"})
+  #   end
+  #   it "with bad guardian_keys - uses strings not symbols" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: ['id']})
+  #     expect( test_answer ).to eq({error: "invalid guardian_keys - use symbols"})
+  #   end
+  #   it "with bad payment_info - not a hash" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},:id)
+  #     expect( test_answer ).to eq({error: "invalid payment_info - use hash"})
+  #   end
+  #   it "with bad payment_keys - not an array" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: :id})
+  #     expect( test_answer ).to eq({error: "invalid payment_keys - need array"})
+  #   end
+  #   it "with bad payment_keys - uses strings not symbols" do
+  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: ['id']})
+  #     expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
+  #   end
+  # end
 
 end
