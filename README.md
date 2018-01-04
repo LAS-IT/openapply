@@ -1,8 +1,4 @@
-[![Build Status](https://travis-ci.org/btihen/openapply.svg?branch=master)](https://travis-ci.org/btihen/openapply)
-
-[![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply)
-
-[![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)
+[![Build Status](https://travis-ci.org/btihen/openapply.svg?branch=master)](https://travis-ci.org/btihen/openapply) | [![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply) | [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)
 
 
 
