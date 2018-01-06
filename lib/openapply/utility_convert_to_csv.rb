@@ -5,7 +5,6 @@ require 'csv'
 
 module ConvertToCsv
 
-
   # Queries by status to get a list of students details of a given status
   # and converts the result to a CSV string with headers (based on keys sent)
   #

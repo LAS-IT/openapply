@@ -21,6 +21,10 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
+* **v0.3.0** - NOT compatible with 0.2.x - 2018-01-??
+  - refactor to use options - simplify and improve usage
+  - refactor to be more modular (usage will change)
+
 * **v0.2.10** - compatible with 0.2.x - 2018-01-04
   - updated rake and webmock gems in deve
   - removed roo - not needed
@@ -120,7 +124,7 @@ Associates the above settings with HTTParty
 (so that you can access the OpenApply api)
 
 ```ruby
-@oa = OpenApply::Client.new
+@oa = Openapply::Client.new
 ```
 
 ###  USAGE
@@ -145,50 +149,26 @@ Associates the above settings with HTTParty
 # Individual students records (separated)
 @oa.student_by_id(95)
 @oa.payments_by_id(95)
-#
-# individual student records combined & possible pre-processing
+# get individual student records
 @oa.student_details_by_id(95)
-
-# ATTRIBUTES: id, [:keys_to_un-nest], [:keys_to_exclude]
-@oa.student_details_by_id(95, [:custom_fields], [:parent_guardian])
-
-# skip payment info -- (payments: [])
-@oa.student_details_by_id(95, [:custom_fields], [:parent_guardian], false)
+# get individual student records & skip payment info
+@oa.student_details_by_id(95, {get_payments: false})
 #
 # student summaries of a given status (recursively if more than on page)
 @oa.students_by_status('applied')
-#
+
+# executes a custom query and returns a group of student summaries matching criteria
+# status='applied', student_id_after=106,
+# updated_after='2017-11-12', returned_records=25
+@oa.students_query('applied', 106, '2017-11-12', 25)
+
 # student details of a given status (recursively if more than on page)
 @oa.students_details_by_status('applied')
-@oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian])
-# skip payment info (payments: [])
-@oa.students_details_by_status('applied', [:custom_fields], [:parent_guardian], false)
+@oa.students_details_by_status('applied', {get_payments: false})
 #
 # student details with multiple status (recursively if more than on page)
-@oa.students_details_by_statuses(['applied','enrolled'], [:custom_fields])
-#
-# create an array
-@oa.students_as_array_by_status('applied', [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
-# multiple statuses into an array
-@oa.students_as_array_by_statuses(['applied','enrolled'], [:custom_fields], [:parent_guardian], [:id, :name], {count: 1, keys: [:id, :name, :address]}, {count: 2, order: :newest, keys: [:date, :amount]} )
-#
-# Create a csv string
-# multiple status into
-csv_string=@oa.students_as_csv_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-#
-# send CSV to a remote server as a file - using ssh-keys
-@oa.send_data_to_remote_server(csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750')
-#
-# send CSV to a remote server as a file - using ssh-keys - don't check host_key of remote server
-@oa.send_data_to_remote_server( csv_string, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.csv', '0750', {verify_host_key: false} )
-
-# Create XLSX file
-# @oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-# # # multiple status into
-# xlsx_obj=@oa.students_as_xlsx_by_statuses(['applied','enrolled'],[:custom_fields], [:parent_guardian], [:id, :name], {type: :guardians, count: 1, keys: [:id, :name, :address]}, {type: :payments, count: 2, order: :newest, keys: [:date, :amount]} )
-# #
-# # send XLSX to a remote server as a file - using ssh-keys
-# @oa.send_data_to_remote_server(xlsx_obj, 'hostname.domain.name', 'myusername', '/home/myusername/xfer/myexport.xlsx', '0750')
+@oa.students_details_by_statuses(['applied','enrolled'])
+@oa.students_details_by_statuses(['applied','enrolled'], {get_payments: false})
 ```
 
 #### INDIVIDUAL STUDENT QUERIES
@@ -285,9 +265,6 @@ xlsx_obj=@oa.students_as_xlsx_by_status('applied',[:custom_fields], [:parent_gua
 # build a custom url query to send to OA api
 # returns a url that can be passed to api
 @oa.students_query_url('applied', 106, '2017-11-12', 25)
-
-# executes a custom query and returns a group of student summaries matching criteria
-@oa.students_query('applied', 106, '2017-11-12', 25)
 ```
 
 

@@ -1,6 +1,3 @@
-# require 'csv'
-# require 'roo'
-# require 'axlsx'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -223,149 +220,309 @@ RSpec.describe Openapply do
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
   end
 
-  # context "axlsx basic tests" do
-  #   # DISABLED until AXLSX can use RubyZip 1.2.1 or later
-  #   it "convert an empty array of students_details into a xlsx object" do
+
+  # context "test API mocks against OpenApply - avoid real api calls" do
+  #   it "oa_api_call - returns correctly formatted billing records 95 - blank" do
+  #     test_answer = @oa.oa_api_call(@url_pay_95).response.body
+  #     expect( test_answer ).to eq SpecData::STUDENT_95_PAYMENTS_TEXT
+  #   end
+  #
+  #   it "oa_api_call - returns correctly formatted billing records 106 - w/data" do
+  #     test_answer = @oa.oa_api_call(@url_pay_106).response.body
+  #     expect( test_answer ).to eq SpecData::STUDENT_106_PAYMENTS_TEXT
+  #   end
+  #
+  #   it "oa_api_call - returns correctly formatted student records 95 - complex" do
+  #     test_answer = @oa.oa_api_call(@url_kid_95).response.body
+  #     expect( test_answer ).to eq SpecData::STUDENT_95_RECORD_TEXT
+  #   end
+  #
+  #   it "oa_api_call - returns correctly formatted student records 106 - complex" do
+  #     test_answer = @oa.oa_api_call(@url_kid_106).response.body
+  #     expect( test_answer ).to eq SpecData::STUDENT_106_RECORD_TEXT
+  #   end
+  #
+  # end
+  #
+  # # TODO: test timeout behavior
+  # context "oa_answer / timeout - handles 1/2 timeouts - not 3"
+  #
+  #
+  # context "oa_answer - get a single student record or payments" do
+  #   it "oa_answer - returns correctly formatted billing records - no options" do
+  #     # puts @url_pay_95
+  #     expect( @oa.oa_answer(@url_pay_95) ).to eq SpecData::STUDENT_95_PAYMENTS_HASH
+  #   end
+  #   it "oa_answer - returns correct billing values" do
+  #     expect(@oa.oa_answer(@url_pay_95)[:payments].empty?).to be true
+  #   end
+  #   it "oa_answer - returns correct billing object" do
+  #     expect( @oa.oa_answer(@url_pay_95,@options) ).to eq SpecData::STUDENT_95_PAYMENTS_HASH
+  #   end
+  #
+  #   it "payments_by_id - sends the correct URL to oa_answer" do
+  #     expect(@oa.payments_by_id(95)).to eq SpecData::STUDENT_95_PAYMENTS_HASH
+  #   end
+  #   it "payments_by_id - sends the correct URL to oa_answer" do
+  #     expect(@oa.payments_by_id(106)).to eq SpecData::STUDENT_106_PAYMENTS_HASH
+  #   end
+  #
+  #   it "student_by_id - sends the correct URL to oa_answer" do
+  #     expect(@oa.student_by_id(95)).to eq SpecData::STUDENT_95_RECORD_HASH
+  #   end
+  #   it "student_by_id - sends the correct URL to oa_answer" do
+  #     expect(@oa.student_by_id(106)).to eq SpecData::STUDENT_106_RECORD_HASH
+  #   end
+  # end
+  #
+  # context "join one student record with one student payments" do
+  #   # it "student_details_by_id - sends back all info on a given student in ONE hash" do
+  #   #   # pp @oa.student_details_by_id(95)
+  #   #   expect(@oa.student_details_by_id(95)).to eq SpecData::STUDENT_95_DETAILS_HASH
+  #   # end
+  #   it "student_details_by_id - sends back all info on a given student in ONE hash" do
+  #     # pp @oa.student_details_by_id(106)
+  #     expect(@oa.student_details_by_id(106)).to eq SpecData::STUDENT_106_DETAILS_HASH
+  #   end
+  # end
+  #
+  # context "test the student summary api call" do
+  #   before(:each) do
+  #     allow(@oa).to receive(:api_records) { 3 }
+  #   end
+  #
+  #   # https://demo.openapply.com//api/v1/students?status=applied&count=3&auth_token=demo_site_api_key
+  #   it "oa_api_call - get the first page students who are in applied" do
+  #     test_answer = @oa.oa_api_call(@url_status_summary_p_1).response.body
+  #     expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_1_TEXT
+  #   end
+  #   # https://demo.openapply.com//api/v1/students?status=applied&since_id=240&count=3&auth_token=demo_site_api_key
+  #   it "oa_api_call - get the second page students who are in applied" do
+  #     test_answer = @oa.oa_api_call(@url_status_summary_p_2).response.body
+  #     expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_2_TEXT
+  #   end
+  #   # # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3&auth_token=demo_site_api_key
+  #   it "oa_api_call - get the last page of students who are in applied" do
+  #     test_answer = @oa.oa_api_call(@url_status_summary_p_3).response.body
+  #     expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_3_TEXT
+  #   end
+  #
+  # end
+  #
+  # context "find all students with api - even with multiple pages" do
+  #   before(:each) do
+  #     @correct_ids = [95, 106, 240, 267, 268, 269, 270, 271]
+  #   end
+  #   it "can query for a single page of student summaries" do
   #     allow(@oa).to receive(:api_records) { 10 }
-  #     student_array = []
-  #     test_answer = @oa.students_array_to_xlsx(student_array)
-  #     # pp test_answer.class
-  #     # pp test_answer.is_a? Axlsx::Package
-  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-  #     # roo_file = Roo::Excelx.new( stream )
-  #     wb = nil
-  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-  #     expect( wb.cell(1,1) ).to eq(nil)
-  #     expect( wb.cell(2,1) ).to eq(nil)
-  #     # adds quotes and removes .0 in numbers
-  #     # pp wb.to_csv
-  #     # expect( wb.to_csv ).to eq SpecData::ROO_CSV_TEXT
+  #     test_answer = @oa.students_by_status('applied')
+  #     expect( test_answer ).to eq SpecData::STATUS_APPLIED_PAGES_ALL_HASH
   #   end
-  #   it "convert an populated array of students_details into a xlsx object" do
-  #     allow(@oa).to receive(:api_records) { 5 }
-  #     student_array = SpecData::STATUS_APPLIED_ENROLLED_ARRAY
-  #     test_answer = @oa.students_array_to_xlsx(student_array)
-  #     # pp test_answer.class
-  #     # pp test_answer.is_a? Axlsx::Package
-  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-  #     # roo_file = Roo::Excelx.new( stream )
-  #     wb = nil
-  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-  #     expect( wb.cell(1,1) ).to eq('student_id')
-  #     expect( wb.cell(2,1) ).to eq(95)
-  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
-  #     # adds quotes and removes .0 in numbers
-  #     # pp wb.to_csv
-  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
+  #   it "gets all pages when of a given status" do
+  #     allow(@oa).to receive(:api_records) { 3 }
+  #     test_answer = @oa.students_by_status('applied')
+  #     # pp test_answer
+  #     expect( test_answer ).to eq SpecData::STATUS_APPLIED_COLLECTED_HASH
   #   end
-  #   it "returns the correct xlsx object given a status" do
+  #   it "gets all pages when of a bad status" do
   #     allow(@oa).to receive(:api_records) { 5 }
-  #     status = 'applied'
-  #     student_keys  = [:id, :name]
-  #     flatten_keys  = [:custom_fields]
-  #     reject_keys   = [:parent_guardian]
-  #     guardian_info = { count: 1, keys: [:id, :name] }
-  #     payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-  #     test_answer   = @oa.students_as_xlsx_by_status(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
-  #     # # pp test_answer.class
-  #     # pp test_answer.is_a? Axlsx::Package
-  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-  #     # pp stream.is_a? StringIO
-  #     # # roo_file = Roo::Excelx.new( stream )
-  #     wb = nil
-  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-  #     expect( wb.cell(1,1) ).to eq('student_id')
-  #     expect( wb.cell(2,1) ).to eq(95)
-  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
-  #     # # adds quotes and removes .0 in numbers
-  #     # # pp wb.to_csv
-  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_CSV_TEXT
-  #     # expect( true ).to eq SpecData::ROO_APPLIED_CSV_TEXT
+  #     test_answer = @oa.students_by_status('bad')
+  #     # pp test_answer
+  #     expect( test_answer ).to eq( {students: []} )
+  #   end
+  #   it "correctly makes a student ids of a given status - from a single pages" do
+  #     allow(@oa).to receive(:api_records) { 10 }
+  #     test_ids = @oa.student_ids_by_status('applied')
+  #     expect( test_ids ).to eq ( { student_ids: @correct_ids } )
+  #   end
+  #   it "correctly makes a student ids of a given status - from multiple pages" do
+  #     allow(@oa).to receive(:api_records) { 3 }
+  #     test_ids = @oa.student_ids_by_status('applied')
+  #     expect( test_ids ).to eq ( { student_ids: @correct_ids } )
+  #   end
+  #   it "correctly makes a student ids of a bad status - from multiple pages" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     test_ids = @oa.student_ids_by_status('bad')
+  #     expect( test_ids ).to eq ( { student_ids: [] } )
+  #   end
+  #   it "finds all student data on all students of a status" do
+  #     allow(@oa).to receive(:api_records) { 10 }
+  #     test_answer = @oa.students_details_by_status('applied')
+  #     # pp test_answer
+  #     expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
+  #   end
+  #   it "finds all student data on all students of a bad status" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     test_answer = @oa.students_details_by_status('bad')
+  #     # pp test_answer
+  #     expect( test_answer ).to eq( students: [] )
+  #   end
+  #   it "finds all student data on all students of a status and flattens the data" do
+  #     allow(@oa).to receive(:api_records) { 10 }
+  #     test_answer = @oa.students_details_by_status('applied',[:custom_fields],[:parent_guardian])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
+  #   end
+  #   it "finds all student details on all students (without payments)" do
+  #     allow(@oa).to receive(:api_records) { 10 }
+  #     test_answer = @oa.students_details_by_status('applied',[],[], false)
+  #     # test_answer = @oa.students_details_by_status('applied',[:custom_fields],[:parent_guardian],false)
+  #     # pp test_answer
+  #     expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_NO_PAYMENTS_HASH
+  #     # expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
   #   end
   # end
-
-  # context "multiple status axlsx reports" do
-  #   it "using multiple statuses return a xlsx object" do
+  #
+  # context "multiple status tests" do
+  #   it "gets the right list of ids with two statuses" do
   #     allow(@oa).to receive(:api_records) { 5 }
-  #     status = ['applied','enrolled']
-  #     student_keys  = [:id, :name]
-  #     flatten_keys  = [:custom_fields]
-  #     reject_keys   = [:parent_guardian]
-  #     guardian_info = { count: 1, keys: [:id, :name] }
-  #     payment_info  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-  #     test_answer   = @oa.students_as_xlsx_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_info, payment_info)
-  #     # pp test_answer.class
-  #     # pp test_answer.is_a? Axlsx::Package
-  #     stream = test_answer.to_stream() if test_answer.is_a? Axlsx::Package
-  #     # roo_file = Roo::Excelx.new( stream )
-  #     wb = nil
-  #     expect{ wb = Roo::Excelx.new(stream) }.to_not raise_error
-  #     expect( wb.cell(1,1) ).to eq('student_id')
-  #     expect( wb.cell(2,1) ).to eq(95)
-  #     expect( wb.cell(2,2) ).to eq('Richard Washington')
-  #     # adds quotes and removes .0 in numbers
-  #     # pp wb.to_csv
-  #     expect( wb.to_csv ).to eq SpecData::ROO_APPLIED_ENROLLED_CSV_TEXT
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.student_ids_by_statuses(['applied','enrolled'])
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+  #   it "gets the right list of ids with three statuses (one blank - accepted)" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.student_ids_by_statuses(['applied','accepted','enrolled'])
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+  #   it "gets the right list of ids with three statuses (one bad status - accepted)" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.student_ids_by_statuses(['applied','bad','enrolled'])
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+  #   it "gets the right students_details_by_status with two statuses" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     test_answer = @oa.students_details_by_status(['applied','enrolled'],[:custom_fields],[:parent_guardian])
+  #     # pp test_answer
+  #     correct_ans = SpecData::STATUS_APPLIED_ENROLLED_FLATTENED_HASH
+  #     expect( test_answer ).to eq correct_ans
   #   end
   # end
-
-  # context "students_as_xlsx_by_status - error gracefully" do
+  # context "check students_details_by_status to error gracefully" do
   #   it "when given invalid flatten_keys - non-arrary" do
-  #     test_answer = @oa.students_as_xlsx_by_status('applied',:custom_fields,[:parent_guardian])
+  #     test_answer = @oa.students_details_by_status('applied',:custom_fields,[:parent_guardian])
   #     # pp test_answer
   #     expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
   #   end
   #   it "when given invalid reject_keys - non-array" do
-  #     test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],:parent_guardian)
+  #     test_answer = @oa.students_details_by_status('applied',[:custom_fields],:parent_guardian)
   #     # pp test_answer
   #     expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
   #   end
   #   it "when given invalid flatten_keys - strings" do
-  #     test_answer = @oa.students_as_xlsx_by_status('applied',['custom_fields'],[:parent_guardian])
+  #     test_answer = @oa.students_details_by_status('applied',['custom_fields'],[:parent_guardian])
   #     # pp test_answer
   #     expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
   #   end
   #   it "when given invalid reject_keys - strings" do
-  #     test_answer = @oa.students_as_xlsx_by_status('applied',[:custom_fields],['parent_guardian'])
+  #     test_answer = @oa.students_details_by_status('applied',[:custom_fields],['parent_guardian'])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
+  #   end
+  # end
+  #
+  # context "build correct urls for students summary queries" do
+  #   let(:correct_answer) { "#{@oa.api_path}?#{@placeholder}count=#{@oa.api_records}&auth_token=#{@oa.api_key}" }
+  #
+  #   it "builds a correct url with NO parameters" do
+  #     @placeholder = nil
+  #     test_answer  = @oa.students_query_url()
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  #   it "builds a correct url based on date" do
+  #     # format: YYYY-MM-DD -- not yet 2013-09-25 02:10:39
+  #     since_date   = Date.today - 2
+  #     @placeholder = "since_date=#{since_date}&"
+  #     test_answer  = @oa.students_query_url(nil,nil,since_date)
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  #   it "builds a correct url based on status" do
+  #     status       = 'applied'
+  #     @placeholder = "status=#{status}&"
+  #     test_answer  = @oa.students_query_url(status)
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  #   it "builds a correct url based on status & since_id" do
+  #     status       = 'applied'
+  #     since_id     = '95'
+  #     @placeholder = "status=#{status}&since_id=#{since_id}&"
+  #     test_answer  = @oa.students_query_url(status,since_id)
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  #   it "builds a correct url based on status & date" do
+  #     status       = 'applied'
+  #     since_date   = '2017-11-01'
+  #     @placeholder = "status=#{status}&since_date=#{since_date}&"
+  #     test_answer  = @oa.students_query_url(status,nil,since_date)
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  #   it "builds a correct url based on status & date" do
+  #     status       = 'applied'
+  #     since_id     = '95'
+  #     since_date   = '2017-11-01'
+  #     @placeholder = "status=#{status}&since_id=#{since_id}&since_date=#{since_date}&"
+  #     test_answer  = @oa.students_query_url(status,since_id,since_date)
+  #     expect( test_answer ).to eq correct_answer
+  #   end
+  # end
+
+  # context "gets correct id lists" do
+  #   it "gets the right list of ids with two statuses" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.all_students_summaries({status: ['applied','enrolled']})
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+  #   it "gets the right list of ids with three statuses (one blank - accepted)" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.all_students_summaries({status: ['applied','accepted','enrolled']})
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+  #   it "gets the right list of ids with three statuses (one bad status - accepted)" do
+  #     allow(@oa).to receive(:api_records) { 5 }
+  #     # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+  #     test_answer = @oa.all_students_summaries({status: ['applied','bad','enrolled']})
+  #     correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+  #     expect( test_answer ).to eq correct_ans
+  #   end
+    # it "gets the right students_details_by_status with two statuses" do
+    #   allow(@oa).to receive(:api_records) { 5 }
+    #   test_answer = @oa.students_details_by_status(['applied','enrolled'],[:custom_fields],[:parent_guardian])
+    #   # pp test_answer
+    #   correct_ans = SpecData::STATUS_APPLIED_ENROLLED_FLATTENED_HASH
+    #   expect( test_answer ).to eq correct_ans
+    # end
+  # end
+  # context "check students_details_by_status to error gracefully" do
+  #   it "when given invalid flatten_keys - non-arrary" do
+  #     test_answer = @oa.students_details_by_status('applied',:custom_fields,[:parent_guardian])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
+  #   end
+  #   it "when given invalid reject_keys - non-array" do
+  #     test_answer = @oa.students_details_by_status('applied',[:custom_fields],:parent_guardian)
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
+  #   end
+  #   it "when given invalid flatten_keys - strings" do
+  #     test_answer = @oa.students_details_by_status('applied',['custom_fields'],[:parent_guardian])
+  #     # pp test_answer
+  #     expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
+  #   end
+  #   it "when given invalid reject_keys - strings" do
+  #     test_answer = @oa.students_details_by_status('applied',[:custom_fields],['parent_guardian'])
   #     # pp test_answer
   #     expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
   #   end
   # end
 
-  # # # DISABLED UNTIL AXLSX works with RubyZip 1.2.1
-  # context "students_as_xlsx_by_status handles bad headers - gracefully and errors" do
-  #   it "with bad student_keys - not an array" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],:id)
-  #     expect( test_answer ).to eq({error: "invalid student_keys - need array"})
-  #   end
-  #   it "with bad student_keys - uses strings not symbols" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],['id'])
-  #     expect( test_answer ).to eq({error: "invalid student_keys - use symbols"})
-  #   end
-  #   it "with bad guardian_info - not a hash" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],:id)
-  #     expect( test_answer ).to eq({error: "invalid guardian_info - use hash"})
-  #   end
-  #   it "with bad guardian_keys - not an array" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: :id})
-  #     expect( test_answer ).to eq({error: "invalid guardian_keys - need array"})
-  #   end
-  #   it "with bad guardian_keys - uses strings not symbols" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{keys: ['id']})
-  #     expect( test_answer ).to eq({error: "invalid guardian_keys - use symbols"})
-  #   end
-  #   it "with bad payment_info - not a hash" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},:id)
-  #     expect( test_answer ).to eq({error: "invalid payment_info - use hash"})
-  #   end
-  #   it "with bad payment_keys - not an array" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: :id})
-  #     expect( test_answer ).to eq({error: "invalid payment_keys - need array"})
-  #   end
-  #   it "with bad payment_keys - uses strings not symbols" do
-  #     test_answer = @oa.students_as_xlsx_by_status([],[],[],[],{},{keys: ['id']})
-  #     expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
-  #   end
-  # end
 
 end

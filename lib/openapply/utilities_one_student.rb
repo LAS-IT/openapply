@@ -1,46 +1,7 @@
-# SINGLE STUDENT API GET CALLS
-##############################
-
-module Get
-
-  # STUDENT FULL RECORD
-  #####################
-
-  # Summary record for ONE student - this API return has the parent info 2x!
-  #
-  # ==== Attributes
-  # # @student_id - openapply student_id
-  # * @options - see httparty options
-  #
-  # ==== Example code
-  #  @demo = Openapply.new
-  #  @demo.student_by_id(96)
-  def student_by_id(student_id, options ={})
-    url = "#{api_path}#{student_id}?auth_token=#{api_key}"
-    return oa_answer( url, options )
-  end
-  alias_method :student, :student_by_id
-
-
-  # STUDENT PAYMENT INFO
-  ######################
-
-  # Payment details for ONE student
-  #
-  # ==== Attributes
-  # * +student_id+ - openapply student_id
-  # * +options+ - see httparty options
-  #
-  # ==== Example code
-  #  @demo = Openapply.new
-  #  @demo.payments_by_id(96)
-  def payments_by_id(student_id, options={})
-    url = "#{api_path}#{student_id}/payments?auth_token=#{api_key}"
-    return oa_answer( url, options )
-  end
-  alias_method :payments, :payments_by_id
-
-
+module Utilities
+  # UTILITIES
+  ###########
+  
   # STUDENT FULL RECORD AND PAYMENTS COMBINED
   ###########################################
 
@@ -68,15 +29,25 @@ module Get
   #       payments: [ {} ]   # all payments made via openapply
   #     }
   #   }
-  def student_details_by_id(id, flatten_keys=[], reject_keys=[], get_payments=true)
+  def get_one_student_details_by_id(id, options={} )
+    # flatten_keys=[], reject_keys=[], get_payments=true)
+    # reject_keys    = []     if options.nil? and options.empty?
+    # flatten_keys   = []     if options.nil? and options.empty?
+    # get_payments   = false  if options.nil? and options.empty?
+    #
+    # reject_keys  ||= []     if reject_keys.nil?
+    # flatten_keys ||= []     if flatten_keys.nil?
+    #
+    # check = check_details_keys_validity(flatten_keys, reject_keys)
+    # return check     unless check.nil? # or check[:error].nil?
 
-    check = check_details_keys_validity(flatten_keys, reject_keys)
-    return check     unless check.nil? # or check[:error].nil?
+    get_payments = options[:get_payments] unless options.nil? or options.empty?
+    get_payments ||= false  if get_payments.nil?
 
     # get full student record and guardian information
-    student_info = student_by_id( "#{id}" )
+    student_info = get_one_student_record_by_id( "#{id}" )
     # get student payment records
-    payment_info = payments_by_id( "#{id}" )     if get_payments.eql? true
+    payment_info = get_one_student_payments_by_id( "#{id}" )if get_payments.eql? true
 
     # be sure there is student data to process -- if not return an empty record
     return {student: {id: id, empty: []}}        if student_info.nil? or
@@ -120,10 +91,8 @@ module Get
               }
             }
   end
-  alias_method :student_details, :student_details_by_id
-
-  # UTILITIES
-  ###########
+  alias_method :student_details,       :get_one_student_details_by_id
+  alias_method :student_details_by_id, :get_one_student_details_by_id
 
   # return value & remove linebreaks & trim spaces (if a string)
   def clean_data( value )

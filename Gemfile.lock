@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openapply (0.2.10)
+    openapply (0.3.0)
       httparty (~> 0.15)
       json (~> 2.1)
       net-scp (~> 1.2)

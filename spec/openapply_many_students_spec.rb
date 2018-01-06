@@ -1,6 +1,3 @@
-# require 'csv'
-# require 'roo'
-# require 'axlsx'
 require 'spec_helper'
 require 'webmock/rspec'
 
@@ -223,255 +220,113 @@ RSpec.describe Openapply do
                       body: SpecData::STATUS_APPLIED_PAGES_ALL_HASH.to_json)
   end
 
-  context "student_summary hash into an array" do
-    it "converts an student summary hash into an array with keys" do
-      student_keys  = [:id, :name, :gender]
-      students_hash = SpecData::STATUS_5_APPLIED_RECORDS_HASH
-      test_answer   = @oa.students_hash_to_array(students_hash, student_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_5_SUMMARY_ARRAY
+  context "test the student summary api call" do
+    before(:each) do
+      allow(@oa).to receive(:api_records) { 3 }
+    end
+    # https://demo.openapply.com//api/v1/students?status=applied&count=3&auth_token=demo_site_api_key
+    it "oa_api_call - get the first page students who are in applied" do
+      test_answer = @oa.oa_api_call(@url_status_summary_p_1).response.body
+      expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_1_TEXT
+    end
+    # https://demo.openapply.com//api/v1/students?status=applied&since_id=240&count=3&auth_token=demo_site_api_key
+    it "oa_api_call - get the second page students who are in applied" do
+      test_answer = @oa.oa_api_call(@url_status_summary_p_2).response.body
+      expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_2_TEXT
+    end
+    # # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3&auth_token=demo_site_api_key
+    it "oa_api_call - get the last page of students who are in applied" do
+      test_answer = @oa.oa_api_call(@url_status_summary_p_3).response.body
+      expect(test_answer).to eq SpecData::STATUS_APPLIED_PAGE_3_TEXT
     end
   end
 
-  context "students_details into an array" do
-    it "convert a empty hash of students_details into an array - no keys" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_EMPTY
+  context "build correct urls for students summary queries" do
+    let(:correct_answer) { "#{@oa.api_path}?#{@placeholder}count=#{@oa.api_records}&auth_token=#{@oa.api_key}" }
+
+    it "builds a correct url with NO parameters" do
+      @placeholder = nil
+      test_answer  = @oa.students_query_url()
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a empty hash of students_details into an array" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      students_hash = {}
-      test_answer = @oa.students_hash_to_array(students_hash, student_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_EMPTY
+    it "builds a correct url based on date" do
+      # format: YYYY-MM-DD -- not yet 2013-09-25 02:10:39
+      since_date   = Date.today - 2
+      @placeholder = "since_date=#{since_date}&"
+      test_answer  = @oa.students_query_url(nil,nil,since_date)
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a empty hash of students_details into an array with 2 guardian headers" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      # get first two parents
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_RENTS_EMPTY
+    it "builds a correct url based on status" do
+      status       = 'applied'
+      @placeholder = "status=#{status}&"
+      test_answer  = @oa.students_query_url(status)
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a empty hash of students_details into an array with 2 payment headers" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys = [:id, :name]
-      # get max number of parent records
-      payment_keys = { count: 2, keys: [:invoice_number, :amount] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_PAY_EMPTY
+    it "builds a correct url based on status & since_id" do
+      status       = 'applied'
+      since_id     = '95'
+      @placeholder = "status=#{status}&since_id=#{since_id}&"
+      test_answer  = @oa.students_query_url(status,since_id)
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a empty hash of students_details into an array wo kid keys, but guardian and payment keys" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      # student_keys = [:id, :name]
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
-      student_hash = {}
-      test_answer = @oa.students_hash_to_array(student_hash, nil, guardian_keys, payment_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_KIDS_KEYS_EMPTY
+    it "builds a correct url based on status & date" do
+      status       = 'applied'
+      since_date   = '2017-11-01'
+      @placeholder = "status=#{status}&since_date=#{since_date}&"
+      test_answer  = @oa.students_query_url(status,nil,since_date)
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a hash of students_details into an array - just kid names" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
-      test_answer = @oa.students_hash_to_array(student_hash, student_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS
+    it "builds a correct url based on status & date" do
+      status       = 'applied'
+      since_id     = '95'
+      since_date   = '2017-11-01'
+      @placeholder = "status=#{status}&since_id=#{since_id}&since_date=#{since_date}&"
+      test_answer  = @oa.students_query_url(status,since_id,since_date)
+      expect( test_answer ).to eq correct_answer
     end
-    it "convert a hash of students_details into an array - w kid names & ONE parent name" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_1_GUARDIAN
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
+  end
+
+  context "all_students_summaries - even with multiple pages" do
+    before(:each) do
+      @correct_ids = [95, 106, 240, 267, 268, 269, 270, 271]
     end
-    it "convert a hash of students_details into an array - w kid names & TWO parent records" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 2, keys: [:id, :name] }
-      # payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_2_GUARDIANS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment implied" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & ONE NEWEST payment - explicit" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_LAST_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & LAST TWO NEWEST payments" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_NEWEST_PAYMENTS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w kid names & TWO OLDEST payments" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      # guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 2, order: :oldest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_MULTI_PAYMENTS_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, nil, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_OLDEST_PAYMENTS
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "convert a hash of students_details into an array - w KID & PARENT & PAYMENTS" do
-      # allow(@oa).to receive(:api_records) { 10 }
-      student_keys  = [:id, :name]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      student_hash  = SpecData::STATUS_APPLIED_ALL_FLATTENED_HASH
-      test_answer   = @oa.students_hash_to_array(student_hash, student_keys, guardian_keys, payment_keys)
-      true_answer   = SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
-      # pp test_answer
-      expect( test_answer ).to eq true_answer
-    end
-    it "using a status return an array object" do
+    xit "can query for a single page of student summaries" do
       allow(@oa).to receive(:api_records) { 10 }
-      status = 'applied'
-      student_keys  = [:id, :name]
-      flatten_keys  = [:custom_fields]
-      reject_keys   = [:parent_guardian]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_status(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
-      # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ARRAY_POPULATED_KIDS_GUARDIAN_PAYMENT
+      test_answer = @oa.many_students_summaries_one_page( {status: 'applied'} )
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_PAGES_ALL_HASH
     end
-  end
-
-  # probably not necessary since statuses to hashes work
-  context "multiple statuses tests" do
-    it "using two status return an array object" do
+    it "gets all pages when of a given status" do
+      allow(@oa).to receive(:api_records) { 3 }
+      test_answer = @oa.all_students_summaries( {status: 'applied'} )
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_COLLECTED_HASH
+    end
+    it "gets all pages when of a bad status" do
       allow(@oa).to receive(:api_records) { 5 }
-      status = ['applied','enrolled']
-      student_keys  = [:id, :name]
-      flatten_keys  = [:custom_fields]
-      reject_keys   = [:parent_guardian]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      test_answer = @oa.all_students_summaries( {status: 'bad'} )
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+      expect( test_answer ).to eq( {students: []} )
     end
-    it "using multiple good and a bad status return an array object" do
+  end
+
+  context "multiple status tests" do
+    it "gets the right list of ids with two statuses" do
       allow(@oa).to receive(:api_records) { 5 }
-      status = ['applied','bad','enrolled']
-      student_keys  = [:id, :name]
-      flatten_keys  = [:custom_fields]
-      reject_keys   = [:parent_guardian]
-      guardian_keys = { count: 1, keys: [:id, :name] }
-      payment_keys  = { count: 1, order: :newest, keys: [:invoice_number, :amount] }
-      test_answer   = @oa.students_as_array_by_statuses(status, flatten_keys, reject_keys, student_keys, guardian_keys, payment_keys)
+      # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+      test_answer = @oa.all_students_summaries({status: ['applied','enrolled']})
       # pp test_answer
-      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ENROLLED_ARRAY
+      # correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+      correct_ans = SpecData::STATUS_APPLIED_ENROLLED_HASH
+      expect( test_answer ).to eq correct_ans
     end
-  end
-
-
-  context "students_as_array_by_status - error gracefully" do
-    it "when given invalid flatten_keys - non-arrary" do
-      test_answer = @oa.students_as_array_by_status('applied',:custom_fields,[:parent_guardian])
+    it "gets the right list of ids with three statuses (one bad status - accepted)" do
+      allow(@oa).to receive(:api_records) { 5 }
+      # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
+      test_answer = @oa.all_students_summaries({status: ['applied','bad','enrolled']})
       # pp test_answer
-      expect( test_answer ).to eq({error: "invalid flatten_keys - need array"})
-    end
-    it "when given invalid reject_keys - non-array" do
-      test_answer = @oa.students_as_array_by_status('applied',[:custom_fields],:parent_guardian)
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid reject_keys - need array"})
-    end
-    it "when given invalid flatten_keys - strings" do
-      test_answer = @oa.students_as_array_by_status('applied',['custom_fields'],[:parent_guardian])
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid flatten_keys - use symbols"})
-    end
-    it "when given invalid reject_keys - strings" do
-      test_answer = @oa.students_as_array_by_status('applied',[:custom_fields],['parent_guardian'])
-      # pp test_answer
-      expect( test_answer ).to eq({error: "invalid reject_keys - use symbols"})
-    end
-  end
-
-  context "students_hash_to_array handles bad headers - gracefully and errors" do
-    it "with bad students_hash_to_array - not an array" do
-      test_answer = @oa.students_hash_to_array({},:id)
-      expect( test_answer ).to eq({error: "invalid student_keys - need array"})
-    end
-    it "with bad student_keys - uses strings not symbols" do
-      test_answer = @oa.students_hash_to_array({},['id'])
-      expect( test_answer ).to eq({error: "invalid student_keys - use symbols"})
-    end
-    it "with bad guardian_info - not using hash" do
-      test_answer = @oa.students_hash_to_array({},[],:id)
-      expect( test_answer ).to eq({error: "invalid guardian_info - use hash"})
-    end
-    it "with bad guardian_keys - only count given" do
-      test_answer = @oa.students_hash_to_array({},[],{count: 1})
-      expect( test_answer ).to eq({error: "invalid guardian_keys - keys missing"})
-    end
-    it "with bad guardian_keys - not an array" do
-      test_answer = @oa.students_hash_to_array({},[],{keys: :id})
-      expect( test_answer ).to eq({error: "invalid guardian_keys - need array"})
-    end
-    it "with bad guardian_keys - uses strings not symbols" do
-      test_answer = @oa.students_hash_to_array({},[],{keys: ['id']})
-      expect( test_answer ).to eq({error: "invalid guardian_keys - use symbols"})
-    end
-    it "with bad payment_keys - not using a hash" do
-      test_answer = @oa.students_hash_to_array({},[],{},:id)
-      expect( test_answer ).to eq({error: "invalid payment_info - use hash"})
-    end
-    it "with bad payment_keys - only count given" do
-      test_answer = @oa.students_hash_to_array({},[],{},{count: 1})
-      expect( test_answer ).to eq({error: "invalid payment_keys - keys missing"})
-    end
-    it "with bad payment_keys - not an array" do
-      test_answer = @oa.students_hash_to_array({},[],{},{keys: :id})
-      expect( test_answer ).to eq({error: "invalid payment_keys - need array"})
-    end
-    it "with bad payment_keys - uses strings not symbols" do
-      test_answer = @oa.students_hash_to_array({},[],{},{keys: ['id']})
-      expect( test_answer ).to eq({error: "invalid payment_keys - use symbols"})
+      # correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
+      correct_ans = SpecData::STATUS_APPLIED_ENROLLED_HASH
+      expect( test_answer ).to eq correct_ans
     end
   end
 
