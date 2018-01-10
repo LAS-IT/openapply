@@ -1,0 +1,15 @@
+collectors:
+
+- type: ruby-bundler
+  path: examples/demo
+  actors:
+  # pull requests for all major, minor, and patch updates
+  - type: ruby-bundler
+    versions: "Y.Y.Y"
+
+- type: ruby-bundler
+  path: /
+  actors:
+  # pull requests for all major, minor, and patch updates
+  - type: ruby-bundler
+    versions: "Y.Y.Y"
