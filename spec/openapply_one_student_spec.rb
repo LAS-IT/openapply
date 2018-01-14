@@ -45,23 +45,23 @@ RSpec.describe Openapply do
   end
 
   context "get individual student info" do
-    it "student_by_id - sends the correct URL to oa_answer" do
-      expect(@oa.student_by_id(106)).to eq SpecData::STUDENT_106_RECORD_HASH
+    it "one_student_record_by_id - sends the correct URL to oa_answer" do
+      expect(@oa.one_student_record_by_id(106)).to eq SpecData::STUDENT_106_RECORD_HASH
     end
-    it "payments_by_id - sends the correct URL to oa_answer" do
-      expect(@oa.payments_by_id(106)).to eq SpecData::STUDENT_106_PAYMENTS_HASH
+    it "one_student_payments_by_id - sends the correct URL to oa_answer" do
+      expect(@oa.one_student_payments_by_id(106)).to eq SpecData::STUDENT_106_PAYMENTS_HASH
     end
   end
 
   context "join one student record with one student payments" do
-    it "student_details_by_id - kid 106 w/payments -- as is" do
-      test_answer = @oa.student_details_by_id(106)
+    it "one_student_details_by_id - kid 106 w/payments -- as is" do
+      test_answer = @oa.one_student_details_by_id(106)
       # pp test_answer
       expect( test_answer ).to eq SpecData::STUDENT_106_DETAILS_HASH
     end
-    it "student_details_by_id - kid 106 -- sends back all kid data except payment info" do
-      # test_answer = @oa.student_details_by_id(106,[],[],false)
-      test_answer = @oa.student_details_by_id(106,{get_payments: false})
+    it "one_student_details_by_id - kid 106 -- sends back all kid data except payment info" do
+      # test_answer = @oa.one_student_details_by_id(106,[],[],false)
+      test_answer = @oa.one_student_details_by_id(106,{get_payments: false})
       # pp test_answer
       expect( test_answer ).to eq SpecData::STUDENT_106_DETAILS_NO_PAYMENTS_HASH
     end

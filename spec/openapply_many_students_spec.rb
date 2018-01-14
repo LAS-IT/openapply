@@ -246,34 +246,35 @@ RSpec.describe Openapply do
 
     it "builds a correct url with NO parameters" do
       @placeholder = nil
-      test_answer  = @oa.students_query_url()
+      test_answer  = @oa.url_for_many_students_summaries()
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on date" do
       # format: YYYY-MM-DD -- not yet 2013-09-25 02:10:39
       since_date   = Date.today - 2
+      # since_date   = Time.zone.today - 2
       @placeholder = "since_date=#{since_date}&"
-      test_answer  = @oa.students_query_url(nil,nil,since_date)
+      test_answer  = @oa.url_for_many_students_summaries(nil,nil,since_date)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status" do
       status       = 'applied'
       @placeholder = "status=#{status}&"
-      test_answer  = @oa.students_query_url(status)
+      test_answer  = @oa.url_for_many_students_summaries(status)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & since_id" do
       status       = 'applied'
       since_id     = '95'
       @placeholder = "status=#{status}&since_id=#{since_id}&"
-      test_answer  = @oa.students_query_url(status,since_id)
+      test_answer  = @oa.url_for_many_students_summaries(status,since_id)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & date" do
       status       = 'applied'
       since_date   = '2017-11-01'
       @placeholder = "status=#{status}&since_date=#{since_date}&"
-      test_answer  = @oa.students_query_url(status,nil,since_date)
+      test_answer  = @oa.url_for_many_students_summaries(status,nil,since_date)
       expect( test_answer ).to eq correct_answer
     end
     it "builds a correct url based on status & date" do
@@ -281,7 +282,7 @@ RSpec.describe Openapply do
       since_id     = '95'
       since_date   = '2017-11-01'
       @placeholder = "status=#{status}&since_id=#{since_id}&since_date=#{since_date}&"
-      test_answer  = @oa.students_query_url(status,since_id,since_date)
+      test_answer  = @oa.url_for_many_students_summaries(status,since_id,since_date)
       expect( test_answer ).to eq correct_answer
     end
   end

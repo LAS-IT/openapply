@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/btihen/openapply.svg?branch=master)](https://travis-ci.org/btihen/openapply)  [![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply)  [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)
+[![Build Status](https://travis-ci.org/btihen/openapply.svg?branch=master)](https://travis-ci.org/btihen/openapply)  [![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply)  [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock) [![Code Quality](https://bettercodehub.com/edge/badge/btihen/shop?branch=master)](https://bettercodehub.com/) [![Coverage Status](https://coveralls.io/repos/github/btihen/openapply/badge.svg?branch=master)](https://coveralls.io/github/btihen/openapply?branch=master)
 
 
 
@@ -212,45 +212,6 @@ Associates the above settings with HTTParty
 #   }
 # }
 
-
-@oa.many_students_summaries_one_page({status: 'applied'})
-# summaries - return format:
-# { :students=>
-#   [
-#     { :id=>489484,
-#       :parent_ids=>[674385, 681019]
-#     },
-#     { :id=>490962,
-#       :parent_ids=>[683048, 691509]
-#     }
-#   ]
-#   linked: {
-#     parents: [
-#       { id: 675172,
-#         custom_fields: {
-#           country_of_residence: null
-#         } },
-#       { id: 696643,
-#         custom_fields: {
-#           country_of_residence: null
-#         } },
-#       { id: 674385,
-#         custom_fields: {
-#           country_of_residence: null
-#         }
-#       },
-#       { id: 681019,
-#         custom_fields: {
-#           mobile_phone: "+86 136 0168 8879"
-#         }
-#       }
-#     ]
-#   }
-#   meta: {
-#     pages: 65,
-#     per_page: "5"
-#   }
-# }
 
 # student summaries of a given status (recursively if more than on page)
 @oa.all_students_summaries({status: 'applied'})

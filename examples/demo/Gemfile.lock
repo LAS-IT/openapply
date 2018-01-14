@@ -8,7 +8,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.2.0)
-    openapply (0.2.4)
+    openapply (0.3.0)
       httparty (~> 0.15)
       json (~> 2.1)
       net-scp (~> 1.2)
@@ -18,7 +18,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  openapply (~> 0.2)
+  openapply (~> 0.3)
 
 BUNDLED WITH
-   1.16.0
+   1.16.1

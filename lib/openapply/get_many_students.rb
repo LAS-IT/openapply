@@ -29,13 +29,13 @@ module Get
     students      = []
     guardians     = []
 
-    count         = api_records()
-    count         = options[:count]       unless options[:count].nil? or
+    count         = options[:count].to_i  unless options[:count].nil? or
                                                   options[:count].empty?
-    count         = 1                     unless count.to_s.to_i >= 1
+    count       ||= api_records()
+    count         = api_records()         unless count.to_s.to_i >= 1
 
     since_date    = nil
-    since_date    = options[:since_date]  unless options[:since_date].nil? or
+    since_date    = options[:since_date].to_s unless options[:since_date].nil? or
                                                   options[:since_date].empty?
     statuses      = nil
     statuses      = options[:status]      unless options[:status].nil? or
@@ -43,17 +43,18 @@ module Get
     statuses      = [statuses]                if statuses.is_a? String
 
     statuses.each do |status|
-      # these values need to be reset status for each loop
+      # these values need to be reset for each status loop
       page_number   = nil
       since_id      = nil
-      since_id      = options[:since_id]    unless options[:since_id].nil? or
-                                                    options[:since_id].empty?
-      # loop until all records at a given status (page_number == 1)
+      since_id      = options[:since_id]  unless options[:since_id].nil? or
+                                                  options[:since_id].empty?
+
+      # loop until all pages recieved
       while  page_number.nil? or page_number > 1
         url = url_for_many_students_summaries(status, since_id, since_date, count)
         answer        = oa_answer( url )
-        return { error: "no answer" }         if answer.nil?
-        break                                 if answer[:students].empty?
+        break        if answer.nil? or answer[:students].empty?
+
         students     += answer[:students]
         guardians    += answer[:linked][:parents]
 
@@ -93,7 +94,7 @@ module Get
 
     return "#{api_path}?#{url_options.join('&')}"
   end
-  alias_method :students_custom_url, :url_for_many_students_summaries
-  alias_method :students_query_url,  :url_for_many_students_summaries
+  # alias_method :students_custom_url, :url_for_many_students_summaries
+  # alias_method :students_query_url,  :url_for_many_students_summaries
 
 end

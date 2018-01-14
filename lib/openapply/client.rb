@@ -66,7 +66,8 @@ module Openapply
       times_retried = 0
       begin
         self.class.get(url, options)
-      rescue Net::ReadTimeout, Net::OpenTimeout => error
+      # rescue Net::ReadTimeout, Net::OpenTimeout => error
+      rescue Net::ReadTimeout, Net::OpenTimeout
         if times_retried < max_retries
           times_retried += 1
           # puts "TIMEOUT RETRY: #{times_retried} of #{max_retries} - USING: #{url.inspect}"
@@ -93,8 +94,8 @@ module Openapply
       return { error: 'bad url - has space' } if url.include? " "
       return { error: 'bad api_path' }    unless url.include? "#{api_path}"
       return { error: 'bad auth_token' }  unless url.include? "auth_token=#{api_key}"
-      api_answer = nil
 
+      # api_answer = nil
       api_answer = oa_api_call(url, options)
 
       return api_answer               unless api_answer.respond_to? "response" # and not api_answer[:error].nil?

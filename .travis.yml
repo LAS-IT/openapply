@@ -1,14 +1,12 @@
 sudo: false
-
 language: ruby
-
 branches:
   only:
   - master
   - staging
-
 rvm:
-  - 2.4.2
-
+- 2.5.0
 before_install: gem install bundler -v 1.16.0
-# before_install: gem install bundler -v 1.15.4
+env:
+  global:
+    secure: IVOwOQStCtCmZBLQszuNwWyYUapjAc3eNOH4trC/hNoYrrtse+WT2c4fRbvL3dFt+Iu/hFxVmtS9Gefmidfp0vCRLm/tPiL2Qsq97brZgb1oekcYx0QlelwXEk76QekIc9RXRle/UZArH+XLcsYzgW2mCVqe6IHElqQAilleu7B5yxtyor/Z+zMfi2d6qYJDMYockISlcmBG1ydshRqrh6sYXCeQutXdPKz1OBuSzwTiz2YcZfVV6SIqkavn6KfQCIQJNBCEU93i54i9f8IV1qrtYLMUfEV4Fah/MT5VGOGH4kNG5OTGna++oqrA9wXRZxPuEX/5e4kELxzg775Wvn9Jfq/NAZVVC63Uk84cags9yp98x0p1Le+JWunQNV1FMb4iuK7wnI07iT1VCtweiPZ6zobW50IyjOS3teyElikBF+j46x63vLNMmzlUU7VkYXTorfr/EOX6v4Pwkgde+b4SIvCemq0pYEahxumY+z6QFbHkvJ7xXiV5n5TLtI1WaLiB/X95X+gF3DUALf3CBgj5rx6cIIgTb5nON8OGYKVo6Oym2VvoSXiCRo2eFjQxtt5fT0AGvDPDg8AlsA+sMR9ISOk2xEkKEM9YG8XIwlQPctZdNHXLlq/rgRuQVvCjlDpbGL202Nw6LGav+dIrnnuGfCIyASC8pAALvmz5ZWw=

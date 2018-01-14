@@ -40,7 +40,7 @@ module Get
                                                   student_info[:student].empty?
     student = []
     # extract the student info
-    student = student_info[:student]
+    student = student_info[:student]       unless student_info[:student].nil?
 
     guardians = []
     # extract guardian information
@@ -63,8 +63,8 @@ module Get
               }
             }
   end
-  alias_method :student_details,       :one_student_details_by_id
-  alias_method :student_details_by_id, :one_student_details_by_id
+  # alias_method :student_details,       :one_student_details_by_id
+  # alias_method :one_student_details_by_id, :one_student_details_by_id
 
   # ONE STUDENT RECORD
   #####################
@@ -82,8 +82,8 @@ module Get
     url = "#{api_path}#{id}?auth_token=#{api_key}"
     return oa_answer( url, options )
   end
-  alias_method :student,       :one_student_record_by_id
-  alias_method :student_by_id, :one_student_record_by_id
+  # alias_method :student,       :one_student_record_by_id
+  # alias_method :student_by_id, :one_student_record_by_id
 
 
   # ONE STUDENT PAYMENT INFO
@@ -102,7 +102,7 @@ module Get
     url = "#{api_path}#{id}/payments?auth_token=#{api_key}"
     return oa_answer( url, options )
   end
-  alias_method :payments,       :one_student_payments_by_id
-  alias_method :payments_by_id, :one_student_payments_by_id
+  # alias_method :payments,       :one_student_payments_by_id
+  # alias_method :payments_by_id, :one_student_payments_by_id
 
 end

@@ -57,7 +57,7 @@ RSpec.describe Openapply do
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
-      test_ans = @oa.student_by_id(95)
+      test_ans = @oa.one_student_record_by_id(95)
       # pp test_ans
       expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
     end
@@ -69,7 +69,7 @@ RSpec.describe Openapply do
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
-      test_ans = @oa.student_by_id(95)
+      test_ans = @oa.one_student_record_by_id(95)
       expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
     end
     it "returns an error after three timeouts" do
@@ -80,8 +80,8 @@ RSpec.describe Openapply do
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
-      test_ans  = @oa.student_by_id(95)
-      error_ans = { error: "SITE TIMEOUT - 3 Consecutive FAILURES"  }
+      test_ans  = @oa.one_student_record_by_id(95)
+      # error_ans = { error: "SITE TIMEOUT - 3 Consecutive FAILURES"  }
       expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
     end
     it "returns an error after three timeouts" do
@@ -92,7 +92,7 @@ RSpec.describe Openapply do
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
-      test_ans  = @oa.student_by_id(95)
+      test_ans  = @oa.one_student_record_by_id(95)
       error_ans = { error: "no response (timeout) from URL: #{@url_kid_95}" }
       expect( test_ans ).to eql( error_ans )
     end
