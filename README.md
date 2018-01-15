@@ -15,7 +15,7 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-[Change Log for this project](https://github.com/[USERNAME]/openapply/blob/master/CHANGE_LOG.md)
+[Change Log for this project](https://github.com/btihen/openapply/blob/master/CHANGE_LOG.md)
 
 
 ### Installation
@@ -248,4 +248,4 @@ The gem is available as open source under the terms of the [MIT License](http://
 
 ## Code of Conduct
 
-Everyone interacting in the Openapply project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/openapply/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Openapply project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/btihen/openapply/blob/master/CODE_OF_CONDUCT.md).
