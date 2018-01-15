@@ -21,7 +21,7 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### CHANGE LOG
 
-[Change Log for this project](/CHANGE_LOG.md)
+[Change Log for this project](https://github.com/LAS-IT/openapply/CHANGE_LOG.md)
 
 
 ### Installation
