@@ -2,7 +2,6 @@
 
 
 
-
 # Openapply
 
 This gem allows ruby access to the OpenApply API v1 - and supports the GET features described at: https://dev.faria.co/oa
@@ -10,18 +9,13 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* allow flattening to work with arrays?
-* allow flattening and reject to work at 2 levels of depth?
-* make tests for scp / ssh (at least data type conversions)?
-* write PUTS methods - *currently api only allows status update*
-* write a recursive custom query - when results are more than one page
-* allow flattening and reject to work at any depth (with recursion)?
-* speed up response when returning large number of records? - **looks like API**
+* write **PUTS** methods - *currently api only allows status update*
+* **API** speed problem when returning large number of records
 
 
 ### CHANGE LOG
 
-[Change Log for this project](https://github.com/LAS-IT/openapply/CHANGE_LOG.md)
+[Change Log for this project](https://github.com/[USERNAME]/openapply/blob/master/CHANGE_LOG.md)
 
 
 ### Installation
