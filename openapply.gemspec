@@ -7,14 +7,14 @@ Gem::Specification.new do |spec|
   spec.name          = "openapply"
   spec.version       = Openapply::VERSION
   spec.authors       = ["Bill Tihen"]
-  spec.email         = ["btihen@gmail.com"]
+  spec.email         = ["btihen@las.ch"]
 
   spec.summary       = %q{Access OpenApply's API with Ruby}
   spec.description   = %q{Access to OpenApply's API and extra utilities that
                           accomplish common needs -- such as recursively query
                           for all students of a given status or change-date
                           until all needed records are recieved.}
-  spec.homepage      = "https://github.com/btihen/openapply"
+  spec.homepage      = "https://github.com/las-it/openapply"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
@@ -30,7 +30,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "net-scp", "~> 1.2"
   #
   # spec.add_development_dependency "simplecov", "~> 0.15"
-  # spec.add_development_dependency 'coveralls', "~> 0.8"
   spec.add_development_dependency 'codacy-coverage', '~> 1.1'
   spec.add_development_dependency "webmock", "~> 3.2"
   spec.add_development_dependency "bundler", "~> 1.15"

@@ -216,7 +216,7 @@ Associates the above settings with HTTParty
 
 
 # student summaries of a given status (recursively if more than on page)
-@oa.all_students_summaries({status: 'applied'})
+@oa.many_students_summaries({status: 'applied'})
 # summaries - return format:
 # { :students=>
 #   [
@@ -266,7 +266,7 @@ Associates the above settings with HTTParty
 # status='applied' & enrolled, student_ids after=106,
 # updated_after '2017-11-12', records returned per query 25
 # (I've had problems when using more than 50 - openapply gets very slow)
-@oa.all_students_summaries({status: ['applied','enrolled'], since_id: 106,
+@oa.many_students_summaries({status: ['applied','enrolled'], since_id: 106,
                             since_date: '2017-11-12', count: 25})
 ```
 

@@ -1,5 +1,45 @@
 module Get
 
+  def many_student_details_by_ids( ids, options={} )
+    return {error: 'no ids provided'} if ids.nil? or ids.empty?
+    students  = []
+    guardians = []
+    ids = [ids]     unless ids.is_a? Array
+    ids.each do |id|
+      response = one_student_details_by_id( id, options )
+      # pp response
+      students  << response[:student]
+      guardians << response[:guardians]
+      # guardians << response[:student][:record][:custom_fields][:parent_guardian]
+    end
+    return  {
+              students: students,
+              guardians: guardians,
+            }
+  end
+
+
+  def many_student_ids( params={} )
+    response = many_students_summaries( params )
+    ids = response[:students].map{ |kid| kid[:id] }
+    { ids: ids }
+  end
+
+
+  def many_ids_updated_at( params={} )
+    response = many_students_summaries( params )
+    kids  = response[:students].map{ |kid| {kid[:id] => kid[:updated_at]} }
+    rents = response[:guardians].map{ |rent| {rent[:id] => rent[:updated_at]} }
+    { ids_updated_at:
+      {
+        students: kids,
+        guardians: rents,
+      }
+    }
+  end
+
+
+
   # Executes a custom query - recursively to get all students summaries
   # matching the given criteria
   #
@@ -22,32 +62,24 @@ module Get
   #      { student summary data from openapply api },
   #    ]
   #  }
-  def all_students_summaries( options={} )
+  def many_students_summaries( params={} )
     # status=nil,since_id=nil,since_date=nil,count=api_records)
-    return {error: 'no query provided'} if options.empty?
+    return {error: 'no query provided'} if params.empty?
 
     students      = []
     guardians     = []
 
-    count         = options[:count].to_i  unless options[:count].nil? or
-                                                  options[:count].empty?
+    count         = params[:count]
     count       ||= api_records()
-    count         = api_records()         unless count.to_s.to_i >= 1
-
-    since_date    = nil
-    since_date    = options[:since_date].to_s unless options[:since_date].nil? or
-                                                  options[:since_date].empty?
-    statuses      = nil
-    statuses      = options[:status]      unless options[:status].nil? or
-                                                  options[:status].empty?
-    statuses      = [statuses]                if statuses.is_a? String
-
+    since_date    = params[:since_date]
+    statuses      = params[:status]
+    statuses      = [statuses]          if not statuses.nil? and
+                                                statuses.is_a? String
     statuses.each do |status|
+
       # these values need to be reset for each status loop
       page_number   = nil
-      since_id      = nil
-      since_id      = options[:since_id]  unless options[:since_id].nil? or
-                                                  options[:since_id].empty?
+      since_id      = params[:since_id]
 
       # loop until all pages recieved
       while  page_number.nil? or page_number > 1

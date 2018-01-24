@@ -55,12 +55,14 @@ module Get
     payments = payment_info[:payments].dup unless payment_info.nil? or
                                                   payment_info[:payments].nil?
     # organize the student details
-    return { student:
-              { id: id,
-                record: student,
-                payments: payments,
-                guardians: guardians,
-              }
+    return  {
+              student:
+                { id: id,
+                  record: student,
+                  payments: payments,
+                  # guardians: guardians,
+                },
+              guardians: guardians,
             }
   end
   # alias_method :student_details,       :one_student_details_by_id

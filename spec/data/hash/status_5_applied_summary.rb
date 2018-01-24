@@ -2,8 +2,7 @@ module SpecData
 
   # https://demo.openapply.com/api/v1/students/?status=applied&count=5&auth_token=demo_site_api_key
   STATUS_5_ALL_APPLIED_SUMMARIES_HASH =
-  {
-    :students=>
+  {:students=>
     [
       {:id=>95,
       :serial_number=>85,
