@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/LAS-IT/openapply.svg?branch=master)](https://travis-ci.org/LAS-IT/openapply)  [![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply)  [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)  [![Code Quality](https://bettercodehub.com/edge/badge/btihen/shop?branch=master)](https://bettercodehub.com/)  [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=btihen/openapply&amp;utm_campaign=Badge_Grade)  [![Codacy Coverage](https://api.codacy.com/project/badge/Coverage/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&utm_medium=referral&utm_content=btihen/openapply&utm_campaign=Badge_Coverage)   
+[![Build Status](https://travis-ci.org/btihen/openapply.svg?branch=master)](https://travis-ci.org/btihen/openapply)  [![Dependency Status](https://beta.gemnasium.com/badges/github.com/btihen/openapply.svg)](https://beta.gemnasium.com/projects/github.com/btihen/openapply)  [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)    [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=btihen/openapply&amp;utm_campaign=Badge_Grade)  [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&utm_medium=referral&utm_content=btihen/openapply&utm_campaign=Badge_Coverage)   [![Code Quality](https://bettercodehub.com/edge/badge/btihen/shop?branch=master)](https://bettercodehub.com/)  [![Coverage Status](https://coveralls.io/repos/github/btihen/openapply/badge.svg?branch=master)](https://coveralls.io/github/btihen/openapply?branch=master)
+
 
 
 
@@ -9,13 +10,10 @@ This gem allows ruby access to the OpenApply API v1 - and supports the GET featu
 
 ### Still TODO
 
-* write **PUTS** methods - *currently api only allows status update*
-* **API** speed problem when returning large number of records
-
 
 ### CHANGE LOG
 
-[Change Log for this project](https://github.com/btihen/openapply/blob/master/CHANGE_LOG.md)
+[Change Log](https://github.com/btihen/openapply/blob/master/CHANGE_LOG.md)
 
 
 ### Installation
@@ -92,130 +90,23 @@ Associates the above settings with HTTParty
 @oa.api_timeout
 @oa.api_records
 
+# Summary calls:
+# options={status:'applied', since_id: 95, since_date: '2018-01-20', count: 50}
+@oa.many_student_ids( params={} )
+@oa.many_ids_updated_at( params={} )
+@oa.many_students_summaries( params={} )
+#
+# Details calls:
+# options={get_payments: false}
+@oa.many_student_details_by_ids( ids, options={} )
+@oa.one_student_details_by_id( id, options={} )
+
 # directly call against the OA API
 @oa.oa_api_call('/api/v1/students/?status=accepted&count=5&auth_token=add_api_key')
 
 # Individual student record (note: yes the parent info is dupblicated)
 @oa.student_by_id(95)
-# individual student payments
-# { student: {
-#   id: 106,
-#   status: "admitted",
-#   custom_fields: {
-#     language: "English",
-#     parent_guardian: [
-#       { id: 265,
-#         custom_fields: { title: "Director" }
-#       },
-#       { id: 266,
-#         custom_fields: { title: nil }
-#       }
-#    ],
-#   },
-#   parent_ids: [ 265, 266 ]
-#   },
-#   linked: {
-#     parents: [
-#       { id: 265,
-#         custom_fields: { title: "Director" }
-#       },
-#       { id: 266,
-#         custom_fields: { title: nil }
-#       }
-#     ]
-#   }
-# }
-
 @oa.payments_by_id(95)
-# format:
-# { payments:
-#   [
-#     { invoice_status: "Late",
-#       amount: "100.0",
-#     },
-#     { invoice_status: "On Time",
-#       amount: "120.0",
-#     }
-#   ]
-# }
-
-
-@oa.student_details_by_id(95)
-# details - return format:
-# { student:
-#   { id: aaa,                                        # student id
-#     record: {id: aaa, custom_fields: {bbb} },       # student record (no guardian info)
-#     guardians: [ {id: ccc, custom_fields: {ddd}},
-#                  {id: eee, custom_fields: {fff}} ], # guardian information
-#     payments:  [ {amount: ggg}, {amount: hhh} ]     # payments in openapply
-#   }
-# }
-# get individual student records & skip payment info (FASTER!)
-@oa.student_details_by_id(95, {get_payments: false})
-# details - return format:
-# { student:
-#   { id: aaa,                                        # student id
-#     record: {id: aaa, custom_fields: {bbb} },       # student record (no guardian info)
-#     guardians: [ {id: ccc, custom_fields: {ddd}},
-#                  {id: eee, custom_fields: {fff}} ], # guardian information
-#     payments:  [ ]                                  # skipped payments in openapply
-#   }
-# }
-
-
-# student summaries of a given status (recursively if more than on page)
-@oa.all_students_summaries({status: 'applied'})
-# summaries - return format:
-# { :students=>
-#   [
-#     { :id=>489484,
-#       ...
-#       :parent_ids=>[674385, 681019]
-#     },
-#     { :id=>490962,
-#       ...
-#       :parent_ids=>[683048, 691509]
-#     }
-#   ]
-#   guardians: [
-#     { id: 675172,
-#       ...
-#       custom_fields: {
-#         country_of_residence: null
-#         ...
-#       }
-#     },
-#     { id: 696643,
-#       ...
-#       custom_fields: {
-#         country_of_residence: null
-#         ...
-#       }
-#     },
-#     { id: 674385,
-#       ...
-#       custom_fields: {
-#         country_of_residence: null
-#         ...
-#       }
-#     },
-#     { id: 681019,
-#       ...
-#       custom_fields: {
-#         mobile_phone: "+86 136 0168 8879"
-#         ...
-#       }
-#     }
-#   ]
-# }
-
-
-# gets all student summaries matching the criteria
-# status='applied' & enrolled, student_ids after=106,
-# updated_after '2017-11-12', records returned per query 25
-# (I've had problems when using more than 50 - openapply gets very slow)
-@oa.all_students_summaries({status: ['applied','enrolled'], since_id: 106,
-                            since_date: '2017-11-12', count: 25})
 ```
 
 #### OpenApply's allowed statuses

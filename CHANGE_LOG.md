@@ -1,6 +1,7 @@
 ### Openapply CHANGE LOG
 
-* **v0.3.0** - NOT compatible with 0.2.x - 2018-01-??
+* **v0.3.0** - compatible with 0.3.x - 2018-01-29
+  - NOT compatible with 0.2.x
   - refactor to use options - simplify and improve usage
   - refactor to be more modular (usage will change)
 

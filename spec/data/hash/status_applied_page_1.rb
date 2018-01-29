@@ -2,7 +2,6 @@ module SpecData
 
   # https://demo.openapply.com//api/v1/students?status=applied&count=3&auth_token=demo_site_api_key"
   STATUS_APPLIED_PAGE_1_HASH = {
-
     students: [
         {
             id: 95,

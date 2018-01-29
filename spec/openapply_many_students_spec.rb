@@ -287,28 +287,76 @@ RSpec.describe Openapply do
     end
   end
 
-  context "all_students_summaries - even with multiple pages" do
-    # before(:each) do
-    #   @correct_ids = [95, 106, 240, 267, 268, 269, 270, 271]
-    # end
-    # it "can query for a single page of student summaries" do
-    #   allow(@oa).to receive(:api_records) { 10 }
-    #   test_answer = @oa.many_students_summaries_one_page( {status: 'applied'} )
-    #   pp test_answer
-    #   expect( test_answer ).to eq SpecData::STATUS_10_APPLIED_PAGES_ALL_HASH
-    # end
+  context "many_student_details_by_ids " do
+    before(:each) do
+      @ids = [95, 106, 240, 267, 268, 269, 270, 271]
+    end
+    it "can query for a single page of student summaries" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.many_student_details_by_ids( @ids )
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::IDS_10_DETAILED_RECORDS_W_PAYMENTS_HASH
+    end
+    it "can query for a single page of student summaries w/o payments" do
+      # allow(@oa).to receive(:api_records) { 10 }
+      test_answer = @oa.many_student_details_by_ids( @ids, {get_payments: false} )
+      # pp test_answer
+      expect( test_answer ).to eq SpecData::IDS_10_DETAILED_RECORDS_WO_PAYMENTS_HASH
+    end
+  end
+
+  context "many_students_summaries - recursive" do
     it "gets all pages when of a given status" do
       allow(@oa).to receive(:api_records) { 5 }
-      test_answer = @oa.all_students_summaries( {status: 'applied'} )
+      test_answer = @oa.many_students_summaries( {status: 'applied'} )
       # pp test_answer
       expect( test_answer ).to eq SpecData::STATUS_5_ALL_APPLIED_SUMMARIES_HASH
       # expect( test_answer ).to eq SpecData::STATUS_5_APPLIED_SUMMARY_HASH
     end
     it "gets all pages when of a bad status" do
       allow(@oa).to receive(:api_records) { 5 }
-      test_answer = @oa.all_students_summaries( {status: 'bad'} )
+      test_answer = @oa.many_students_summaries( {status: 'bad'} )
       # pp test_answer
       expect( test_answer ).to eq( { students: [], guardians: [] } )
+    end
+  end
+
+  context "many_student_ids" do
+    it "gets all ids of a given status" do
+      allow(@oa).to receive(:api_records) { 5 }
+      correct_answer = {ids: [95, 106, 240, 267, 268]}
+      test_answer = @oa.many_student_ids( {status: 'applied'} )
+      # pp test_answer
+      expect( test_answer ).to eq( correct_answer )
+      # expect( test_answer ).to eq SpecData::STATUS_5_APPLIED_SUMMARY_HASH
+    end
+    it "ids_updated_at" do
+      allow(@oa).to receive(:api_records) { 5 }
+      correct_answer =  { :ids_updated_at=>
+                          {
+                            :students=> [
+                              {95=>"2017-07-11T14:46:44.000+08:00"},
+                              {106=>"2017-10-30T13:06:18.000+08:00"},
+                              {240=>"2017-07-11T14:46:44.000+08:00"},
+                              {267=>"2017-07-11T14:46:44.000+08:00"},
+                              {268=>"2017-09-04T10:55:32.000+08:00"}
+                            ],
+                            :guardians=> [
+                              {492=>"2017-07-11T14:46:48.000+08:00"},
+                              {493=>"2017-07-11T14:46:48.000+08:00"},
+                              {265=>"2017-09-04T16:30:18.000+08:00"},
+                              {266=>"2017-09-01T12:04:26.000+08:00"},
+                              {408=>"2017-07-11T14:46:48.000+08:00"},
+                              {409=>"2017-07-11T14:46:48.000+08:00"},
+                              {504=>"2017-07-11T14:46:48.000+08:00"},
+                              {505=>"2017-07-11T14:46:48.000+08:00"},
+                              {506=>"2017-07-11T14:46:48.000+08:00"}
+                            ]
+                          }
+                        }
+      test_answer = @oa.many_ids_updated_at( {status: 'applied'} )
+      # pp test_answer
+      expect( test_answer ).to eq( correct_answer )
     end
   end
 
@@ -316,7 +364,7 @@ RSpec.describe Openapply do
     it "gets the right list of ids with two statuses" do
       allow(@oa).to receive(:api_records) { 5 }
       # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
-      test_answer = @oa.all_students_summaries({status:['applied','enrolled']})
+      test_answer = @oa.many_students_summaries({status:['applied','enrolled']})
       # pp test_answer
       # correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
       correct_ans = SpecData::STATUS_5_APPLIED_ENROLLED_SUMMARY_HASH
@@ -325,7 +373,7 @@ RSpec.describe Openapply do
     it "gets the right list of ids with three statuses (one bad status - accepted)" do
       allow(@oa).to receive(:api_records) { 5 }
       # test_answer = @oa.student_ids_by_status(['applied','enrolled'])
-      test_answer = @oa.all_students_summaries({status:['applied','bad','enrolled']})
+      test_answer = @oa.many_students_summaries({status:['applied','bad','enrolled']})
       # pp test_answer
       # correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
       correct_ans = SpecData::STATUS_5_APPLIED_ENROLLED_SUMMARY_HASH
