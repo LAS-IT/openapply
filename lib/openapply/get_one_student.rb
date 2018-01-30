@@ -60,7 +60,7 @@ module Get
                 { id: id,
                   record: student,
                   payments: payments,
-                  # guardians: guardians,
+                  guardians: guardians,
                 },
               guardians: guardians,
             }

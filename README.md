@@ -139,19 +139,19 @@ Associates the above settings with HTTParty
 @oa.student_by_id( id )
 @oa.payments_by_id( id )
 
-# Query many students by params:
-# params = {status: 'applied', since_id: 95, since_date: '2018-01-20', count: 50}
-@oa.many_student_ids( params )
-@oa.many_ids_updated_time( params )
-@oa.many_students_details( params )
-@oa.many_students_summaries( params )
-
 # Student Details by IDs:
 # id - student's record number
 # options = {get_payments: false}
 @oa.one_student_details_by_id( id, options={} )
 # ids - in array format
-@oa.many_student_details_by_ids( ids, options={} )
+@oa.many_students_details_by_ids( ids, options={} )
+
+# Query many students by params:
+# params = {status: 'applied', since_id: 95, since_date: '2018-01-20', count: 50}
+@oa.many_students_ids( params )
+@oa.many_ids_updated_time( params )
+@oa.many_students_summaries( params )
+@oa.many_students_details( params, options )
 
 # directly call the OA API - with custom URL
 @oa.oa_api_call('/api/v1/students/?status=accepted&count=5&auth_token=add_api_key')

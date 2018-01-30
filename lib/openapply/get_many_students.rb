@@ -1,12 +1,13 @@
 module Get
 
-  def many_student_details( params )
-    ids = many_student_ids( params )
-    return many_student_details_by_ids( ids )
+  def many_students_details( params, options={} )
+    ids = many_students_ids( params )
+    return {error: "need an array of ids"}          unless ids[:ids]
+    return many_students_details_by_ids( ids[:ids], options )
   end
 
 
-  def many_student_details_by_ids( ids, options={} )
+  def many_students_details_by_ids( ids, options={} )
     return {error: 'no ids provided'} if ids.nil? or ids.empty?
     students  = []
     guardians = []
@@ -24,7 +25,7 @@ module Get
   end
 
 
-  def many_student_ids( params )
+  def many_students_ids( params )
     response = many_students_summaries( params )
     ids = response[:students].map{ |kid| kid[:id] }
     { ids: ids }

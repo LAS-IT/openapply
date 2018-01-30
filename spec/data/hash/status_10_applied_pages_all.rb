@@ -4,8 +4,7 @@ module SpecData
   STATUS_10_APPLIED_PAGES_ALL_HASH =
   {
     students: [
-        {
-            id: 95,
+        {   id: 95,
             serial_number: 85,
             custom_id: "85",
             applicant_id: "00000085",
@@ -46,8 +45,7 @@ module SpecData
                 493
             ]
         },
-        {
-            id: 106,
+        {   id: 106,
             serial_number: 90,
             custom_id: "90",
             applicant_id: "00000090",
@@ -97,8 +95,7 @@ module SpecData
                 266
             ]
         },
-        {
-            id: 240,
+        {   id: 240,
             serial_number: 95,
             custom_id: nil,
             applicant_id: "00000095",
@@ -141,8 +138,7 @@ module SpecData
                 409
             ]
         },
-        {
-            id: 267,
+        {   id: 267,
             serial_number: 122,
             custom_id: "122",
             applicant_id: "00000122",
@@ -183,8 +179,7 @@ module SpecData
                 505
             ]
         },
-        {
-            id: 268,
+        {   id: 268,
             serial_number: 123,
             custom_id: "123",
             applicant_id: "00000123",
@@ -226,8 +221,7 @@ module SpecData
                 506
             ]
         },
-        {
-            id: 269,
+        {   id: 269,
             serial_number: 124,
             custom_id: "124",
             applicant_id: "00000124",
@@ -270,8 +264,7 @@ module SpecData
                 508
             ]
         },
-        {
-            id: 270,
+        {   id: 270,
             serial_number: 125,
             custom_id: "125",
             applicant_id: "00000125",
@@ -311,8 +304,7 @@ module SpecData
                 509
             ]
         },
-        {
-            id: 271,
+        {   id: 271,
             serial_number: 126,
             custom_id: "126",
             applicant_id: "00000126",

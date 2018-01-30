@@ -3,10 +3,8 @@ module SpecData
   # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3&auth_token=demo_site_api_key
   STATUS_APPLIED_PAGE_3_HASH =
   {
-
     students: [
-        {
-            id: 270,
+          { id: 270,
             serial_number: 125,
             custom_id: "125",
             applicant_id: "00000125",
@@ -45,9 +43,8 @@ module SpecData
             parent_ids: [
                 509
             ]
-        },
-        {
-            id: 271,
+          },
+          { id: 271,
             serial_number: 126,
             custom_id: "126",
             applicant_id: "00000126",
