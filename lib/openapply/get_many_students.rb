@@ -1,16 +1,21 @@
 module Get
 
+  def many_student_details( params )
+    ids = many_student_ids( params )
+    return many_student_details_by_ids( ids )
+  end
+
+
   def many_student_details_by_ids( ids, options={} )
     return {error: 'no ids provided'} if ids.nil? or ids.empty?
     students  = []
     guardians = []
-    ids = [ids]     unless ids.is_a? Array
+    ids       = [ids]     unless ids.is_a? Array
     ids.each do |id|
       response = one_student_details_by_id( id, options )
       # pp response
       students  << response[:student]
       guardians << response[:guardians]
-      # guardians << response[:student][:record][:custom_fields][:parent_guardian]
     end
     return  {
               students: students,
@@ -19,14 +24,14 @@ module Get
   end
 
 
-  def many_student_ids( params={} )
+  def many_student_ids( params )
     response = many_students_summaries( params )
     ids = response[:students].map{ |kid| kid[:id] }
     { ids: ids }
   end
 
 
-  def many_ids_updated_at( params={} )
+  def many_ids_updated_time( params )
     response = many_students_summaries( params )
     kids  = response[:students].map{ |kid| {kid[:id] => kid[:updated_at]} }
     rents = response[:guardians].map{ |rent| {rent[:id] => rent[:updated_at]} }
