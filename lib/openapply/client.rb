@@ -4,10 +4,6 @@ require "openapply/put"
 require 'httparty'
 
 module Openapply
-
-  # OpenApply CLIENT is a service to manage admissions -
-  # this gem allows access to OpenApply API calls via HTTParty
-  #
   class Client
 
     include Put      # PUT api calls
@@ -44,7 +40,6 @@ module Openapply
     # @param url [String] - this is the url to do the call
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_api_call(url, options={})
-      # https://stackoverflow.com/questions/26251422/handling-netreadtimeout-error-in-httparty
       max_retries = 3
       times_retried = 0
       begin
@@ -70,7 +65,7 @@ module Openapply
 
       api_answer = oa_api_call(url, options)
 
-      return api_answer               unless api_answer.respond_to? "response" # and not api_answer[:error].nil?
+      return api_answer               unless api_answer.respond_to? "response"
       return { error: 'no response' }     if api_answer.response.nil?
       return { error: 'no response' }     if api_answer.response.to_s.eql? ""
       return JSON.parse(api_answer.response.body, symbolize_names: true)
