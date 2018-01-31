@@ -26,8 +26,7 @@ module Get
       students  << response[:student]
       guardians << response[:guardians]
     end
-    return  {
-              students: students,
+    return  { students: students,
               guardians: guardians,
             }
   end
@@ -53,8 +52,7 @@ module Get
     kids  = response[:students].map{ |kid| {kid[:id] => kid[:updated_at]} }
     rents = response[:guardians].map{ |rent| {rent[:id] => rent[:updated_at]} }
     { ids_updated_at:
-      {
-        students: kids,
+      { students: kids,
         guardians: rents,
       }
     }
@@ -68,10 +66,8 @@ module Get
   def many_students_summaries( params={} )
     # status=nil,since_id=nil,since_date=nil,count=api_records)
     return {error: 'no query provided'} if params.empty?
-
     students      = []
     guardians     = []
-
     count         = params[:count]
     count       ||= api_records()
     since_date    = params[:since_date]
@@ -79,8 +75,6 @@ module Get
     statuses      = [statuses]          if not statuses.nil? and
                                                 statuses.is_a? String
     statuses.each do |status|
-
-      # these values need to be reset for each status loop
       page_number   = nil
       since_id      = params[:since_id]
 
@@ -89,18 +83,14 @@ module Get
         url = url_for_many_students_summaries(status, since_id, since_date, count)
         answer        = oa_answer( url )
         break        if answer.nil? or answer[:students].empty?
-
         students     += answer[:students]
         guardians    += answer[:linked][:parents]
-
         last_student  = answer[:students].last
         since_id      = last_student[:id]
-        # since_id      = (answer[:students].last)[:id]
         page_number   = answer[:meta][:pages]
       end
     end
-    return  {
-              students: students,
+    return  { students: students,
               guardians: guardians,
             }
   end
