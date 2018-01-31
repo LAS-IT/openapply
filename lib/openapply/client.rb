@@ -52,14 +52,9 @@ module Openapply
       ENV['OA_RECORD_COUNT'] || '50'
     end
 
-    # Does the actual api call to OpenApply & handles API timeouts gracefully
-    #
-    # ==== Attributes
-    # * +url+ - this is the url to do the call
-    #  /api/v1/students/95?auth_token=demo_site_api_key
-    # is the url passed when wanting to do the following cli api call
-    #  curl http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key
-    # * +options+ - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
+    # @note Does the actual api call to OpenApply & handles API timeouts gracefully
+    # @param url [String] - this is the url to do the call
+    # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_api_call(url, options={})
       # https://stackoverflow.com/questions/26251422/handling-netreadtimeout-error-in-httparty
       max_retries = 3
@@ -79,14 +74,9 @@ module Openapply
       end
     end
 
-    # Does checks the info for validity & unpacks the json retubed to a JS formatt
-    #
-    # ==== Attributes
-    # * +url+ - this is the url to do the call
-    #  /api/v1/students/95?auth_token=demo_site_api_key
-    # is the url passed when wanting to do the following cli api call
-    #  curl http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key
-    # * +options+ - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
+    # @note checks the info for validity & unpacks the json retubed to a JS formatt
+    # @param url [String] - this is the url to do the call
+    # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_answer(url, options={})
       # puts
       # puts "GIVEN URL: #{ url.inspect }"
@@ -104,8 +94,7 @@ module Openapply
       return { error: 'no response' }     if api_answer.response.to_s.eql? ""
       return JSON.parse(api_answer.response.body, symbolize_names: true)
     end
-    # alias_method :openapply_answer, :oa_answer
 
-  end  # Client
+  end 
 
-end    # Openapply
+end

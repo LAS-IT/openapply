@@ -287,21 +287,21 @@ RSpec.describe Openapply do
     end
   end
 
-  context "many_student_details_by_ids " do
+  context "many_students_details_by_ids " do
     before(:each) do
       @ids = [95, 106, 240, 267, 268, 269, 270, 271]
     end
     it "can query for a single page of student summaries" do
       # allow(@oa).to receive(:api_records) { 10 }
-      test_answer = @oa.many_student_details_by_ids( @ids )
+      test_answer = @oa.many_students_details_by_ids( @ids )
       # pp test_answer
-      expect( test_answer ).to eq SpecData::IDS_10_DETAILED_RECORDS_W_PAYMENTS_HASH
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
     end
     it "can query for a single page of student summaries w/o payments" do
       # allow(@oa).to receive(:api_records) { 10 }
-      test_answer = @oa.many_student_details_by_ids( @ids, {get_payments: false} )
+      test_answer = @oa.many_students_details_by_ids( @ids, {get_payments: false} )
       # pp test_answer
-      expect( test_answer ).to eq SpecData::IDS_10_DETAILED_RECORDS_WO_PAYMENTS_HASH
+      expect( test_answer ).to eq SpecData::STATUS_APPLIED_ALL_DETAILS_NO_PAYMENTS_HASH
     end
   end
 
@@ -321,11 +321,11 @@ RSpec.describe Openapply do
     end
   end
 
-  context "many_student_ids" do
+  context "many_students_ids" do
     it "gets all ids of a given status" do
       allow(@oa).to receive(:api_records) { 5 }
       correct_answer = {ids: [95, 106, 240, 267, 268]}
-      test_answer = @oa.many_student_ids( {status: 'applied'} )
+      test_answer = @oa.many_students_ids( {status: 'applied'} )
       # pp test_answer
       expect( test_answer ).to eq( correct_answer )
       # expect( test_answer ).to eq SpecData::STATUS_5_APPLIED_SUMMARY_HASH
@@ -354,7 +354,7 @@ RSpec.describe Openapply do
                             ]
                           }
                         }
-      test_answer = @oa.many_ids_updated_at( {status: 'applied'} )
+      test_answer = @oa.many_ids_updated_time( {status: 'applied'} )
       # pp test_answer
       expect( test_answer ).to eq( correct_answer )
     end
@@ -378,6 +378,24 @@ RSpec.describe Openapply do
       # correct_ans = {student_ids: [95, 106, 240, 267, 268, 1, 4, 5, 6, 7]}
       correct_ans = SpecData::STATUS_5_APPLIED_ENROLLED_SUMMARY_HASH
       expect( test_answer ).to eq correct_ans
+    end
+  end
+
+  context "detailed lookup" do
+    it "gets details by status" do
+      allow(@oa).to receive(:api_records) { 10 }
+      answer  = @oa.many_students_details( {status: 'applied'} )
+      # pp answer
+      correct = SpecData::STATUS_APPLIED_ALL_DETAILS_HASH
+      expect( answer ).to eq correct
+    end
+    it "gets studentdetails - without payments" do
+    allow(@oa).to receive(:api_records) { 10 }
+    answer  = @oa.many_students_details( {status: 'applied'},
+                                         {get_payments: false} )
+    # pp answer
+    correct = SpecData::STATUS_APPLIED_ALL_DETAILS_NO_PAYMENTS_HASH
+    expect( answer ).to eq correct
     end
   end
 

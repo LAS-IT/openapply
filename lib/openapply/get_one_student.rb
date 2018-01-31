@@ -3,29 +3,9 @@
 
 module Get
 
-  # STUDENT FULL RECORD AND PAYMENTS COMBINED
-  ###########################################
-  # Combines all student info into one record
-  #
-  # ==== Attributes
-  # * +student_id+ - openapply student_id
-  # * +options+ at the moment only {get_payments: true} (default) or
-  #   {get_payments: true} - 2x faster when false (if payment info not needed)!
-  #
-  # === Usage
-  #  get_one_student_details_by_id( 95 )
-  #  get_one_student_details_by_id( 95, {get_payments: true} )
-  #  get_one_student_details_by_id( 95, {get_payments: false} )
-  #
-  # === Returned Data
-  # returns the data structured as:
-  #   { student:
-  #     { id: aaa,                     # student id
-  #       record: {bbb}                # complete student record
-  #       guardians: [ {ccc}, {ddd} ]  # all guardian information
-  #       payments:  [ {eee}, {fff} ]  # all payments made via openapply
-  #     }
-  #   }
+  # @note Get all student details matching the associated id
+  # @param ids - (Integer) - ids of student to lookup
+  # @param options[:get_payments] (Boolean) - get student payments (or not)
   def one_student_details_by_id( id, options={} )
 
     get_payments = options[:get_payments]  unless options.nil? or options.empty?
@@ -60,51 +40,26 @@ module Get
                 { id: id,
                   record: student,
                   payments: payments,
-                  # guardians: guardians,
+                  guardians: guardians,
                 },
               guardians: guardians,
             }
   end
-  # alias_method :student_details,       :one_student_details_by_id
-  # alias_method :one_student_details_by_id, :one_student_details_by_id
 
-  # ONE STUDENT RECORD
-  #####################
-
-  # Summary record for ONE student - this API return has the parent info 2x!
-  #
-  # ==== Attributes
-  # # @student_id - openapply student_id
-  # * @options - see httparty options
-  #
-  # ==== Example code
-  #  @demo = Openapply.new
-  #  @demo.get_one_student_record_by_id(96)
+  # @note Get one student's primary record matching the associated id
+  # @param ids - (Integer) - ids of student to lookup
+  # @param options - http options
   def one_student_record_by_id(id, options ={})
     url = "#{api_path}#{id}?auth_token=#{api_key}"
     return oa_answer( url, options )
   end
-  # alias_method :student,       :one_student_record_by_id
-  # alias_method :student_by_id, :one_student_record_by_id
 
-
-  # ONE STUDENT PAYMENT INFO
-  ##########################
-
-  # Payment details for ONE student
-  #
-  # ==== Attributes
-  # * +student_id+ - openapply student_id
-  # * +options+ - see httparty options
-  #
-  # ==== Example code
-  #  @demo = Openapply.new
-  #  @demo.get_one_student_payments_by_id(96)
+  # @note Get one student's details matching the associated id
+  # @param ids - (Integer) - ids of student to lookup
+  # @param options - http options
   def one_student_payments_by_id(id, options={})
     url = "#{api_path}#{id}/payments?auth_token=#{api_key}"
     return oa_answer( url, options )
   end
-  # alias_method :payments,       :one_student_payments_by_id
-  # alias_method :payments_by_id, :one_student_payments_by_id
 
 end
