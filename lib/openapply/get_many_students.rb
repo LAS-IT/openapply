@@ -1,12 +1,20 @@
 module Get
 
+  # @note Get all student details matching the criteria in params
+  # @param params[:status] - (String or Array of Strings) - list the status wanted
+  # @param params[:since_id] - (Integer) - get all ids matching the criteria LARGER than the given number
+  # @param params[:since_date] - (String) - all records updated after the given date (YYYY-MM-DD) or Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
+  # @param params[:count] - (Integer) - The number of customers to return - large numbers need a large timeout
+  # @param options[:get_payments] (Boolean) - get student payments
   def many_students_details( params, options={} )
     ids = many_students_ids( params )
     return {error: "need an array of ids"}          unless ids[:ids]
     return many_students_details_by_ids( ids[:ids], options )
   end
 
-
+  # @note Get all student details matching the criteria in params
+  # @param ids - (Array of Integers) - list ids wanted to lookup
+  # @param options[:get_payments] (Boolean) - get student payments
   def many_students_details_by_ids( ids, options={} )
     return {error: 'no ids provided'} if ids.nil? or ids.empty?
     students  = []
@@ -24,14 +32,22 @@ module Get
             }
   end
 
-
+  # @note Get all student ids matching the criteria in params
+  # @param params[:status] - (String or Array of Strings) - list the status wanted
+  # @param params[:since_id] - (Integer) - get all ids matching the criteria LARGER than the given number
+  # @param params[:since_date] - (String) - all records updated after the given date (YYYY-MM-DD) or Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
+  # @param params[:count] - (Integer) - The number of customers to return - large numbers need a large timeout
   def many_students_ids( params )
     response = many_students_summaries( params )
     ids = response[:students].map{ |kid| kid[:id] }
     { ids: ids }
   end
 
-
+  # @note Get all student ids & guardian ids with associated last updated timestamp (matching the criteria in params)
+  # @param params[:status] - (String or Array of Strings) - list the status wanted
+  # @param params[:since_id] - (Integer) - get all ids matching the criteria LARGER than the given number
+  # @param params[:since_date] - (String) - all records updated after the given date (YYYY-MM-DD) or Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
+  # @param params[:count] - (Integer) - The number of customers to return - large numbers need a large timeout
   def many_ids_updated_time( params )
     response = many_students_summaries( params )
     kids  = response[:students].map{ |kid| {kid[:id] => kid[:updated_at]} }
@@ -44,30 +60,11 @@ module Get
     }
   end
 
-
-
-  # Executes a custom query - recursively to get all students summaries
-  # matching the given criteria
-  #
-  # ==== Attributes
-  # +options+ - query options
-  # * +status+ - match status (be sure it is in the list of OpenApply status)
-  # * +since_id+ - get all ids matching the criteria LARGER than the given number
-  # * +since_date+ - get all records updated after the given date (YYYY-MM-DD) or
-  # Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
-  # * +count+ - return a custom number of records (no more than 1000)
-  #
-  # ==== Usage
-  #  students_query( { status: 'applied', since_id: 95,
-  #                    since_date: '2017-01-01', count: 2 } )
-  #
-  # ==== returned
-  #  { students:
-  #    [
-  #      { student summary data from openapply api },
-  #      { student summary data from openapply api },
-  #    ]
-  #  }
+  # @note Get all student summaries matching the criteria in params
+  # @param params[:status] - (String or Array of Strings) - list the status wanted
+  # @param params[:since_id] - (Integer) - get all ids matching the criteria LARGER than the given number
+  # @param params[:since_date] - (String) - all records updated after the given date (YYYY-MM-DD) or Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
+  # @param params[:count] - (Integer) - The number of customers to return - large numbers need a large timeout
   def many_students_summaries( params={} )
     # status=nil,since_id=nil,since_date=nil,count=api_records)
     return {error: 'no query provided'} if params.empty?
@@ -108,19 +105,11 @@ module Get
             }
   end
 
-
-  # Builds a custom url (with domain) to get a list of students summaries matching
-  # the attribute's criteria (but not do a Query) - returns a URL
-  #
-  # ==== Attributes
-  # * +status+ - match status (be sure it is in the list of OpenApply status)
-  # * +since_id+ - get all ids matching the criteria LARGER than the given number
-  # * +since_date+ - get all records updated after the given date (YYYY-MM-DD) or
-  # Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
-  # * +count+ - return a custom number of records (no more than 1000)
-  #
-  # ==== Return Format
-  # "/api/v1/students/?status=applied&since_id=96&since_date=2017-01-25&count=2&auth_token=319d9axxxxxxx"
+  # @note Get url to query for student summaries matching the criteria in params
+  # @param status - (String or Array of Strings) - list the status wanted
+  # @param since_id - (Integer) - get all ids matching the criteria LARGER than the given number
+  # @param since_date - (String) - all records updated after the given date (YYYY-MM-DD) or Date and Time (YYYY-MM-DD HH:MM:SS) - 24 hour clock (not sure about timeszone)
+  # @param count - (Integer) - The number of customers to return - large numbers need a large timeout
   def url_for_many_students_summaries(status=nil, since_id=nil,
                                       since_date=nil, count=api_records)
     url_options = []
@@ -132,7 +121,5 @@ module Get
 
     return "#{api_path}?#{url_options.join('&')}"
   end
-  # alias_method :students_custom_url, :url_for_many_students_summaries
-  # alias_method :students_query_url,  :url_for_many_students_summaries
 
 end
