@@ -8,9 +8,6 @@
 /spec/reports/
 /tmp/
 
-/examples/demo/*.csv
-/examples/demo/*.xlsx
-
 # rspec failure tracking
 .rspec_status
 .coveralls.yml
