@@ -3,7 +3,7 @@ require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
-RSpec.describe Openapply do
+RSpec.describe Openapply::Client do
 
   before(:each) do
     @options = {}
@@ -11,12 +11,6 @@ RSpec.describe Openapply do
   end
 
   context "basic config - initialization" do
-    it "has a version number" do
-      expect(Openapply::VERSION).not_to be nil
-    end
-    it "has correct version number" do
-      expect(Openapply::VERSION).to eq "0.3.0"
-    end
     it "has a url" do
       expect(@oa.api_url).not_to be nil
       expect(@oa.api_url).to eq 'demo.openapply.com'

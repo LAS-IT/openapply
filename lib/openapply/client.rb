@@ -6,9 +6,10 @@ require 'httparty'
 module Openapply
   class Client
 
-    include Put      # PUT api calls
-    include Get      # GET api calls
-    include HTTParty # Library for API calls to OpenApply
+    include HTTParty                    # Library for API calls
+    include Openapply::Put              # PUT api calls
+    include Openapply::GetOneStudent    # GET api calls
+    include Openapply::GetManyStudents  # GET api calls
 
     API_URL        = (ENV['OA_BASE_URI'] || 'demo.openapply.com')
     API_TIMEOUT    = (ENV['OA_TIMEOUT'].to_i || 5)

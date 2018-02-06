@@ -4,7 +4,7 @@ require 'webmock/rspec'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
-RSpec.describe Openapply do
+RSpec.describe Openapply::GetOneStudent do
   before(:each) do
     @options = {}
     @oa = Openapply::Client.new
