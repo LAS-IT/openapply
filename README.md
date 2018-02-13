@@ -73,13 +73,14 @@ Associates the above settings with HTTParty
 #### USAGE SUMMARY
 
 ```ruby
+require 'openapply'
 # instantiate
-@oa = OpenApply::Client.new
+@oa = Openapply::Client.new
 
 # see settings
 @oa.api_url
 @oa.api_key
-@oa.base_path
+@oa.api_path
 @oa.api_timeout
 @oa.api_records
 
