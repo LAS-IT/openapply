@@ -11,26 +11,36 @@ module Openapply
     include Openapply::GetOneStudent    # GET api calls
     include Openapply::GetManyStudents  # GET api calls
 
-    API_URL        = (ENV['OA_BASE_URI'] || 'demo.openapply.com')
-    API_TIMEOUT    = (ENV['OA_TIMEOUT'].to_i || 5)
+    API_URL        = ENV['OA_BASE_URI']
+    API_TIMEOUT    = ENV['OA_TIMEOUT'].to_i || 5
 
     base_uri API_URL
     default_timeout API_TIMEOUT
 
+    # attr_reader :api_url, :api_key
+
+    def initialize
+      api_url     = ENV['OA_BASE_URI']
+      api_key     = ENV['OA_AUTH_TOKEN']
+
+      raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or api_url.empty?
+      raise ArgumentError, 'OA_AUTH_TOKEN is missing' if api_key.nil? or api_key.empty?
+    end
+
     def api_url
-      API_URL
+      ENV['OA_BASE_URI']
     end
 
     def api_timeout
-      API_TIMEOUT
+      ENV['OA_TIMEOUT'].to_i
     end
 
     def api_key
-      ENV['OA_AUTH_TOKEN'] || 'demo_site_api_key'
+      ENV['OA_AUTH_TOKEN']
     end
 
     def api_path
-      ENV['OA_API_PATH'] || "/api/v1/students/"
+      ENV['OA_API_PATH']     || "/api/v1/students/"
     end
 
     def api_records
@@ -41,6 +51,7 @@ module Openapply
     # @param url [String] - this is the url to do the call
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_api_call(url, options={})
+      # add exception if ENV are not set
       max_retries = 3
       times_retried = 0
       begin
