@@ -15,23 +15,23 @@ RSpec.describe Openapply::Client do
       expect(@oa.api_url).not_to be nil
       # expect(@oa.api_url).to eq 'demo.openapply.com'
     end
-    # it "trows error w/o a url" do
-    #   allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("")
-    #   expect(Openapply::Client.new).to raise_error(ArgumentError)
-    #   expect(Openapply::Client.new).to raise_error('OA_BASE_URI is missing')
-    #   # expect Openapply::Client.new.to raise_error(ArgumentError, 'OA_BASE_URI is missing')
-    #   # expect(@oa.api_url).to eq 'demo.openapply.com'
-    # end
+    xit "trows error w/o a url" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("")
+      expect(Openapply::Client.new).to raise_error(ArgumentError)
+      expect(Openapply::Client.new).to raise_error('OA_BASE_URI is missing')
+      # expect Openapply::Client.new.to raise_error(ArgumentError, 'OA_BASE_URI is missing')
+      # expect(@oa.api_url).to eq 'demo.openapply.com'
+    end
     it "has an Auth key" do
       expect(@oa.api_key).not_to be nil
     end
-    # it "trows error w/o a key" do
-    #   allow(ENV).to receive(:[]).with("OA_AUTH_TOKEN").and_return("")
-    #   expect(Openapply::Client.new).to raise_error(ArgumentError)
-    #   expect(Openapply::Client.new).to raise_error('OA_AUTH_TOKEN is missing')
-    #   # expect Openapply::Client.new.to raise_error(ArgumentError, 'OA_BASE_URI is missing')
-    #   # expect(@oa.api_url).to eq 'demo.openapply.com'
-    # end
+    xit "trows error w/o a key" do
+      allow(ENV).to receive(:[]).with("OA_AUTH_TOKEN").and_return("")
+      expect(Openapply::Client.new).to raise_error(ArgumentError)
+      expect(Openapply::Client.new).to raise_error('OA_AUTH_TOKEN is missing')
+      # expect Openapply::Client.new.to raise_error(ArgumentError, 'OA_BASE_URI is missing')
+      # expect(@oa.api_url).to eq 'demo.openapply.com'
+    end
     it "has an base path" do
       expect(@oa.api_path).not_to be nil
       expect(@oa.api_path).to eq '/api/v1/students/'
