@@ -83,7 +83,7 @@ module Openapply
         while  page_number.nil? or page_number > 1
           url = url_for_many_students_summaries(status, since_id, since_date, count)
           answer        = oa_answer( url )
-          break        if answer.nil? or answer[:students].empty?
+          break        if answer.nil? or answer[:students].nil? or answer[:students].empty?
           students     += answer[:students]
           guardians    += answer[:linked][:parents]
           last_student  = answer[:students].last
