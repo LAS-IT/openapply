@@ -1,7 +1,7 @@
 ### Openapply CHANGE LOG
 
 * **v0.3.2** - compatible with 0.3.x - 2018-0?-??
-  - 
+  - add another break condition (prevent nil)
 
 * **v0.3.1** - compatible with 0.3.x - 2018-04-10
   - protect against nil error no when meta info returned from OA
