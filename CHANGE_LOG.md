@@ -1,6 +1,7 @@
 ### Openapply CHANGE LOG
 
-* **v0.3.1** - compatible with 0.3.x - 2018-02-XX
+* **v0.3.1** - compatible with 0.3.x - 2018-04-10
+  - protect against nil error no when meta info returned from OA
   - add error / exception when ENV doesn't load properly
   - remove unused gems (scp and ssh)
   - add example / demo usage code
