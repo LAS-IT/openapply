@@ -1,5 +1,8 @@
 ### Openapply CHANGE LOG
 
+* **v0.3.2** - compatible with 0.3.x - 2018-0?-??
+  - 
+
 * **v0.3.1** - compatible with 0.3.x - 2018-04-10
   - protect against nil error no when meta info returned from OA
   - add error / exception when ENV doesn't load properly

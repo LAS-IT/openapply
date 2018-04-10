@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openapply (0.3.1)
+    openapply (0.3.2)
       httparty (~> 0.15)
       json (~> 2.1)
 
@@ -18,7 +18,7 @@ GEM
     diff-lcs (1.3)
     docile (1.1.5)
     hashdiff (0.3.7)
-    httparty (0.15.6)
+    httparty (0.16.2)
       multi_xml (>= 0.5.2)
     json (2.1.0)
     method_source (0.9.0)
