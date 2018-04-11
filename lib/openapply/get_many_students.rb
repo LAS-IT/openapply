@@ -88,8 +88,8 @@ module Openapply
           guardians    += answer[:linked][:parents]
           last_student  = answer[:students].last
           since_id      = last_student[:id]
-          page_number   = 0                              if answer[:meta].nil?
           page_number   = answer[:meta][:pages].to_i unless answer[:meta].nil?
+          page_number   = 0                              if answer[:meta].nil?
         end
       end
       return  { students: students,
