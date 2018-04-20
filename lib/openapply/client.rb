@@ -23,8 +23,14 @@ module Openapply
       api_url     = ENV['OA_BASE_URI']
       api_key     = ENV['OA_AUTH_TOKEN']
 
-      raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or api_url.empty?
-      raise ArgumentError, 'OA_AUTH_TOKEN is missing' if api_key.nil? or api_key.empty?
+      raise ArgumentError, 'OA_TIMEOUT is missing'    if api_timeout.nil? or
+                                                          api_timeout.empty?
+      raise ArgumentError, 'OA_API_PATH is missing'   if api_path.nil? or
+                                                          api_path.empty?
+      raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
+                                                          api_url.empty?
+      raise ArgumentError, 'OA_AUTH_TOKEN is missing' if api_key.nil? or
+                                                          api_key.empty?
     end
 
     def api_url
@@ -71,9 +77,9 @@ module Openapply
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_answer(url, options={})
       return { error: 'no url given' }        if url.nil? or url.to_s.eql? ""
-      return { error: 'bad url - has space' } if url.include? " "
-      return { error: 'bad api_path' }    unless url.include? "#{api_path}"
-      return { error: 'bad auth_token' }  unless url.include? "auth_token=#{api_key}"
+      return { error: 'bad url - has space' } if url&.include? " "
+      return { error: 'bad api_path' }    unless url&.include? "#{api_path}"
+      return { error: 'bad auth_token' }  unless url&.include? "auth_token=#{api_key}"
 
       api_answer = oa_api_call(url, options)
 
