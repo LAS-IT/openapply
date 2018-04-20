@@ -24,7 +24,7 @@ module Openapply
       api_key     = ENV['OA_AUTH_TOKEN']
 
       raise ArgumentError, 'OA_TIMEOUT is missing'    if api_timeout.nil? or
-                                                          api_timeout.empty?
+                                                          not api_timeout.is_a? Integer
       raise ArgumentError, 'OA_API_PATH is missing'   if api_path.nil? or
                                                           api_path.empty?
       raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
