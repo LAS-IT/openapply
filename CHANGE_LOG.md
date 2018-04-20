@@ -1,6 +1,6 @@
 ### Openapply CHANGE LOG
 
-* **v0.3.3** - compatible with 0.3.x - 2018-04-20?
+* **v0.3.3** - compatible with 0.3.x - 2018-04-20
   - add more exceptions to catch misconfigs and alert coder
 
 * **v0.3.2** - compatible with 0.3.x - 2018-04-11
