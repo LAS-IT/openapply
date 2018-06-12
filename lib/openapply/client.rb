@@ -53,7 +53,7 @@ module Openapply
       ENV['OA_RECORD_COUNT'] || '50'
     end
 
-    # @note Does the actual api call to OpenApply & handles API timeouts gracefully
+    # @note Does the actual api call(get) to OpenApply & handles API timeouts gracefully
     # @param url [String] - this is the url to do the call
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
 
@@ -73,6 +73,10 @@ module Openapply
       end
     end
     alias_method :oa_api_call, :get
+
+    # @note Does the actual api call(put) to OpenApply & handles API timeouts gracefully
+    # @param url [String] - this is the url to do the call
+    # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
 
     def put(url, value, options={})
       # add exception if ENV are not set
@@ -101,7 +105,9 @@ module Openapply
 
 
     # @note checks the info for validity & unpacks the json retubed to a JS formatt
+    # @note by passing in a value such as student_id or status this will automatically trigger the change form get to put
     # @param url [String] - this is the url to do the call
+    # @param value [Hash] - This is used to update the student_id or status
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
     def oa_answer(url, value={}, options={})
       return { error: 'no url given' }        if url.nil? or url.to_s.eql? ""
