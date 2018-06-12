@@ -56,7 +56,8 @@ module Openapply
     # @note Does the actual api call to OpenApply & handles API timeouts gracefully
     # @param url [String] - this is the url to do the call
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
-    def oa_api_call(url, options={})
+
+    def get(url, options={})
       # add exception if ENV are not set
       max_retries = 3
       times_retried = 0
@@ -71,17 +72,45 @@ module Openapply
         end
       end
     end
+    alias_method :oa_api_call, :get
+
+    def put(url, value, options={})
+      # add exception if ENV are not set
+      # Per emai from Mackenzine on API call formatting, vs what is found on API site
+     #  curl -X "PUT" "https://las.openapply.com/api/v1/students/OAID" \
+     # -H 'Content-Type: application/x-www-form-urlencoded; charset=utf-8' \
+     # --data-urlencode "student_id=YOURID" \
+     # --data-urlencode "auth_token=YOURTOKEN"
+      max_retries = 3
+      times_retried = 0
+      begin
+        query = {auth_token: api_key}.merge(value)
+        header = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
+        self.class.put(url,
+                        query: query,
+                        headers: header )
+      rescue Net::ReadTimeout, Net::OpenTimeout
+        if times_retried < max_retries
+          times_retried += 1
+          retry
+        else
+          { error: "no response (timeout) from URL: #{url}"  }
+        end
+      end
+    end
+
 
     # @note checks the info for validity & unpacks the json retubed to a JS formatt
     # @param url [String] - this is the url to do the call
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
-    def oa_answer(url, options={})
+    def oa_answer(url, value={}, options={})
       return { error: 'no url given' }        if url.nil? or url.to_s.eql? ""
       return { error: 'bad url - has space' } if url&.include? " "
       return { error: 'bad api_path' }    unless url&.include? "#{api_path}"
       return { error: 'bad auth_token' }  unless url&.include? "auth_token=#{api_key}"
 
-      api_answer = oa_api_call(url, options)
+      api_answer = send(:get, url, options)            if value.empty?
+      api_answer = send(:put, url, value, options) unless value.empty?
 
       return api_answer               unless api_answer.respond_to? "response"
       return { error: 'no response' }     if api_answer.response.nil?

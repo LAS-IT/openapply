@@ -1,5 +1,8 @@
 ### Openapply CHANGE LOG
 
+* **v0.4.0** - compatible with 0.3.x - 2018-06-08
+  - add put ability for student id and status
+
 * **v0.3.3** - compatible with 0.3.x - 2018-04-20
   - add more exceptions to catch misconfigs and alert coder
 

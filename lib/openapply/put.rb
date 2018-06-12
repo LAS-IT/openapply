@@ -1,5 +1,26 @@
+require 'json'
+
 module Openapply
+  # OpenApply API Page
+  # https://dev.faria.co/oa/#resources-reference
   module Put
+
+    # PUT https://<school_subdomain>.openapply.com/api/v1/students/1/student_id
+    # PUT Data student_id=123456
+    def update_student_id(oa_id, student_id)
+      # url = "#{api_path}#{id}?auth_token=#{api_key}"
+      url = "#{api_path}#{oa_id}"
+      return oa_answer( url, {student_id: student_id})
+    end
+
+    # PUT https://<school_subdomain>.openapply.com/api/v1/students/1/status
+    # PUT Data status=Applied
+    def update_student_status(oa_id, status)
+      # url = "#{api_path}#{id}/status?auth_token=#{api_key}"
+      url = "#{api_path}#{oa_id}/status"
+      return oa_answer( url, {status: status})
+    end
+
 
   end
 end

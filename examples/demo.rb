@@ -29,3 +29,6 @@ details   = @oa.many_students_details_by_ids( kid_ids )
 # get all student records that have been updated in the last week
 params = {since_date: "#{Date.today-7}"}
 updates   = @oa.many_ids_updated_time( params )
+
+# Update Student ID
+update_id = @oa.update_student_id(533497, 533497)

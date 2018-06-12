@@ -26,6 +26,7 @@ require_relative './data/hash/status_5_accepted_records'
 require_relative './data/hash/status_5_enrolled_records'
 require_relative './data/hash/status_applied_all_details'
 require_relative './data/hash/status_applied_all_details_no_payments'
+require_relative './data/put/student_106_put_response'
 
 module SpecData
   # puts "#{File.expand_path File.dirname(__FILE__)}"
