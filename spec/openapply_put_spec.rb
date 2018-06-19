@@ -13,14 +13,14 @@ RSpec.describe Openapply::GetOneStudent do
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/106?auth_token=demo_site_api_key")
     # @url_kid_106  = "#{@oa.api_path}106?auth_token=#{@oa.api_key}"
     @url_put_id_kid_106  = "#{@oa.api_path}106"
-    stub_request(:put, "http://#{@oa.api_url}#{@url_put_id_kid_106}")
+    stub_request(:put, "#{@oa.api_url}#{@url_put_id_kid_106}")
           .with(query: {auth_token: @oa.api_key, student_id: 123456})
           .with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8'} )
           .to_return( status: 200, headers: {},
                       body: SpecData::STUDENT_106_PUT_RESPONSE_HASH.to_json)
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/106/payments?auth_token=demo_site_api_key")
     # @url_pay_106  = "#{@oa.api_path}106/payments?auth_token=#{@oa.api_key}"
-    # stub_request(:get, "http://#{@oa.api_url}#{@url_pay_106}")
+    # stub_request(:get, "#{@oa.api_url}#{@url_pay_106}")
     #       .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
     #       .to_return( status: 200, headers: {},
     #                   body: SpecData::STUDENT_106_PAYMENTS_HASH.to_json)

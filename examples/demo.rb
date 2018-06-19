@@ -21,6 +21,10 @@ require 'openapply'
 params = {status: 'applied'}
 summaries = @oa.many_students_summaries( params )
 
+# get information details on one student
+oa_id = 123456
+one_details = @oa.one_student_details_by_id(oa_id)
+
 # get details of of many kids - after kid 95 (only get 50 records at a time)
 params = {since_id: 95, count: 50}
 kid_ids   = @oa.many_students_ids( params )

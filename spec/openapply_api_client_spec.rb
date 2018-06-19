@@ -60,7 +60,7 @@ RSpec.describe Openapply::Client do
     it "returns an answer after one timeout" do
       # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
       @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
-      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+      stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(1).then
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
@@ -72,7 +72,7 @@ RSpec.describe Openapply::Client do
     it "returns an answer after two timeouts" do
       # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
       @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
-      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+      stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(2).then
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
@@ -83,7 +83,7 @@ RSpec.describe Openapply::Client do
     it "returns an error after three timeouts" do
       # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
       @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
-      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+      stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(3).then
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
@@ -95,7 +95,7 @@ RSpec.describe Openapply::Client do
     it "returns an error after three timeouts" do
       # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
       @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
-      stub_request(:get, "http://#{@oa.api_url}#{@url_kid_95}")
+      stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(4).then
             .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
             .to_return( status: 200, headers: {},
