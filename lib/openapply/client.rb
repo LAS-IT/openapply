@@ -88,10 +88,15 @@ module Openapply
       max_retries = 3
       times_retried = 0
       begin
-        query = {auth_token: api_key}.merge(value)
+        # query = {auth_token: api_key}.merge(value)
         header = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
+        pp url
+        # pp query
+        pp header
+        # self.class.put(url,
+        #                 query: query,
+        #                 headers: header )
         self.class.put(url,
-                        query: query,
                         headers: header )
       rescue Net::ReadTimeout, Net::OpenTimeout
         if times_retried < max_retries
@@ -113,7 +118,7 @@ module Openapply
       return { error: 'no url given' }        if url.nil? or url.to_s.eql? ""
       return { error: 'bad url - has space' } if url&.include? " "
       return { error: 'bad api_path' }    unless url&.include? "#{api_path}"
-      return { error: 'bad auth_token' }  unless url&.include? "auth_token=#{api_key}"
+      # return { error: 'bad auth_token' }  unless url&.include? "auth_token=#{api_key}"
 
       api_answer = send(:get, url, options)            if value.empty?
       api_answer = send(:put, url, value, options) unless value.empty?

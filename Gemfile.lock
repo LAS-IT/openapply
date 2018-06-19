@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    openapply (0.4.0)
+    openapply (0.4.1)
       httparty (~> 0.15)
       json (~> 2.1)
 
@@ -65,4 +65,4 @@ DEPENDENCIES
   webmock (~> 3.2)
 
 BUNDLED WITH
-   1.16.1
+   1.16.2
