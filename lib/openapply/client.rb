@@ -11,8 +11,17 @@ module Openapply
     include Openapply::GetOneStudent    # GET api calls
     include Openapply::GetManyStudents  # GET api calls
 
-    API_URL        = ENV['OA_BASE_URI']
-    API_TIMEOUT    = ENV['OA_TIMEOUT'].to_i || 5
+
+    API_TIMEOUT = ENV['OA_TIMEOUT'].to_i || 5
+    # Force RBENV var base_uri to https://
+    API_URL     = case
+                  when ENV['OA_BASE_URI'].start_with?('https://')
+                    "#{ENV['OA_BASE_URI']}"
+                  when ENV['OA_BASE_URI'].start_with?('http://')
+                    "#{ENV['OA_BASE_URI']}".gsub("http", "https")
+                  else
+                    "https://#{ENV['OA_BASE_URI']}"
+                  end
 
     base_uri API_URL
     default_timeout API_TIMEOUT
@@ -20,7 +29,7 @@ module Openapply
     # attr_reader :api_url, :api_key
 
     def initialize
-      api_url     = ENV['OA_BASE_URI']
+      api_url     = API_URL
       api_key     = ENV['OA_AUTH_TOKEN']
 
       raise ArgumentError, 'OA_TIMEOUT is missing'    if api_timeout.nil? or
@@ -34,7 +43,7 @@ module Openapply
     end
 
     def api_url
-      ENV['OA_BASE_URI']
+      API_URL
     end
 
     def api_timeout
