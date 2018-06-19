@@ -1,5 +1,8 @@
 ### Openapply CHANGE LOG
 
+* **v0.4.1** - compatible with 0.4.x - 2018-06-19
+  - force all openapply interactions to use https
+  
 * **v0.4.0** - compatible with 0.3.x - 2018-06-08
   - add put ability for student id and status
 
