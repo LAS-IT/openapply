@@ -20,14 +20,13 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "httparty", "~> 0.15"
-  spec.add_dependency "json" , "~> 2.1"
+  spec.add_dependency "httparty", "~> 0.18"
+  spec.add_dependency "json" , "~> 2.3"
 
-  spec.add_development_dependency 'codacy-coverage', '~> 1.1'
-  spec.add_development_dependency "webmock", "~> 3.2"
+  spec.add_development_dependency 'codacy-coverage', '~> 2.1'
+  spec.add_development_dependency "webmock", "~> 3.8"
   spec.add_development_dependency "bundler", "~> 2.1"
-  spec.add_development_dependency "rake", "~> 12.3"
-  spec.add_development_dependency "rspec", "~> 3.7"
-  spec.add_development_dependency "pry", "~> 0.11"
-
+  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.9"
+  spec.add_development_dependency "pry", "~> 0.12"
 end
