@@ -1,25 +1,29 @@
 [![Codeship Status for LAS-IT/openapply](https://app.codeship.com/projects/b3b1a8b0-3f90-0138-630c-02a65faac0e6/status?branch=master)](https://app.codeship.com/projects/387673)  [![Known Vulnerabilities](https://snyk.io/test/github/btihen/openapply/badge.svg?targetFile=Gemfile.lock)](https://snyk.io/test/github/btihen/openapply?targetFile=Gemfile.lock)    [![Codacy Badge](https://api.codacy.com/project/badge/Grade/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=btihen/openapply&amp;utm_campaign=Badge_Grade)  [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/7b2062680fd14704bd321baef8dbddce)](https://www.codacy.com/app/btihen/openapply?utm_source=github.com&utm_medium=referral&utm_content=btihen/openapply&utm_campaign=Badge_Coverage)   [![Code Quality](https://bettercodehub.com/edge/badge/btihen/shop?branch=master)](https://bettercodehub.com/)  
+# Openapply API wrapper
 
-
-# Openapply
-
-This gem allows ruby access to the OpenApply API v1 - and supports the GET features described at: https://dev.faria.co/oa
-
-
-### Still TODO
-
-
-### CHANGE LOG
+## CHANGE LOG
 
 [Change Log](https://github.com/btihen/openapply/blob/master/CHANGE_LOG.md)
 
+## Openapply v3
+
+This gem allows ruby access to the OpenApply API v3 - and supports the GET features described at: https://(your openapply domain)/help/api_v3
+
+### TODO
+- [] implement OAuth 2.0
+- [] update students GET wrapper
+- [] update students payement info GET wrapper
+- [] implement students advanced search
+- [] implement parents GET wrapper
+- [] implement parents advanced search
+- [] implement students and parent PUT wrapper
 
 ### Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'openapply'
+gem 'openapply', "~> 1.0"
 ```
 
 And then execute:
@@ -28,7 +32,28 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install openapply
+    $ gem install openapply -v "~> 1.0"
+
+## Openapply v1
+
+This gem allows ruby access to the OpenApply API v1 - and supports the GET features described at: https://(your openapply domain)/help/api_v1
+
+
+### Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'openapply', "~> 0.4"
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install openapply  -v "~> 0.4"
 
 
 ### Docs
