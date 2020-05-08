@@ -1,6 +1,6 @@
 ### Openapply CHANGE LOG
 
-* **v0.4.1** - compatible with 0.4.x - 2020-03-03
+* **v0.4.2** - compatible with 0.4.x - 2020-03-03
   - update dependencies
 
 * **v0.4.1** - compatible with 0.4.x - 2018-06-19
