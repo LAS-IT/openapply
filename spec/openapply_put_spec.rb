@@ -7,25 +7,22 @@ WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.describe Openapply::GetOneStudent do
   before(:each) do
+    allow(ENV).to receive(:[]).with("OA_TIMEOUT").and_return(nil)
+    allow(ENV).to receive(:[]).with("OA_RECORD_COUNT").and_return(nil)
+    allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("demo.openapply.com")
+    allow(ENV).to receive(:[]).with("OA_CLIENT_ID").and_return("xvz1evFS4wEEPTGEFPHBog")
+    allow(ENV).to receive(:[]).with("OA_CLIENT_SECRET").and_return("L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg")
+
     @options = {}
-    @oa = Openapply::Client.new
+    @oa = Openapply::Client.new token: "a7bec3a61bdebb406ccc117419cce8713d56403eaeb00ce68397b3a16293a1d3"
 
-    stub_auth(@oa.api_url)
-
-    # stub_request(:get, "http://demo.openapply.com/api/v1/students/106?auth_token=demo_site_api_key")
-    # @url_kid_106  = "#{@oa.api_path}106?auth_token=#{@oa.api_key}"
-    @url_put_id_kid_106  = "#{@oa.api_path}106"
+    # stub_request(:put, "http://demo.openapply.com/api/v1/students/106")
+    @url_put_id_kid_106  = "#{@oa.api_path}/students/106"
     stub_request(:put, "#{@oa.api_url}#{@url_put_id_kid_106}")
-          .with(query: {auth_token: @oa.api_key, student_id: 123456})
-          .with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8'} )
+          .with(body: {student_id: 123456})
+          .with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => "Bearer " + @oa.api_key} )
           .to_return( status: 200, headers: {},
                       body: SpecData::STUDENT_106_PUT_RESPONSE_HASH.to_json)
-    # stub_request(:get, "http://demo.openapply.com/api/v1/students/106/payments?auth_token=demo_site_api_key")
-    # @url_pay_106  = "#{@oa.api_path}106/payments?auth_token=#{@oa.api_key}"
-    # stub_request(:get, "#{@oa.api_url}#{@url_pay_106}")
-    #       .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
-    #       .to_return( status: 200, headers: {},
-    #                   body: SpecData::STUDENT_106_PAYMENTS_HASH.to_json)
   end
 
   context "test API mocks against OpenApply - avoid real api calls" do

@@ -46,7 +46,7 @@ module Openapply
     # @param ids - (Integer) - ids of student to lookup
     # @param options - http options
     def one_student_payments_by_id(id, options={})
-      url = "#{api_path}#{id}/payments?auth_token=#{api_key}"
+      url = "#{api_path}/students/#{id}/payments"
       return oa_answer( url, options )
     end
 

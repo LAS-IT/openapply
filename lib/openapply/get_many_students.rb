@@ -109,9 +109,8 @@ module Openapply
       url_options << "since_id=#{since_id}"     unless since_id.to_s.eql? ""
       url_options << "since_date=#{since_date}" unless since_date.to_s.eql? ""
       url_options << "count=#{count}"
-      url_options << "auth_token=#{api_key}"
 
-      return "#{api_path}?#{url_options.join('&')}"
+      return "#{api_path}/students/?#{url_options.join('&')}"
     end
 
   end

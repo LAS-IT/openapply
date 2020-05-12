@@ -1,6 +1,6 @@
 module SpecData
 
-  # https://demo.openapply.com/api/v1/students/?status=enrolled&count=5&auth_token=demo_site_api_key
+  # https://demo.openapply.com/api/v1/students/?status=enrolled&count=5
   STATUS_5_ENROLLED_RECORDS_HASH = {
   students: [
     { id: 1,

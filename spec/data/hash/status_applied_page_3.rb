@@ -1,6 +1,6 @@
 module SpecData
 
-  # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3&auth_token=demo_site_api_key
+  # https://demo.openapply.com//api/v1/students?status=applied&since_id=269&count=3
   STATUS_APPLIED_PAGE_3_HASH =
   {
     students: [
