@@ -12,15 +12,14 @@ module Openapply
     include Openapply::GetOneStudent    # GET api calls
     include Openapply::GetManyStudents  # GET api calls
 
-    API_TIMEOUT = ENV['OA_TIMEOUT'].to_i
-    API_TIMEOUT = 5 if ENV['OA_TIMEOUT'].to_i == 0
+    API_TIMEOUT = ENV['OA_TIMEOUT'].to_i == 0 ? 5 : ENV['OA_TIMEOUT'].to_i
     default_timeout API_TIMEOUT
 
     def initialize(url: nil, client_id: nil, client_secret: nil, token: nil)
       @api_url     = format_api_url(url || ENV['OA_BASE_URI'])
       @api_client_id     = client_id || ENV['OA_CLIENT_ID']
       @api_client_secret     = client_secret || ENV['OA_CLIENT_SECRET']
-      @api_key             = token || authentificate#.token
+      @api_key             = token || authentificate.token
 
       raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
                                                           api_url.empty?
