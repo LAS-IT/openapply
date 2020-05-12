@@ -1,6 +1,7 @@
 # require_relative "./spec_data_array"
 require_relative "./spec_data_hash"
 require_relative "./spec_data_text"
+require_relative './helpers'
 require "bundler/setup"
 require "openapply"
 #
@@ -21,4 +22,6 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
+
+  config.include Helpers
 end

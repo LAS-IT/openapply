@@ -17,11 +17,10 @@ module Openapply
     default_timeout API_TIMEOUT
 
     def initialize(url: nil, client_id: nil, client_secret: nil, token: nil)
-      puts token
       @api_url     = format_api_url(url || ENV['OA_BASE_URI'])
       @api_client_id     = client_id || ENV['OA_CLIENT_ID']
       @api_client_secret     = client_secret || ENV['OA_CLIENT_SECRET']
-      @api_key             = token || authentificate
+      @api_key             = token || authentificate#.token
 
       raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
                                                           api_url.empty?
@@ -54,7 +53,7 @@ module Openapply
     end
 
     def api_path
-      "/api/v3/"
+      "/api/v3"
     end
 
     def api_records
@@ -69,6 +68,7 @@ module Openapply
       max_retries = 3
       times_retried = 0
       begin
+        options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
         self.class.get(url, options)
       rescue Net::ReadTimeout, Net::OpenTimeout
         if times_retried < max_retries
@@ -94,13 +94,9 @@ module Openapply
       max_retries = 3
       times_retried = 0
       begin
-        query = {auth_token: api_key}.merge(value)
-        header = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8' }
-        self.class.put(url,
-                        query: query,
-                        headers: header )
-        # self.class.put(url,
-        #                 headers: header )
+        options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
+        options[:body] = value
+        self.class.put(url, options)
       rescue Net::ReadTimeout, Net::OpenTimeout
         if times_retried < max_retries
           times_retried += 1
@@ -112,7 +108,7 @@ module Openapply
     end
 
 
-    # @note checks the info for validity & unpacks the json retubed to a JS formatt
+    # @note checks the info for validity & unpacks the json retubed to a JS format
     # @note by passing in a value such as student_id or status this will automatically trigger the change form get to put
     # @param url [String] - this is the url to do the call
     # @param value [Hash] - This is used to update the student_id or status
@@ -122,8 +118,7 @@ module Openapply
       return { error: 'bad url - has space' } if url&.include? " "
       return { error: 'bad api_path' }    unless url&.include? "#{api_path}"
       if value.empty?
-        return { error: 'bad auth_token' }  unless url&.include? "auth_token=#{api_key}"
-        api_answer = send(:get, url, options)            if value.empty?
+        api_answer = send(:get, url, options) if value.empty?
       else
         api_answer = send(:put, url, value, options) unless value.empty?
       end
@@ -135,11 +130,11 @@ module Openapply
     end
 
     # @note authentificate using oauth2
-    # def authentificate
-    #   client = OAuth2::Client.new(api_client_id, api_client_secret, site: api_url)
-    #   token_wrapper = client.client_credentials.get_token
-    #   return token_wrapper.token
-    # end
+    # @note returns OAuth2::AccessToken
+    def authentificate
+      client = OAuth2::Client.new(api_client_id, api_client_secret, site: api_url)
+      return client.client_credentials.get_token
+    end
 
     private
 
@@ -155,6 +150,10 @@ module Openapply
         else
           "https://#{url}"
         end
+    end
+
+    def auth_token
+      "Bearer " + api_key
     end
 
   end

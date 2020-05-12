@@ -85,7 +85,7 @@ RSpec.describe Openapply::Client do
     end
 
     it "has the correct default base path for API v3" do
-      expect(@oa.api_path.to_s).to eq "/api/v3/"
+      expect(@oa.api_path.to_s).to eq "/api/v3"
     end
 
     it "has a api_records value" do
@@ -105,11 +105,11 @@ RSpec.describe Openapply::Client do
     end
 
     it "returns an answer after one timeout" do
-      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
-      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
+      @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(1).then
-            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
       test_ans = @oa.one_student_record_by_id(95)
@@ -118,11 +118,11 @@ RSpec.describe Openapply::Client do
     end
 
     it "returns an answer after two timeouts" do
-      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
-      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
+      @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(2).then
-            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
       test_ans = @oa.one_student_record_by_id(95)
@@ -130,11 +130,11 @@ RSpec.describe Openapply::Client do
     end
 
     it "returns an error after three timeouts" do
-      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
-      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
+      @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(3).then
-            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
       test_ans  = @oa.one_student_record_by_id(95)
@@ -143,11 +143,11 @@ RSpec.describe Openapply::Client do
     end
 
     it "returns an error after three timeouts" do
-      # stub_request(:get, "http://demo.openapply.com/api/v1/students/95?auth_token=demo_site_api_key")
-      @url_kid_95  = "#{@oa.api_path}95?auth_token=#{@oa.api_key}"
+      # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
+      @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
             .to_timeout.times(4).then
-            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby'})
+            .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
             .to_return( status: 200, headers: {},
                         body: SpecData::STUDENT_95_RECORD_HASH.to_json)
       test_ans  = @oa.one_student_record_by_id(95)
@@ -168,9 +168,19 @@ RSpec.describe Openapply::Client do
     it "oa_answer - returns the proper error message when base path is missing/wrong" do
       expect( @oa.oa_answer("humpty") ).to eql( { error: 'bad api_path' } )
     end
+  end
 
-    it "oa_answer - returns the proper error message when auth_token is missing/wrong" do
-      expect( @oa.oa_answer("#{@oa.api_path}?auth_token=xyz") ).to eql( { error: 'bad auth_token' } )
+  context "authentification using oauth2" do
+    it "returns a token using client id & secret" do
+      allow(ENV).to receive(:[]).with("https_proxy").and_return(nil)
+      allow(ENV).to receive(:[]).with("HTTPS_PROXY").and_return(nil)
+      allow(ENV).to receive(:[]).with("OAUTH_DEBUG").and_return(true)
+
+      stub_auth(@oa.api_url)
+
+      expect(@oa.authentificate).to be_a_kind_of(OAuth2::AccessToken)
+      expect(@oa.authentificate.token).to eq("a7bec3a61bdebb406ccc117419cce8713d56403eaeb00ce68397b3a16293a1d3")
+      expect(@oa.authentificate.expires_in).to eq(2629745)
     end
   end
 

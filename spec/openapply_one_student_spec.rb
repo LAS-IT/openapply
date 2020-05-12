@@ -9,6 +9,8 @@ RSpec.describe Openapply::GetOneStudent do
     @options = {}
     @oa = Openapply::Client.new
 
+    stub_auth(@oa.api_url)
+
     # stub_request(:get, "http://demo.openapply.com/api/v1/students/106?auth_token=demo_site_api_key")
     @url_kid_106  = "#{@oa.api_path}106?auth_token=#{@oa.api_key}"
     stub_request(:get, "#{@oa.api_url}#{@url_kid_106}")
