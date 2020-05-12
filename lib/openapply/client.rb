@@ -57,7 +57,7 @@ module Openapply
     end
 
     def api_records
-      ENV['OA_RECORD_COUNT'] || '1000'
+      ENV['OA_RECORD_COUNT'] || '100'
     end
 
     # @note Does the actual api call(get) to OpenApply & handles API timeouts gracefully

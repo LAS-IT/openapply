@@ -90,7 +90,7 @@ RSpec.describe Openapply::Client do
 
     it "has a api_records value" do
       expect(@oa.api_records).not_to be nil
-      expect(@oa.api_records).to eq '1000'
+      expect(@oa.api_records).to eq '100'
     end
 
     # ???
