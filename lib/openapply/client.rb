@@ -1,3 +1,4 @@
+require 'oauth2'
 require "openapply/get_many_students"
 require "openapply/get_one_student"
 require "openapply/put"
@@ -11,55 +12,53 @@ module Openapply
     include Openapply::GetOneStudent    # GET api calls
     include Openapply::GetManyStudents  # GET api calls
 
-
-    API_TIMEOUT = ENV['OA_TIMEOUT'].to_i || 5
-    # Force RBENV var base_uri to https://
-    API_URL     = case
-                  when ENV['OA_BASE_URI'].start_with?('https://')
-                    "#{ENV['OA_BASE_URI']}"
-                  when ENV['OA_BASE_URI'].start_with?('http://')
-                    "#{ENV['OA_BASE_URI']}".gsub("http", "https")
-                  else
-                    "https://#{ENV['OA_BASE_URI']}"
-                  end
-
-    base_uri API_URL
+    API_TIMEOUT = ENV['OA_TIMEOUT'].to_i
+    API_TIMEOUT = 5 if ENV['OA_TIMEOUT'].to_i == 0
     default_timeout API_TIMEOUT
 
-    # attr_reader :api_url, :api_key
+    def initialize(url: nil, client_id: nil, client_secret: nil, token: nil)
+      puts token
+      @api_url     = format_api_url(url || ENV['OA_BASE_URI'])
+      @api_client_id     = client_id || ENV['OA_CLIENT_ID']
+      @api_client_secret     = client_secret || ENV['OA_CLIENT_SECRET']
+      @api_key             = token || authentificate
 
-    def initialize
-      api_url     = API_URL
-      api_key     = ENV['OA_AUTH_TOKEN']
-
-      raise ArgumentError, 'OA_TIMEOUT is missing'    if api_timeout.nil? or
-                                                          not api_timeout.is_a? Integer
-      raise ArgumentError, 'OA_API_PATH is missing'   if api_path.nil? or
-                                                          api_path.empty?
       raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
                                                           api_url.empty?
-      raise ArgumentError, 'OA_AUTH_TOKEN is missing' if api_key.nil? or
-                                                          api_key.empty?
+      raise ArgumentError, 'OA_CLIENT_ID is missing' if api_client_id.nil? or
+                                                          api_client_id.empty?
+      raise ArgumentError, 'OA_CLIENT_SECRET is missing' if api_client_secret.nil? or
+                                                          api_client_secret.empty?
+
+      self.class.base_uri api_url
     end
 
     def api_url
-      API_URL
+      @api_url
     end
 
     def api_timeout
-      ENV['OA_TIMEOUT'].to_i
+      API_TIMEOUT
+    end
+
+    def api_client_id
+      @api_client_id
+    end
+
+    def api_client_secret
+      @api_client_secret
     end
 
     def api_key
-      ENV['OA_AUTH_TOKEN']
+      @api_key
     end
 
     def api_path
-      ENV['OA_API_PATH']     || "/api/v1/students/"
+      "/api/v3/"
     end
 
     def api_records
-      ENV['OA_RECORD_COUNT'] || '50'
+      ENV['OA_RECORD_COUNT'] || '1000'
     end
 
     # @note Does the actual api call(get) to OpenApply & handles API timeouts gracefully
@@ -67,7 +66,6 @@ module Openapply
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
 
     def get(url, options={})
-      # add exception if ENV are not set
       max_retries = 3
       times_retried = 0
       begin
@@ -88,7 +86,6 @@ module Openapply
     # @param options - see httparty options [http://www.rubydoc.info/github/jnunemaker/httparty]
 
     def put(url, value, options={})
-      # add exception if ENV are not set
       # Per emai from Mackenzine on API call formatting, vs what is found on API site
      #  curl -X "PUT" "https://las.openapply.com/api/v1/students/OAID" \
      # -H 'Content-Type: application/x-www-form-urlencoded; charset=utf-8' \
@@ -135,6 +132,29 @@ module Openapply
       return { error: 'no response' }     if api_answer.response.nil?
       return { error: 'no response' }     if api_answer.response.to_s.eql? ""
       return JSON.parse(api_answer.response.body, symbolize_names: true)
+    end
+
+    # @note authentificate using oauth2
+    # def authentificate
+    #   client = OAuth2::Client.new(api_client_id, api_client_secret, site: api_url)
+    #   token_wrapper = client.client_credentials.get_token
+    #   return token_wrapper.token
+    # end
+
+    private
+
+    def format_api_url(url)
+      # Force RBENV var base_uri to https://
+      return case
+        when url.nil?
+          raise ArgumentError, 'OA_BASE_URI is missing'
+        when url.start_with?('https://')
+          url
+        when url.start_with?('http://')
+          url.gsub("http", "https")
+        else
+          "https://#{url}"
+        end
     end
 
   end
