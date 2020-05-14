@@ -15,6 +15,10 @@ module Openapply
     API_TIMEOUT = ENV['OA_TIMEOUT'].to_i == 0 ? 5 : ENV['OA_TIMEOUT'].to_i
     default_timeout API_TIMEOUT
 
+    # @param [String] url Base uri
+    # @param [String] client_id
+    # @param [String] client_secret
+    # @param [String] token if present will not generate an auth token
     def initialize(url: nil, client_id: nil, client_secret: nil, token: nil)
       @api_url     = format_api_url(url || ENV['OA_BASE_URI'])
       @api_client_id     = client_id || ENV['OA_CLIENT_ID']
@@ -129,7 +133,7 @@ module Openapply
     end
 
     # @note authentificate using oauth2
-    # @note returns OAuth2::AccessToken
+    # @return [OAuth2::AccessToken]
     def authentificate
       client = OAuth2::Client.new(api_client_id, api_client_secret, site: api_url)
       return client.client_credentials.get_token
@@ -137,8 +141,8 @@ module Openapply
 
     private
 
+    # @note Force url to https://
     def format_api_url(url)
-      # Force RBENV var base_uri to https://
       return case
         when url.nil?
           raise ArgumentError, 'OA_BASE_URI is missing'
@@ -151,6 +155,7 @@ module Openapply
         end
     end
 
+    # @note format auth token
     def auth_token
       "Bearer " + api_key
     end
