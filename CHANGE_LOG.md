@@ -1,5 +1,10 @@
 ### Openapply CHANGE LOG
 
+* **v1.0.0** - compatible with 1.0.x - 2020-05-14
+  - update path to use OpenApply API v3
+  - oauth authentification
+  - add arguments in addition to environment variables
+
 * **v0.4.2** - compatible with 0.4.x - 2020-03-03
   - update dependencies
 
