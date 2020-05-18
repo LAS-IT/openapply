@@ -23,7 +23,7 @@ module Openapply
       @api_url     = format_api_url(url || ENV['OA_BASE_URI'])
       @api_client_id     = client_id || ENV['OA_CLIENT_ID']
       @api_client_secret     = client_secret || ENV['OA_CLIENT_SECRET']
-      @api_key             = token || authentificate.token
+      @api_key             = token
 
       raise ArgumentError, 'OA_BASE_URI is missing'   if api_url.nil? or
                                                           api_url.empty?
@@ -52,7 +52,7 @@ module Openapply
     end
 
     def api_key
-      @api_key
+      @api_key || authentificate.token
     end
 
     def api_path

@@ -1,5 +1,8 @@
 ### Openapply CHANGE LOG
 
+* **v1.0.2** - compatible with 1.0.x - 2020-05-18
+  - improve auth token generation
+
 * **v1.0.1** - compatible with 1.0.x - 2020-05-18
   - update dependencies
 
