@@ -99,6 +99,61 @@ RSpec.describe Openapply::Client do
     # end
   end
 
+  context "oa_answer handles code 429 too many request" do
+      it "to return a answer after one retry" do
+        @url_kid_95  = "#{@oa.api_path}/students/95"
+        stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
+              .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 200, headers: {}, body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+
+        test_ans = @oa.one_student_record_by_id(95)
+        # pp test_ans
+        expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+      end
+
+      it "to return an answer after two retry" do
+        @url_kid_95  = "#{@oa.api_path}/students/95"
+        stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
+              .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 200, headers: {}, body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+
+        test_ans = @oa.one_student_record_by_id(95)
+        # pp test_ans
+        expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+      end
+
+      it "to return an answer after three retry" do
+        @url_kid_95  = "#{@oa.api_path}/students/95"
+        stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
+              .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 200, headers: {}, body: SpecData::STUDENT_95_RECORD_HASH.to_json)
+
+        test_ans = @oa.one_student_record_by_id(95)
+        # pp test_ans
+        expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
+      end
+
+      it "to return an error after four retry" do
+        @url_kid_95  = "#{@oa.api_path}/students/95"
+        stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
+              .with(headers: {'Accept'=>'*/*', 'User-Agent'=>'Ruby', "Authorization" => "Bearer " + @oa.api_key})
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}').then
+              .to_return( status: 429, headers: {}, body: '{"error": "Rate limit reached. Retry later."}')
+
+        test_ans = @oa.one_student_record_by_id(95)
+        error_ans = { error: "no response (timeout) from URL: #{@url_kid_95}" }
+        expect( test_ans ).to eql( error_ans )
+      end
+  end
+
   context "oa_answer handles timeouts" do
     before(:each) do
       # setup api timeout mocks
@@ -129,7 +184,7 @@ RSpec.describe Openapply::Client do
       expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
     end
 
-    it "returns an error after three timeouts" do
+    it "returns an amswer after three timeouts" do
       # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
       @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")
@@ -142,7 +197,7 @@ RSpec.describe Openapply::Client do
       expect( test_ans ).to eql( SpecData::STUDENT_95_RECORD_HASH )
     end
 
-    it "returns an error after three timeouts" do
+    it "returns an error after four timeouts" do
       # stub_request(:get, "http://demo.openapply.com/api/v3/students/95")
       @url_kid_95  = "#{@oa.api_path}/students/95"
       stub_request(:get, "#{@oa.api_url}#{@url_kid_95}")

@@ -5,12 +5,17 @@ require "openapply/put"
 require 'httparty'
 
 module Openapply
+  class TooManyRequestError < StandardError
+  end
+
   class Client
 
     include HTTParty                    # Library for API calls
     include Openapply::Put              # PUT api calls
     include Openapply::GetOneStudent    # GET api calls
     include Openapply::GetManyStudents  # GET api calls
+
+    NET_EXCEPTIONS = [Net::ReadTimeout, Net::OpenTimeout, TooManyRequestError]
 
     API_TIMEOUT = ENV['OA_TIMEOUT'].to_i == 0 ? 5 : ENV['OA_TIMEOUT'].to_i
     default_timeout API_TIMEOUT
@@ -72,8 +77,10 @@ module Openapply
       times_retried = 0
       begin
         options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
-        self.class.get(url, options)
-      rescue Net::ReadTimeout, Net::OpenTimeout
+        answer = self.class.get(url, options)
+        raise TooManyRequestError if answer.too_many_requests?
+        answer
+      rescue *NET_EXCEPTIONS
         if times_retried < max_retries
           times_retried += 1
           retry
@@ -100,7 +107,7 @@ module Openapply
         options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
         options[:body] = value
         self.class.put(url, options)
-      rescue Net::ReadTimeout, Net::OpenTimeout
+      rescue *NET_EXCEPTIONS
         if times_retried < max_retries
           times_retried += 1
           retry
@@ -161,5 +168,4 @@ module Openapply
     end
 
   end
-
 end
