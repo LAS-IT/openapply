@@ -44,10 +44,6 @@ module Openapply
       @api_url
     end
 
-    def debug_http
-      ENV['OA_DEBUG_HTTP'] || false
-    end
-
     def api_timeout
       API_TIMEOUT
     end
@@ -158,13 +154,10 @@ module Openapply
         when url.nil?
           raise ArgumentError, 'OA_BASE_URI is missing'
         when url.start_with?('https://')
-          return url.gsub("https", "http") if debug_http
           url
         when url.start_with?('http://')
-          return url if debug_http
           url.gsub("http", "https")
         else
-          return "http://#{url}" if debug_http
           "https://#{url}"
         end
     end
