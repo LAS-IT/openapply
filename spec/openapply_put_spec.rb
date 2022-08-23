@@ -8,6 +8,7 @@ WebMock.disable_net_connect!(allow_localhost: true)
 RSpec.describe Openapply::GetOneStudent do
   before(:each) do
     allow(ENV).to receive(:[]).with("OA_TIMEOUT").and_return(nil)
+    allow(ENV).to receive(:[]).with("OA_DEBUG_HTTP").and_return(false)
     allow(ENV).to receive(:[]).with("OA_RECORD_COUNT").and_return(nil)
     allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("demo.openapply.com")
     allow(ENV).to receive(:[]).with("OA_CLIENT_ID").and_return("xvz1evFS4wEEPTGEFPHBog")

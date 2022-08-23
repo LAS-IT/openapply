@@ -7,6 +7,7 @@ RSpec.describe Openapply::Client do
 
   before(:each) do
     allow(ENV).to receive(:[]).with("OA_TIMEOUT").and_return(nil)
+    allow(ENV).to receive(:[]).with("OA_DEBUG_HTTP").and_return(false)
     allow(ENV).to receive(:[]).with("OA_RECORD_COUNT").and_return(nil)
     allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("demo.openapply.com")
     allow(ENV).to receive(:[]).with("OA_CLIENT_ID").and_return("xvz1evFS4wEEPTGEFPHBog")
@@ -40,6 +41,10 @@ RSpec.describe Openapply::Client do
     it "has a token" do
       expect(@oa.api_key).to eq "asdfg"
     end
+
+    it "has debug_http to false" do
+      expect(@oa.debug_http).to eq false
+    end
   end
 
   context "basic config - initialization with env" do
@@ -70,6 +75,41 @@ RSpec.describe Openapply::Client do
       allow(ENV).to receive(:[]).with("OA_CLIENT_SECRET").and_return("")
       expect(Openapply::Client.new).to raise_error(ArgumentError)
       expect(Openapply::Client.new).to raise_error('OA_CLIENT_SECRET is missing')
+    end
+  end
+
+  context "force https" do
+    it "force https if http is pass has the uri" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("http://oa.com")
+      expect(Openapply::Client.new.api_url).to eq "https://oa.com"
+    end
+
+    it "does not change the base uri if https is passed" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("https://oa.com")
+      expect(Openapply::Client.new.api_url).to eq "https://oa.com"
+    end
+
+    it "adds the protocol if not included" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("oa.com")
+      expect(Openapply::Client.new.api_url).to eq "https://oa.com"
+    end
+
+    it "force http if https is pass has the uri and debug true" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("https://oa.com")
+      allow(ENV).to receive(:[]).with("OA_DEBUG_HTTP").and_return(true)
+      expect(Openapply::Client.new.api_url).to eq "http://oa.com"
+    end
+
+    it "does not change the base uri if http is passed and debug true" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("http://oa.com")
+      allow(ENV).to receive(:[]).with("OA_DEBUG_HTTP").and_return(true)
+      expect(Openapply::Client.new.api_url).to eq "http://oa.com"
+    end
+
+    it "adds the protocol if not included and debug true" do
+      allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("oa.com")
+      allow(ENV).to receive(:[]).with("OA_DEBUG_HTTP").and_return(true)
+      expect(Openapply::Client.new.api_url).to eq "http://oa.com"
     end
   end
 
