@@ -1,5 +1,8 @@
 ### Openapply CHANGE LOG
 
+* **v1.0.3.5** - compatible with 1.0.x - 2022-08-23
+  - add a debug env variable to debug queries
+
 * **v1.0.3.4** - compatible with 1.0.x - 2022-08-23
   - update dependencies
 

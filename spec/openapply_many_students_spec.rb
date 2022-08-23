@@ -7,6 +7,7 @@ RSpec.describe Openapply::GetManyStudents do
   before(:each) do
     allow(ENV).to receive(:[]).with("OA_TIMEOUT").and_return(nil)
     allow(ENV).to receive(:[]).with("OA_RECORD_COUNT").and_return(nil)
+    allow(ENV).to receive(:[]).with("OA_DEBUG").and_return(false)
     allow(ENV).to receive(:[]).with("OA_BASE_URI").and_return("demo.openapply.com")
     allow(ENV).to receive(:[]).with("OA_CLIENT_ID").and_return("xvz1evFS4wEEPTGEFPHBog")
     allow(ENV).to receive(:[]).with("OA_CLIENT_SECRET").and_return("L8qq9PZyRg6ieKGEKhZolGC0vJWLw8iEJ88DRdyOg")

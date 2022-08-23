@@ -77,9 +77,31 @@ module Openapply
       times_retried = 0
       begin
         options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
+        
+        if ENV['OA_DEBUG']
+          puts "###"
+          puts "DEBUG OA CLIENT GET at #{Time.now}"
+          puts "request URI: #{url}"
+          puts "request options: #{options}"
+          puts "###"
+        end
+
         answer = self.class.get(url, options)
+
+        if ENV['OA_DEBUG']
+          puts "ANSWER:"
+          puts "code: #{answer.code}"
+          puts "headers: #{answer.headers}"
+          puts "---"
+          puts "body:"
+          puts answer.body
+          puts "###"
+        end
+
         raise TooManyRequestError if answer.too_many_requests?
-        answer
+
+        return answer
+
       rescue *NET_EXCEPTIONS
         if times_retried < max_retries
           times_retried += 1
@@ -106,7 +128,29 @@ module Openapply
       begin
         options[:headers] = { 'Content-Type' => 'application/x-www-form-urlencoded; charset=utf-8', "Authorization" => auth_token}
         options[:body] = value
-        self.class.put(url, options)
+
+        if ENV['OA_DEBUG']
+          puts "###" if ENV['OA_DEBUG']
+          puts "DEBUG OA CLIENT PUT at #{Time.now}"
+          puts "request URI: #{url}"
+          puts "request options: #{options}"
+          puts "###"
+        end
+
+        answer = self.class.put(url, options)
+
+        if ENV['OA_DEBUG']
+          puts "ANSWER:"
+          puts "code: #{answer.code}"
+          puts "headers: #{answer.headers}"
+          puts "---"
+          puts "body:"
+          puts answer.body
+          puts "###"
+        end
+
+        return answer
+
       rescue *NET_EXCEPTIONS
         if times_retried < max_retries
           times_retried += 1
