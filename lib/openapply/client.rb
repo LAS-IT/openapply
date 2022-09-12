@@ -101,7 +101,9 @@ module Openapply
         raise TooManyRequestError if answer.too_many_requests?
 
         return answer
-
+      rescue TooManyRequestError
+        sleep (answer.headers['X-RateLimit-Period'].to_i + 1)
+        retry
       rescue *NET_EXCEPTIONS
         if times_retried < max_retries
           times_retried += 1

@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = "openapply"
   spec.version       = Openapply::Version::VERSION
   spec.authors       = ["Bill Tihen", "Elliott Hébert"]
-  spec.email         = ["btihen@gmail.com","btihen@las.ch","ell.heb@container4.ch","ehebert@las.ch"]
+  spec.email         = ["btihen@gmail.com","btihen@las.ch","ehebert@las.ch"]
 
   spec.summary       = %q{Access OpenApply's APIs with Ruby}
   spec.homepage      = "https://github.com/las-it/openapply"
