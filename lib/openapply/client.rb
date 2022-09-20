@@ -102,9 +102,17 @@ module Openapply
 
         return answer
       rescue TooManyRequestError
+        puts "TooManyRequestError"
         sleep (answer.headers['X-RateLimit-Period'].to_i + 1)
         retry
-      rescue *NET_EXCEPTIONS
+      rescue *NET_EXCEPTIONS => error
+        if ENV['OA_DEBUG']
+          puts "ERROR:"
+          puts "error: #{error}"
+          puts "message: #{error.message}"
+          puts "###"
+        end
+
         if times_retried < max_retries
           times_retried += 1
           retry
@@ -151,9 +159,22 @@ module Openapply
           puts "###"
         end
 
+        raise TooManyRequestError if answer.too_many_requests?
+
         return answer
 
-      rescue *NET_EXCEPTIONS
+      rescue TooManyRequestError
+        puts "TooManyRequestError"
+        sleep (answer.headers['X-RateLimit-Period'].to_i + 1)
+        retry
+      rescue *NET_EXCEPTIONS => error
+        if ENV['OA_DEBUG']
+          puts "ERROR:"
+          puts "error: #{error}"
+          puts "message: #{error.message}"
+          puts "###"
+        end
+
         if times_retried < max_retries
           times_retried += 1
           retry
