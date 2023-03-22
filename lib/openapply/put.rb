@@ -16,6 +16,11 @@ module Openapply
       return oa_answer( url, {student: {student_id: student_id}})
     end
 
+    def update_student_email(oa_id, student_email)
+      # url = "#{api_path}#{oa_id}"
+      url = "#{api_path}/students/#{oa_id}"
+      return oa_answer( url, {student: {email: student_email}})
+    end
     # # @note Update one student's status
     # # @param oa_id - (Integer) - id of student to update
     # # @param status - (string) - status to update for student
