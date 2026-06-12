@@ -5,12 +5,8 @@ require_relative './helpers'
 require "bundler/setup"
 require "openapply"
 #
-require 'codacy-coverage'
-Codacy::Reporter.start
-# require 'simplecov'
-# require 'coveralls'
-# Coveralls.wear!
-# SimpleCov.start
+require 'simplecov'
+SimpleCov.start
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

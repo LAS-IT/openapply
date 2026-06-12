@@ -1,5 +1,18 @@
 ### Openapply CHANGE LOG
 
+* **v1.0.3.4** - compatible with 1.0.x - 2026-06-12
+  - Update gems with high security vulnerabilities (checked using `bundle-audit --update`)
+    - **oauth2** 2.0.18 — credential leak via protocol-relative redirect | `~> 2.0` → `~> 2.0.22`, now at **2.0.22** |
+    - **addressable** 2.8.1 — ReDoS (CVE-2026-35611) | Updated to **2.9.0** |
+    - **faraday** 2.14.1 — host-scoping bypass (CVE-2026-33637) | Updated to **2.14.2** |
+    - **jwt** 3.1.2 — empty-key HMAC bypass (CVE-2026-45363) | Updated to **3.2.0** |
+    - **rexml** 3.2.5 — 6 DoS vulnerabilities | Updated to **3.4.4** |
+    - **codacy-coverage** 2.2.1 — uses removed `File.exists?` (Ruby 4.0) | Replaced with **simplecov ~> 0.22** |
+    - **bundler** `~> 2.3` — incompatible with Bundler 4.x | Changed to `>= 2.3
+  - Make code Ruby 4.x compatible 
+    - **Codacy-Coverage** replaced with Simplecov (Codacy-Coverage is abanded since 2000 and not Ruby 4.0 compatible)
+    - update spec_helper to support `simplecov`
+
 * **v1.0.3.9** - compatible with 1.0.x - 2026-04-20
   - retrieve guardian summary data from students' `parent_guardian` key instead of the linked hash
 
